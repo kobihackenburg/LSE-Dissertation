@@ -1,0 +1,138 @@
+---
+title: "tweets stats/processing"
+author: "Kobi Hackenburg"
+date: "7/2/2021"
+output: html_document
+---
+
+Set-up and load packages
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(quanteda)
+library(stringr)
+```
+
+Create two data frames with one containing all Democratic tweets and the other with all Republican tweets 
+```{r}
+#standardize 2016 REPUBLICAN label names
+cruz_text <- as.data.frame(cruz_tweets$text)
+names(cruz_text)[1] <- 'text'
+trump_text <- as.data.frame(trump_tweets$text)
+names(trump_text)[1] <- 'text'
+rubio_text <- as.data.frame(rubio_tweets$text)
+names(rubio_text)[1] <- 'text'
+kasich_text <- as.data.frame(kasich_tweets$text)
+names(kasich_text)[1] <- 'text'
+carson_text <- as.data.frame(carson_tweets$text)
+names(carson_text)[1] <- 'text'
+bush_text <- as.data.frame(bush_tweets$text)
+names(bush_text)[1] <- 'text'
+christie_text <- as.data.frame(christie_tweets$text)
+names(christie_text)[1] <- 'text'
+paul_text <- as.data.frame(paul_tweets$text)
+names(paul_text)[1] <- 'text'
+fiorina_text <- as.data.frame(fiorina_tweets$text)
+names(fiorina_text)[1] <- 'text'
+huckabee_text <- as.data.frame(huckabee_tweets$text)
+names(huckabee_text)[1] <- 'text'
+graham_text <- as.data.frame(graham_tweets$text)
+names(graham_text)[1] <- 'text'
+walker_text <- as.data.frame(walker_tweets$text)
+names(walker_text)[1] <- 'text'
+santorum_text <- as.data.frame(santorum_tweets$text)
+names(santorum_text)[1] <- 'text'
+perry_text <- as.data.frame(perry_tweets$text)
+names(perry_text)[1] <- 'text'
+pataki_text <- as.data.frame(pataki_tweets$text)
+names(pataki_text)[1] <- 'text'
+jindal_text <- as.data.frame(jindal_tweets$text)
+names(jindal_text)[1] <- 'text'
+
+#standardize 2020 DEMOCRAT label names 
+biden_text <- as.data.frame(biden_tweets$text)
+names(biden_text)[1] <- 'text'
+sanders_text <- as.data.frame(sanders_tweets$text)
+names(sanders_text)[1] <- 'text'
+warren_text <- as.data.frame(warren_tweets$text)
+names(warren_text)[1] <- 'text'
+buttigieg_text <- as.data.frame(buttigieg_tweets$text)
+names(buttigieg_text)[1] <- 'text'
+klobuchar_text <- as.data.frame(klobuchar_tweets$text)
+names(klobuchar_text)[1] <- 'text'
+steyer_text <- as.data.frame(steyer_tweets$text)
+names(steyer_text)[1] <- 'text'
+yang_text <- as.data.frame(yang_tweets$text)
+names(yang_text)[1] <- 'text'
+harris_text <- as.data.frame(harris_tweets$text)
+names(harris_text)[1] <- 'text'
+booker_text <- as.data.frame(booker_tweets$text)
+names(booker_text)[1] <- 'text'
+orourke_text <- as.data.frame(orourke_tweets$text)
+names(orourke_text)[1] <- 'text'
+castro_text <- as.data.frame(castro_tweets$text)
+names(castro_text)[1] <- 'text'
+gabbard_text <- as.data.frame(gabbard_tweets$text)
+names(gabbard_text)[1] <- 'text'
+bloomberg_text <- as.data.frame(bloomberg_tweets$text)
+names(bloomberg_text)[1] <- 'text'
+bennet_text <- as.data.frame(bennet_tweets$text)
+names(bennet_text)[1] <- 'text'
+delaney_text <- as.data.frame(delaney_tweets$text)
+names(delaney_text)[1] <- 'text'
+williamson_text <- as.data.frame(williamson_tweets$text)
+names(williamson_text)[1] <- 'text'
+ryan_text <- as.data.frame(ryan_tweets$text)
+names(ryan_text)[1] <- 'text'
+deblasio_text <- as.data.frame(deblasio_tweets$text)
+names(deblasio_text)[1] <- 'text'
+gillibrand_text <- as.data.frame(gillibrand_tweets$text)
+names(gillibrand_text)[1] <- 'text'
+inslee_text <- as.data.frame(inslee_tweets$text)
+names(inslee_text)[1] <- 'text'
+hickenlooper_text <- as.data.frame(hickenlooper_tweets$text)
+names(hickenlooper_text)[1] <- 'text'
+bullock_text <- as.data.frame(bullock_tweets$text)
+names(bullock_text)[1] <- 'text'
+swalwell_text <- as.data.frame(swalwell_tweets$text)
+names(swalwell_text)[1] <- 'text'
+
+#standardize 2020 DEMOCRAT label names
+
+#standardize 2016 & 2020 GENERAL ELECTION label names
+
+#make combined 2016 REPUBLICAN data frame
+combined_repub_tweets <- rbind(cruz_text, trump_text, kasich_text, rubio_text, carson_text, bush_text, christie_text, paul_text, fiorina_text, huckabee_text, graham_text, walker_text, santorum_text, perry_text, pataki_text, jindal_text)
+
+#make combined 2020 DEMOCRAT data frame
+combined_dem_tweets <- rbind(biden_text, sanders_text, warren_text, buttigieg_text, klobuchar_text, steyer_text, yang_text, orourke_text, gabbard_text, castro_text, harris_text, booker_text, bloomberg_text, bennet_text, delaney_text, williamson_text, ryan_text, deblasio_text, gillibrand_text, hickenlooper_text, inslee_text, bullock_text, swalwell_text)
+
+#make combined 2016 DEMOCRAT data frame
+
+#make combined 2016&2020 GENERAL ELECTION data frame
+
+```
+
+
+Apply raw dictionary to tweets to obtain raw proportion of tweets containing moral langauge
+```{r}
+moral.list <- c(data_dictionary_MFD$care.virtue, data_dictionary_MFD$care.vice,
+                     data_dictionary_MFD$fairness.virtue, data_dictionary_MFD$fairness.vice,
+                     data_dictionary_MFD$loyalty.virtue, data_dictionary_MFD$loyalty.vice,
+                     data_dictionary_MFD$authority.virtue, data_dictionary_MFD$authority.vice,
+                     data_dictionary_MFD$sanctity.virtue, data_dictionary_MFD$sanctity.vice)
+
+allrepub_primarytweets_moral <- combined_repub_tweets[rowSums(sapply(moral.list, grepl, combined_repub_tweets$text)) > 0, , drop = FALSE] #19,964
+
+alldem_primarytweets_moral <- combined_dem_tweets[rowSums(sapply(moral.list, grepl, combined_dem_tweets$text)) > 0, , drop = FALSE] #57,944
+
+```
+
+Apply extracted dictionary to tweets to obtain weighted proportion of tweets containing moral langauge
+```{r}
+moral.list.extracted <- c(bipartisan_toks_specific)
+
+allrepub_primarytweets_moral_weighted <- combined_repub_tweets[rowSums(sapply(moral.list.extracted, grepl, combined_repub_tweets$text)) > 0, , drop = FALSE] #13,923
+
+alldem_primarytweets_moral_weighted <- combined_dem_tweets[rowSums(sapply(moral.list.extracted, grepl, combined_dem_tweets$text)) > 0, , drop = FALSE] # 44,568
+```
+

@@ -1,0 +1,112 @@
+---
+title: "wordcloud code"
+author: "Kobi Hackenburg"
+date: "6/20/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#test wordcloud
+#create combined tokens object for all dems
+toks_mega_combined <- (toks_biden+
+                       toks_sanders+
+                       toks_warren+
+                         toks_buttigieg+
+                         toks_klobuchar+
+                         toks_booker+
+                         toks_harris+
+                         toks_steyer+
+                         toks_yang+
+                         toks_orourke+
+                         toks_castro+
+                         toks_gabbard+
+                         toks_bennet+
+                         toks_delaney+
+                         toks_williamson+
+                         toks_gillibrand+
+                         toks_inslee+
+                         toks_hickenlooper+
+                         toks_bullock+
+                         toks_swalwell+
+                         toks_trump+
+                         toks_cruz+
+                         toks_kasich+
+                         toks_rubio+
+                         toks_carson+
+                         toks_bush+
+                         toks_christie+
+                         toks_paul+
+                         toks_fiorina+
+                         toks_huckabee+
+                         toks_walker+
+                         toks_graham+
+                         toks_jindal+
+                         toks_santorum+
+                         toks_pataki)
+                         
+                        
+toks_mega_combined <- tokens(toks_mega_combined) %>% tokens_tolower()
+
+#filter
+toks_mega_combined <- tokens_select(toks_mega_combined, pattern = c("sexual", "president*", "presidential", "protect"), selection = "remove", valuetype = "glob")
+
+#authority
+wordcloud_authority.virtue <- tokens_select(toks_mega_combined, pattern = extracted_dict$authority.virtue_ex, valuetype = "glob") 
+wordcloud_authority.virtue <- as.character(wordcloud_authority.virtue)
+wordcloud_authority.virtue <- paste0(wordcloud_authority.virtue, collapse = " ")
+write(wordcloud_authority.virtue, "wordcloud_authority.virtue.txt")
+
+wordcloud_authority.vice <- tokens_select(toks_mega_combined, pattern = extracted_dict$authority.vice_ex, valuetype = "glob") 
+wordcloud_authority.vice <- as.character(wordcloud_authority.vice)
+wordcloud_authority.vice <- paste0(wordcloud_authority.vice, collapse = " ")
+write(wordcloud_authority.vice, "wordcloud_authority.vice.txt")
+
+#care
+wordcloud_care.virtue <- tokens_select(toks_mega_combined, pattern = extracted_dict$care.virtue_ex, valuetype = "glob") 
+wordcloud_care.virtue <- as.character(wordcloud_care.virtue)
+wordcloud_care.virtue <- paste0(wordcloud_care.virtue, collapse = " ")
+write(wordcloud_care.virtue, "wordcloud_care.virtue.txt")
+
+wordcloud_care.vice <- tokens_select(toks_mega_combined, pattern = extracted_dict$care.vice_ex, valuetype = "glob") 
+wordcloud_care.vice <- as.character(wordcloud_care.vice)
+wordcloud_care.vice <- paste0(wordcloud_care.vice, collapse = " ")
+write(wordcloud_care.vice, "wordcloud_care.vice.txt")
+
+#fairness
+wordcloud_fairness.virtue <- tokens_select(toks_mega_combined, pattern = extracted_dict$fairness.virtue_ex, valuetype = "glob") 
+wordcloud_fairness.virtue <- as.character(wordcloud_fairness.virtue)
+wordcloud_fairness.virtue <- paste0(wordcloud_fairness.virtue, collapse = " ")
+write(wordcloud_fairness.virtue, "wordcloud_fairness.virtue.txt")
+
+wordcloud_fairness.vice <- tokens_select(toks_mega_combined, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob") 
+wordcloud_fairness.vice <- as.character(wordcloud_fairness.vice)
+wordcloud_fairness.vice <- paste0(wordcloud_fairness.vice, collapse = " ")
+write(wordcloud_fairness.vice, "wordcloud_fairness.vice.txt")
+
+#sanctity
+wordcloud_sanctity.virtue <- tokens_select(toks_mega_combined, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob") 
+wordcloud_sanctity.virtue <- as.character(wordcloud_sanctity.virtue)
+wordcloud_sanctity.virtue <- paste0(wordcloud_sanctity.virtue, collapse = " ")
+write(wordcloud_sanctity.virtue, "wordcloud_sanctity.virtue.txt")
+
+wordcloud_sanctity.vice <- tokens_select(toks_mega_combined, pattern = extracted_dict$sanctity.vice_ex, valuetype = "glob") 
+wordcloud_sanctity.vice <- as.character(wordcloud_sanctity.vice)
+wordcloud_sanctity.vice <- paste0(wordcloud_sanctity.vice, collapse = " ")
+write(wordcloud_sanctity.vice, "wordcloud_sanctity.vice.txt")
+
+#loyalty
+wordcloud_loyalty.virtue <- tokens_select(toks_mega_combined, pattern = extracted_dict$loyalty.virtue_ex, valuetype = "glob") 
+wordcloud_loyalty.virtue <- as.character(wordcloud_loyalty.virtue)
+wordcloud_loyalty.virtue <- paste0(wordcloud_loyalty.virtue, collapse = " ")
+write(wordcloud_loyalty.virtue, "wordcloud_loyalty.virtue.txt")
+
+wordcloud_loyalty.vice <- tokens_select(toks_mega_combined, pattern = extracted_dict$loyalty.vice_ex, valuetype = "glob") 
+wordcloud_loyalty.vice <- as.character(wordcloud_loyalty.vice)
+wordcloud_loyalty.vice <- paste0(wordcloud_loyalty.vice, collapse = " ")
+write(wordcloud_loyalty.vice, "wordcloud_loyalty.vice.txt")
+```
+

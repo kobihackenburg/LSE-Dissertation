@@ -1,0 +1,1128 @@
+---
+title: "tweets"
+output: html_document
+---
+
+Set-up and load packages
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+library("quanteda")
+library("academictwitteR")
+```
+
+Get all 2016 Republican primary campaign tweets
+```{r}
+#GET CRUZ TWEETS
+cruz_tweets <- get_all_tweets(users = c("tedcruz"),
+                              start_tweets = "2015-03-02T00:00:00Z",
+                              end_tweets = "2016-05-03T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+                              
+
+cruztweets_text <- as.character(cruz_tweets$text)
+cruztweets_text_clean <- gsub("http[^[:space:]]*","", cruztweets_text)
+cruztweets_text_clean <- gsub("RT", "", cruztweets_text_clean)
+cruztweets_text_clean <- gsub("--&gt", "", cruztweets_text_clean)
+cruztweets_text_clean <- gsub("&amp", "", cruztweets_text_clean)
+cruztweets_text_clean <- gsub("\n", "", cruztweets_text_clean)
+cruztweets_text_clean <- gsub('#\\S+', "", cruztweets_text_clean)
+cruztweets_text_clean <- gsub('.@\\S+', "", cruztweets_text_clean)
+cruztweets_text_clean <- gsub('@\\S+', "", cruztweets_text_clean)
+
+cruz_corpus <- corpus(cruztweets_text_clean) 
+cruz_corpus <- `docnames<-`(cruz_corpus, "cruz")
+#textstat_summary(cruz_corpus)
+
+write(cruztweets_text_clean, "cruztweets.txt")
+
+#GET KASICH TWEETS
+kasich_tweets <- get_all_tweets(users = c("JohnKasich"),
+                              start_tweets = "2015-07-21T00:00:00Z",
+                              end_tweets = "2016-05-04T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+kasichtweets_text <- as.character(kasich_tweets$text)
+kasichtweets_text_clean <- gsub("http[^[:space:]]*","", kasichtweets_text)
+kasichtweets_text_clean <- gsub("RT", "", kasichtweets_text_clean)
+kasichtweets_text_clean <- gsub("--&gt", "", kasichtweets_text_clean)
+kasichtweets_text_clean <- gsub("&amp", "", kasichtweets_text_clean)
+kasichtweets_text_clean <- gsub("\n", "", kasichtweets_text_clean)
+kasichtweets_text_clean <- gsub('#\\S+', "", kasichtweets_text_clean)
+kasichtweets_text_clean <- gsub('.@\\S+', "", kasichtweets_text_clean)
+kasichtweets_text_clean <- gsub('@\\S+', "", kasichtweets_text_clean)
+
+kasich_corpus <- corpus(kasichtweets_text_clean) 
+kasich_corpus <- `docnames<-`(kasich_corpus, "kasich")
+#textstat_summary(kasich_corpus)
+
+write(kasichtweets_text_clean, "kasichtweets.txt")
+
+#GET RUBIO TWEETS
+rubio_tweets <- get_all_tweets(users = c("marcorubio"),
+                              start_tweets = "2015-04-13T00:00:00Z",
+                              end_tweets = "2016-03-15T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+rubiotweets_text <- as.character(rubio_tweets$text)
+rubiotweets_text_clean <- gsub("http[^[:space:]]*","", rubiotweets_text)
+rubiotweets_text_clean <- gsub("RT", "", rubiotweets_text_clean)
+rubiotweets_text_clean <- gsub("--&gt", "", rubiotweets_text_clean)
+rubiotweets_text_clean <- gsub("&amp", "", rubiotweets_text_clean)
+rubiotweets_text_clean <- gsub("\n", "", rubiotweets_text_clean)
+rubiotweets_text_clean <- gsub('#\\S+', "", rubiotweets_text_clean)
+rubiotweets_text_clean <- gsub('.@\\S+', "", rubiotweets_text_clean)
+rubiotweets_text_clean <- gsub('@\\S+', "", rubiotweets_text_clean)
+
+rubio_corpus <- corpus(rubiotweets_text_clean) 
+rubio_corpus <- `docnames<-`(rubio_corpus, "rubio")
+#textstat_summary(rubio_corpus)
+
+write(rubiotweets_text_clean, "rubiotweets.txt")
+
+#GET CARSON TWEETS
+carson_tweets <- get_all_tweets(users = c("RealBenCarson"),
+                              start_tweets = "2015-05-03T00:00:00Z",
+                              end_tweets = "2016-03-04T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+carsontweets_text <- as.character(carson_tweets$text)
+carsontweets_text_clean <- gsub("http[^[:space:]]*","", carsontweets_text)
+carsontweets_text_clean <- gsub("RT", "", carsontweets_text_clean)
+carsontweets_text_clean <- gsub("--&gt", "", carsontweets_text_clean)
+carsontweets_text_clean <- gsub("&amp", "", carsontweets_text_clean)
+carsontweets_text_clean <- gsub("\n", "", carsontweets_text_clean)
+carsontweets_text_clean <- gsub('#\\S+', "", carsontweets_text_clean)
+carsontweets_text_clean <- gsub('.@\\S+', "", carsontweets_text_clean)
+carsontweets_text_clean <- gsub('@\\S+', "", carsontweets_text_clean)
+
+carson_corpus <- corpus(carsontweets_text_clean) 
+carson_corpus <- `docnames<-`(carson_corpus, "carson")
+#textstat_summary(carson_corpus)
+
+write(carsontweets_text_clean, "carsontweets.txt")
+
+#GET BUSH TWEETS
+bush_tweets <- get_all_tweets(users = c("JebBush"),
+                              start_tweets = "2015-06-15T00:00:00Z",
+                              end_tweets = "2016-02-20T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+bushtweets_text <- as.character(bush_tweets$text)
+bushtweets_text_clean <- gsub("http[^[:space:]]*","", bushtweets_text)
+bushtweets_text_clean <- gsub("RT", "", bushtweets_text_clean)
+bushtweets_text_clean <- gsub("--&gt", "", bushtweets_text_clean)
+bushtweets_text_clean <- gsub("&amp", "", bushtweets_text_clean)
+bushtweets_text_clean <- gsub("\n", "", bushtweets_text_clean)
+bushtweets_text_clean <- gsub('#\\S+', "", bushtweets_text_clean)
+bushtweets_text_clean <- gsub('.@\\S+', "", bushtweets_text_clean)
+bushtweets_text_clean <- gsub('@\\S+', "", bushtweets_text_clean)
+
+bush_corpus <- corpus(bushtweets_text_clean) 
+bush_corpus <- `docnames<-`(bush_corpus, "bush")
+#textstat_summary(bush_corpus)
+
+write(bushtweets_text_clean, "bushtweets.txt")
+
+#GET CHRISTIE TWEETS
+christie_tweets <- get_all_tweets(users = c("GovChristie"),
+                              start_tweets = "2015-06-30T00:00:00Z",
+                              end_tweets = "2016-02-10T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+christietweets_text <- as.character(christie_tweets$text)
+christietweets_text_clean <- gsub("http[^[:space:]]*","", christietweets_text)
+christietweets_text_clean <- gsub("RT", "", christietweets_text_clean)
+christietweets_text_clean <- gsub("--&gt", "", christietweets_text_clean)
+christietweets_text_clean <- gsub("&amp", "", christietweets_text_clean)
+christietweets_text_clean <- gsub("\n", "", christietweets_text_clean)
+christietweets_text_clean <- gsub('#\\S+', "", christietweets_text_clean)
+christietweets_text_clean <- gsub('.@\\S+', "", christietweets_text_clean)
+christietweets_text_clean <- gsub('@\\S+', "", christietweets_text_clean)
+
+christie_corpus <- corpus(christietweets_text_clean) 
+christie_corpus <- `docnames<-`(christie_corpus, "christie")
+#textstat_summary(christie_corpus)
+
+write(christietweets_text_clean, "christietweets.txt")
+
+#GET PAUL TWEETS
+paul_tweets <- get_all_tweets(users = c("RandPaul"),
+                              start_tweets = "2015-04-07T00:00:00Z",
+                              end_tweets = "2016-02-03T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+paultweets_text <- as.character(paul_tweets$text)
+paultweets_text_clean <- gsub("http[^[:space:]]*","", paultweets_text)
+paultweets_text_clean <- gsub("RT", "", paultweets_text_clean)
+paultweets_text_clean <- gsub("--&gt", "", paultweets_text_clean)
+paultweets_text_clean <- gsub("&amp", "", paultweets_text_clean)
+paultweets_text_clean <- gsub("\n", "", paultweets_text_clean)
+paultweets_text_clean <- gsub("&gt;&gt;&gt;", "", paultweets_text_clean)
+paultweets_text_clean <- gsub('#\\S+', "", paultweets_text_clean)
+paultweets_text_clean <- gsub('.@\\S+', "", paultweets_text_clean)
+paultweets_text_clean <- gsub('@\\S+', "", paultweets_text_clean)
+
+paul_corpus <- corpus(paultweets_text_clean) 
+paul_corpus <- `docnames<-`(paul_corpus, "paul")
+#textstat_summary(paul_corpus)
+
+write(paultweets_text_clean, "paultweets.txt")
+
+#GET FIORINA TWEETS
+fiorina_tweets <- get_all_tweets(users = c("CarlyFiorina"),
+                              start_tweets = "2015-05-04T00:00:00Z",
+                              end_tweets = "2016-02-10T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+fiorinatweets_text <- as.character(fiorina_tweets$text)
+fiorinatweets_text_clean <- gsub("http[^[:space:]]*","", fiorinatweets_text)
+fiorinatweets_text_clean <- gsub("RT", "", fiorinatweets_text_clean)
+fiorinatweets_text_clean <- gsub("--&gt", "", fiorinatweets_text_clean)
+fiorinatweets_text_clean <- gsub("&amp", "", fiorinatweets_text_clean)
+fiorinatweets_text_clean <- gsub("\n", "", fiorinatweets_text_clean)
+fiorinatweets_text_clean <- gsub('#\\S+', "", fiorinatweets_text_clean)
+fiorinatweets_text_clean <- gsub('.@\\S+', "", fiorinatweets_text_clean)
+fiorinatweets_text_clean <- gsub('@\\S+', "", fiorinatweets_text_clean)
+
+fiorina_corpus <- corpus(fiorinatweets_text_clean) 
+fiorina_corpus <- `docnames<-`(fiorina_corpus, "fiorina")
+#textstat_summary(fiorina_corpus)
+
+write(fiorinatweets_text_clean, "fiorinatweets.txt")
+
+#GET HUCKABEE TWEETS
+huckabee_tweets <- get_all_tweets(users = c("GovMikeHuckabee"),
+                              start_tweets = "2015-05-05T00:00:00Z",
+                              end_tweets = "2016-02-01T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+huckabeetweets_text <- as.character(huckabee_tweets$text)
+huckabeetweets_text_clean <- gsub("http[^[:space:]]*","", huckabeetweets_text)
+huckabeetweets_text_clean <- gsub("RT", "", huckabeetweets_text_clean)
+huckabeetweets_text_clean <- gsub("--&gt", "", huckabeetweets_text_clean)
+huckabeetweets_text_clean <- gsub("&amp", "", huckabeetweets_text_clean)
+huckabeetweets_text_clean <- gsub("\n", "", huckabeetweets_text_clean)
+huckabeetweets_text_clean <- gsub('#\\S+', "", huckabeetweets_text_clean)
+huckabeetweets_text_clean <- gsub('.@\\S+', "", huckabeetweets_text_clean)
+huckabeetweets_text_clean <- gsub('@\\S+', "", huckabeetweets_text_clean)
+
+huckabee_corpus <- corpus(huckabeetweets_text_clean) 
+huckabee_corpus <- `docnames<-`(huckabee_corpus, "huckabee")
+#textstat_summary(huckabee_corpus)
+
+write(huckabeetweets_text_clean, "huckabeetweets.txt")
+
+#GET WALKER TWEETS
+walker_tweets <- get_all_tweets(users = c("ScottWalker"),
+                              start_tweets = "2015-07-13T00:00:00Z",
+                              end_tweets = "2015-09-21T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+walkertweets_text <- as.character(walker_tweets$text)
+walkertweets_text_clean <- gsub("http[^[:space:]]*","", walkertweets_text)
+walkertweets_text_clean <- gsub("RT", "", walkertweets_text_clean)
+walkertweets_text_clean <- gsub("--&gt", "", walkertweets_text_clean)
+walkertweets_text_clean <- gsub("&amp", "", walkertweets_text_clean)
+walkertweets_text_clean <- gsub("\n", "", walkertweets_text_clean)
+walkertweets_text_clean <- gsub('#\\S+', "", walkertweets_text_clean)
+walkertweets_text_clean <- gsub('.@\\S+', "", walkertweets_text_clean)
+walkertweets_text_clean <- gsub('@\\S+', "", walkertweets_text_clean)
+
+walker_corpus <- corpus(walkertweets_text_clean) 
+walker_corpus <- `docnames<-`(walker_corpus, "walker")
+#textstat_summary(walker_corpus)
+
+write(walkertweets_text_clean, "walkertweets.txt")
+
+#GET GRAHAM TWEETS
+graham_tweets <- get_all_tweets(users = c("LindseyGrahamSC"),
+                              start_tweets = "2015-06-01T00:00:00Z",
+                              end_tweets = "2015-12-21T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+grahamtweets_text <- as.character(graham_tweets$text)
+grahamtweets_text_clean <- gsub("http[^[:space:]]*","", grahamtweets_text)
+grahamtweets_text_clean <- gsub("RT", "", grahamtweets_text_clean)
+grahamtweets_text_clean <- gsub("--&gt", "", grahamtweets_text_clean)
+grahamtweets_text_clean <- gsub("&amp", "", grahamtweets_text_clean)
+grahamtweets_text_clean <- gsub("\n", "", grahamtweets_text_clean)
+grahamtweets_text_clean <- gsub('#\\S+', "", grahamtweets_text_clean)
+grahamtweets_text_clean <- gsub('.@\\S+', "", grahamtweets_text_clean)
+grahamtweets_text_clean <- gsub('@\\S+', "", grahamtweets_text_clean)
+
+graham_corpus <- corpus(grahamtweets_text_clean) 
+graham_corpus <- `docnames<-`(graham_corpus, "graham")
+#textstat_summary(graham_corpus)
+
+write(grahamtweets_text_clean, "grahamtweets.txt")
+
+#GET JINDAL  TWEETS
+jindal_tweets <- get_all_tweets(users = c("BobbyJindal"),
+                              start_tweets = "2015-06-24T00:00:00Z",
+                              end_tweets = "2015-11-17T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+jindaltweets_text <- as.character(jindal_tweets$text)
+jindaltweets_text_clean <- gsub("http[^[:space:]]*","", jindaltweets_text)
+jindaltweets_text_clean <- gsub("RT", "", jindaltweets_text_clean)
+jindaltweets_text_clean <- gsub("--&gt", "", jindaltweets_text_clean)
+jindaltweets_text_clean <- gsub("&amp", "", jindaltweets_text_clean)
+jindaltweets_text_clean <- gsub("\n", "", jindaltweets_text_clean)
+jindaltweets_text_clean <- gsub('#\\S+', "", jindaltweets_text_clean)
+jindaltweets_text_clean <- gsub('.@\\S+', "", jindaltweets_text_clean)
+jindaltweets_text_clean <- gsub('@\\S+', "", jindaltweets_text_clean)
+
+jindal_corpus <- corpus(jindaltweets_text_clean) 
+jindal_corpus <- `docnames<-`(jindal_corpus, "jindal")
+#textstat_summary(jindal_corpus)
+
+write(jindaltweets_text_clean, "jindaltweets.txt")
+
+#GET CRUZ TWEETS
+santorum_tweets <- get_all_tweets(users = c("RickSantorum"),
+                              start_tweets = "2015-05-27T00:00:00Z",
+                              end_tweets = "2016-02-03T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+santorumtweets_text <- as.character(santorum_tweets$text)
+santorumtweets_text_clean <- gsub("http[^[:space:]]*","", santorumtweets_text)
+santorumtweets_text_clean <- gsub("RT", "", santorumtweets_text_clean)
+santorumtweets_text_clean <- gsub("--&gt", "", santorumtweets_text_clean)
+santorumtweets_text_clean <- gsub("&amp", "", santorumtweets_text_clean)
+santorumtweets_text_clean <- gsub("\n", "", santorumtweets_text_clean)
+santorumtweets_text_clean <- gsub('#\\S+', "", santorumtweets_text_clean)
+santorumtweets_text_clean <- gsub('.@\\S+', "", santorumtweets_text_clean)
+santorumtweets_text_clean <- gsub('@\\S+', "", santorumtweets_text_clean)
+
+santorum_corpus <- corpus(santorumtweets_text_clean) 
+santorum_corpus <- `docnames<-`(santorum_corpus, "santorum")
+#textstat_summary(santorum_corpus)
+
+write(santorumtweets_text_clean, "santorumtweets.txt")
+
+#GET PATAKI TWEETS
+pataki_tweets <- get_all_tweets(users = c("GovernorPataki"),
+                              start_tweets = "2015-05-28T00:00:00Z",
+                              end_tweets = "2015-12-29T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+patakitweets_text <- as.character(pataki_tweets$text)
+patakitweets_text_clean <- gsub("http[^[:space:]]*","", patakitweets_text)
+patakitweets_text_clean <- gsub("RT", "", patakitweets_text_clean)
+patakitweets_text_clean <- gsub("--&gt", "", patakitweets_text_clean)
+patakitweets_text_clean <- gsub("&amp", "", patakitweets_text_clean)
+patakitweets_text_clean <- gsub("\n", "", patakitweets_text_clean)
+patakitweets_text_clean <- gsub('#\\S+', "", patakitweets_text_clean)
+patakitweets_text_clean <- gsub('.@\\S+', "", patakitweets_text_clean)
+patakitweets_text_clean <- gsub('@\\S+', "", patakitweets_text_clean)
+
+pataki_corpus <- corpus(patakitweets_text_clean) 
+pataki_corpus <- `docnames<-`(pataki_corpus, "pataki")
+#textstat_summary(pataki_corpus)
+
+write(patakitweets_text_clean, "patakitweets.txt")
+
+#GET PERRY TWEETS
+perry <- c("GovernorPerry")
+perry_tweets <-
+  get_user_tweets(perry, "2015-06-14T00:00:00Z", "2015-09-11T00:00:00Z", bearer_token, bind_tweets = TRUE)
+
+perry_tweets <- get_all_tweets(users = c("GovernorPerry"),
+                              start_tweets = "2015-06-14T00:00:00Z",
+                              end_tweets = "2015-09-11T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+perrytweets_text <- as.character(perry_tweets$text)
+perrytweets_text_clean <- gsub("http[^[:space:]]*","", perrytweets_text)
+perrytweets_text_clean <- gsub("RT", "", perrytweets_text_clean)
+perrytweets_text_clean <- gsub("--&gt", "", perrytweets_text_clean)
+perrytweets_text_clean <- gsub("&amp", "", perrytweets_text_clean)
+perrytweets_text_clean <- gsub("\n", "", perrytweets_text_clean)
+perrytweets_text_clean <- gsub('#\\S+', "", perrytweets_text_clean)
+perrytweets_text_clean <- gsub('.@\\S+', "", perrytweets_text_clean)
+perrytweets_text_clean <- gsub('@\\S+', "", perrytweets_text_clean)
+
+perry_corpus <- corpus(perrytweets_text_clean) 
+perry_corpus <- `docnames<-`(perry_corpus, "perry")
+#textstat_summary(perry_corpus)
+
+write(perrytweets_text_clean, "perrytweets.txt")
+
+#GET TRUMP TWEETS
+library(lubridate)
+trump_tweets <- read.csv("trump_tweets.csv")
+trump_tweets$date <- as.Date(ymd_hms(trump_tweets$date))
+trump_tweets <- trump_tweets[trump_tweets$date > "2015-06-16" &    
+                   trump_tweets$date < "2016-05-04", ]
+
+trumptweets_text <- as.character(trump_tweets$text)
+trumptweets_text_clean <- gsub("http[^[:space:]]*","", trumptweets_text)
+trumptweets_text_clean <- gsub("RT", "", trumptweets_text_clean)
+trumptweets_text_clean <- gsub("--&gt", "", trumptweets_text_clean)
+trumptweets_text_clean <- gsub("&amp", "", trumptweets_text_clean)
+trumptweets_text_clean <- gsub("\n", "", trumptweets_text_clean)
+trumptweets_text_clean <- gsub('#\\S+', "", trumptweets_text_clean)
+trumptweets_text_clean <- gsub('.@\\S+', "", trumptweets_text_clean)
+trumptweets_text_clean <- gsub('@\\S+', "", trumptweets_text_clean)
+trumptweets_text_clean <- gsub('"""', "", trumptweets_text_clean)
+
+sum(nchar(trumptweets_text_clean))
+trump_corpus <- corpus(trumptweets_text_clean) 
+trump_corpus <- `docnames<-`(trump_corpus, "trump")
+#textstat_summary(trump_corpus)
+
+write(trumptweets_text_clean, "trumptweets.txt")
+```
+Get all 2016 Democratic primary campaign tweets
+```{r}
+#HILLARY
+hillary_tweets <- get_all_tweets(users = c("HillaryClinton"),
+                              start_tweets = "2015-04-12T00:00:00Z",
+                              end_tweets = "2016-06-06T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+hillarytweets_text <- as.character(hillary_tweets$text)
+hillarytweets_text_clean <- gsub("http[^[:space:]]*","", hillarytweets_text)
+hillarytweets_text_clean <- gsub("RT", "", hillarytweets_text_clean)
+hillarytweets_text_clean <- gsub("--&gt", "", hillarytweets_text_clean)
+hillarytweets_text_clean <- gsub("&amp", "", hillarytweets_text_clean)
+hillarytweets_text_clean <- gsub("\n", "", hillarytweets_text_clean)
+hillarytweets_text_clean <- gsub('#\\S+', "", hillarytweets_text_clean)
+hillarytweets_text_clean <- gsub('.@\\S+', "", hillarytweets_text_clean)
+hillarytweets_text_clean <- gsub('@\\S+', "", hillarytweets_text_clean)
+
+hillary_corpus <- corpus(hillarytweets_text_clean) 
+hillary_corpus <- `docnames<-`(hillary_corpus, "hillary")
+#textstat_summary(hillary_corpus)
+
+write(hillarytweets_text_clean, "hillary2016tweets.txt")
+
+#BERNIE
+bernie_tweets <- get_all_tweets(users = c("BernieSanders"),
+                              start_tweets = "2015-04-30T00:00:00Z",
+                              end_tweets = "2016-06-06T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+bernietweets_text <- as.character(bernie_tweets$text)
+bernietweets_text_clean <- gsub("http[^[:space:]]*","", bernietweets_text)
+bernietweets_text_clean <- gsub("RT", "", bernietweets_text_clean)
+bernietweets_text_clean <- gsub("--&gt", "", bernietweets_text_clean)
+bernietweets_text_clean <- gsub("&amp", "", bernietweets_text_clean)
+bernietweets_text_clean <- gsub("\n", "", bernietweets_text_clean)
+bernietweets_text_clean <- gsub('#\\S+', "", bernietweets_text_clean)
+bernietweets_text_clean <- gsub('.@\\S+', "", bernietweets_text_clean)
+bernietweets_text_clean <- gsub('@\\S+', "", bernietweets_text_clean)
+
+bernie_corpus <- corpus(bernietweets_text_clean) 
+bernie_corpus <- `docnames<-`(bernie_corpus, "bernie")
+#textstat_summary(bernie_corpus)
+
+write(bernietweets_text_clean, "bernie2016tweets.txt")
+
+#O'MALLEY
+omalley_tweets <- get_all_tweets(users = c("MartinOMalley"),
+                              start_tweets = "2015-05-30T00:00:00Z",
+                              end_tweets = "2016-02-01T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 100,
+                              n = Inf)
+
+omalleytweets_text <- as.character(omalley_tweets$text)
+omalleytweets_text_clean <- gsub("http[^[:space:]]*","", omalleytweets_text)
+omalleytweets_text_clean <- gsub("RT", "", omalleytweets_text_clean)
+omalleytweets_text_clean <- gsub("--&gt", "", omalleytweets_text_clean)
+omalleytweets_text_clean <- gsub("&amp", "", omalleytweets_text_clean)
+omalleytweets_text_clean <- gsub("\n", "", omalleytweets_text_clean)
+omalleytweets_text_clean <- gsub('#\\S+', "", omalleytweets_text_clean)
+omalleytweets_text_clean <- gsub('.@\\S+', "", omalleytweets_text_clean)
+omalleytweets_text_clean <- gsub('@\\S+', "", omalleytweets_text_clean)
+
+omalley_corpus <- corpus(omalleytweets_text_clean) 
+omalley_corpus <- `docnames<-`(omalley_corpus, "omalley")
+#textstat_summary(omalley_corpus)
+
+write(omalleytweets_text_clean, "omalley2016tweets.txt")
+```
+
+Get all 2020 Democratic primary campaign tweets
+```{r}
+#GET BIDEN TWEETS
+biden_tweets <- get_all_tweets(users = c("JoeBiden"),
+                              start_tweets = "2019-05-18T00:00:00Z",
+                              end_tweets = "2020-04-08T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+bidentweets_text <- as.character(biden_tweets$text)
+bidentweets_text_clean <- gsub("http[^[:space:]]*","", bidentweets_text)
+bidentweets_text_clean <- gsub("RT", "", bidentweets_text_clean)
+bidentweets_text_clean <- gsub("--&gt", "", bidentweets_text_clean)
+bidentweets_text_clean <- gsub("&amp", "", bidentweets_text_clean)
+bidentweets_text_clean <- gsub("\n", "", bidentweets_text_clean)
+bidentweets_text_clean <- gsub('#\\S+', "", bidentweets_text_clean)
+bidentweets_text_clean <- gsub('.@\\S+', "", bidentweets_text_clean)
+bidentweets_text_clean <- gsub('@\\S+', "", bidentweets_text_clean)
+
+biden_corpus <- corpus(bidentweets_text_clean) 
+biden_corpus <- `docnames<-`(biden_corpus, "Biden")
+#textstat_summary(biden_corpus)
+
+write(bidentweets_text_clean, "bidentweets.txt")
+
+#GET SANDERS TWEETS
+sanders_tweets <- get_all_tweets(users = c("BernieSanders"),
+                              start_tweets = "2019-03-02T00:00:00Z",
+                              end_tweets = "2020-04-08T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+sanderstweets_text <- as.character(sanders_tweets$text)
+sanderstweets_text_clean <- gsub("http[^[:space:]]*","", sanderstweets_text)
+sanderstweets_text_clean <- gsub("RT", "", sanderstweets_text_clean)
+sanderstweets_text_clean <- gsub("--&gt", "", sanderstweets_text_clean)
+sanderstweets_text_clean <- gsub("&amp", "", sanderstweets_text_clean)
+sanderstweets_text_clean <- gsub("\n", "", sanderstweets_text_clean)
+sanderstweets_text_clean <- gsub('#\\S+', "", sanderstweets_text_clean)
+sanderstweets_text_clean <- gsub('.@\\S+', "", sanderstweets_text_clean)
+sanderstweets_text_clean <- gsub('@\\S+', "", sanderstweets_text_clean)
+
+sanders_corpus <- corpus(sanderstweets_text_clean) 
+sanders_corpus <- `docnames<-`(sanders_corpus, "Sanders")
+#textstat_summary(sanders_corpus)
+
+write(sanderstweets_text_clean, "sanderstweets.txt")
+
+#GET BUTTIGIEG TWEETS
+buttigieg_tweets <- get_all_tweets(users = c("PeteButtigieg"),
+                              start_tweets = "2019-04-14T00:00:00Z",
+                              end_tweets = "2020-03-01T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+buttigiegtweets_text <- as.character(buttigieg_tweets$text)
+buttigiegtweets_text_clean <- gsub("http[^[:space:]]*","", buttigiegtweets_text)
+buttigiegtweets_text_clean <- gsub("RT", "", buttigiegtweets_text_clean)
+buttigiegtweets_text_clean <- gsub("--&gt", "", buttigiegtweets_text_clean)
+buttigiegtweets_text_clean <- gsub("&amp", "", buttigiegtweets_text_clean)
+buttigiegtweets_text_clean <- gsub("\n", "", buttigiegtweets_text_clean)
+buttigiegtweets_text_clean <- gsub('#\\S+', "", buttigiegtweets_text_clean)
+buttigiegtweets_text_clean <- gsub('.@\\S+', "", buttigiegtweets_text_clean)
+buttigiegtweets_text_clean <- gsub('@\\S+', "", buttigiegtweets_text_clean)
+
+buttigieg_corpus <- corpus(buttigiegtweets_text_clean) 
+buttigieg_corpus <- `docnames<-`(buttigieg_corpus, "Buttigieg")
+#textstat_summary(buttigieg_corpus)
+
+write(buttigiegtweets_text_clean, "buttigiegtweets.txt")
+
+#GET GABBARD TWEETS
+gabbard_tweets <- get_all_tweets(users = c("TulsiGabbard"),
+                              start_tweets = "2019-03-02T00:00:00Z",
+                              end_tweets = "2020-03-19T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+gabbardtweets_text <- as.character(gabbard_tweets$text)
+gabbardtweets_text_clean <- gsub("http[^[:space:]]*","", gabbardtweets_text)
+gabbardtweets_text_clean <- gsub("RT", "", gabbardtweets_text_clean)
+gabbardtweets_text_clean <- gsub("--&gt", "", gabbardtweets_text_clean)
+gabbardtweets_text_clean <- gsub("&amp", "", gabbardtweets_text_clean)
+gabbardtweets_text_clean <- gsub("\n", "", gabbardtweets_text_clean)
+gabbardtweets_text_clean <- gsub('#\\S+', "", gabbardtweets_text_clean)
+gabbardtweets_text_clean <- gsub('.@\\S+', "", gabbardtweets_text_clean)
+gabbardtweets_text_clean <- gsub('@\\S+', "", gabbardtweets_text_clean)
+
+gabbard_corpus <- corpus(gabbardtweets_text_clean) 
+gabbard_corpus <- `docnames<-`(gabbard_corpus, "Gabbard")
+#textstat_summary(gabbard_corpus)
+
+write(gabbardtweets_text_clean, "gabbardtweets.txt")
+
+#GET WARREN TWEETS
+warren_tweets <- get_all_tweets(users = c("ewarren"),
+                              start_tweets = "2019-02-09T00:00:00Z",
+                              end_tweets = "2020-03-05T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+warrentweets_text <- as.character(warren_tweets$text)
+warrentweets_text_clean <- gsub("http[^[:space:]]*","", warrentweets_text)
+warrentweets_text_clean <- gsub("RT", "", warrentweets_text_clean)
+warrentweets_text_clean <- gsub("--&gt", "", warrentweets_text_clean)
+warrentweets_text_clean <- gsub("&amp", "", warrentweets_text_clean)
+warrentweets_text_clean <- gsub("\n", "", warrentweets_text_clean)
+warrentweets_text_clean <- gsub('#\\S+', "", warrentweets_text_clean)
+warrentweets_text_clean <- gsub('.@\\S+', "", warrentweets_text_clean)
+warrentweets_text_clean <- gsub('@\\S+', "", warrentweets_text_clean)
+
+warren_corpus <- corpus(warrentweets_text_clean) 
+warren_corpus <- `docnames<-`(warren_corpus, "Warren")
+#textstat_summary(warren_corpus)
+
+write(warrentweets_text_clean, "warrentweets.txt")
+
+#GET BLOOMBERG TWEETS
+bloomberg_tweets <- get_all_tweets(users = c("MikeBloomberg"),
+                              start_tweets = "2019-11-24T00:00:00Z",
+                              end_tweets = "2020-03-05T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+bloombergtweets_text <- as.character(bloomberg_tweets$text)
+bloombergtweets_text_clean <- gsub("http[^[:space:]]*","", bloombergtweets_text)
+bloombergtweets_text_clean <- gsub("RT", "", bloombergtweets_text_clean)
+bloombergtweets_text_clean <- gsub("--&gt", "", bloombergtweets_text_clean)
+bloombergtweets_text_clean <- gsub("&amp", "", bloombergtweets_text_clean)
+bloombergtweets_text_clean <- gsub("\n", "", bloombergtweets_text_clean)
+bloombergtweets_text_clean <- gsub('#\\S+', "", bloombergtweets_text_clean)
+bloombergtweets_text_clean <- gsub('.@\\S+', "", bloombergtweets_text_clean)
+bloombergtweets_text_clean <- gsub('@\\S+', "", bloombergtweets_text_clean)
+
+bloomberg_corpus <- corpus(bloombergtweets_text_clean) 
+bloomberg_corpus <- `docnames<-`(bloomberg_corpus, "Bloomberg")
+#textstat_summary(bloomberg_corpus)
+
+write(bloombergtweets_text_clean, "bloombergtweets.txt")
+
+#GET KLOBUCHAR TWEETS
+klobuchar_tweets <- get_all_tweets(users = c("amyklobuchar"),
+                              start_tweets = "2019-02-10T00:00:00Z",
+                              end_tweets = "2020-03-02T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+klobuchartweets_text <- as.character(klobuchar_tweets$text)
+klobuchartweets_text_clean <- gsub("http[^[:space:]]*","", klobuchartweets_text)
+klobuchartweets_text_clean <- gsub("RT", "", klobuchartweets_text_clean)
+klobuchartweets_text_clean <- gsub("--&gt", "", klobuchartweets_text_clean)
+klobuchartweets_text_clean <- gsub("&amp", "", klobuchartweets_text_clean)
+klobuchartweets_text_clean <- gsub("\n", "", klobuchartweets_text_clean)
+klobuchartweets_text_clean <- gsub('#\\S+', "", klobuchartweets_text_clean)
+klobuchartweets_text_clean <- gsub('.@\\S+', "", klobuchartweets_text_clean)
+klobuchartweets_text_clean <- gsub('@\\S+', "", klobuchartweets_text_clean)
+
+klobuchar_corpus <- corpus(klobuchartweets_text_clean) 
+klobuchar_corpus <- `docnames<-`(klobuchar_corpus, "Klobuchar")
+#textstat_summary(klobuchar_corpus)
+
+write(klobuchartweets_text_clean, "klobuchartweets.txt")
+
+#GET STEYER TWEETS
+steyer_tweets <- get_all_tweets(users = c("TomSteyer"),
+                              start_tweets = "2019-07-09T00:00:00Z",
+                              end_tweets = "2020-02-29T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+steyertweets_text <- as.character(steyer_tweets$text)
+steyertweets_text_clean <- gsub("http[^[:space:]]*","", steyertweets_text)
+steyertweets_text_clean <- gsub("RT", "", steyertweets_text_clean)
+steyertweets_text_clean <- gsub("--&gt", "", steyertweets_text_clean)
+steyertweets_text_clean <- gsub("&amp", "", steyertweets_text_clean)
+steyertweets_text_clean <- gsub("\n", "", steyertweets_text_clean)
+steyertweets_text_clean <- gsub('#\\S+', "", steyertweets_text_clean)
+steyertweets_text_clean <- gsub('.@\\S+', "", steyertweets_text_clean)
+steyertweets_text_clean <- gsub('@\\S+', "", steyertweets_text_clean)
+
+steyer_corpus <- corpus(steyertweets_text_clean) 
+steyer_corpus <- `docnames<-`(steyer_corpus, "Steyer")
+#textstat_summary(steyer_corpus)
+
+write(steyertweets_text_clean, "steyertweets.txt")
+
+#GET BENNET TWEETS
+bennet_tweets <- get_all_tweets(users = c("MichaelBennet"),
+                              start_tweets = "2019-05-02T00:00:00Z",
+                              end_tweets = "2020-02-12T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+bennettweets_text <- as.character(bennet_tweets$text)
+bennettweets_text_clean <- gsub("http[^[:space:]]*","", bennettweets_text)
+bennettweets_text_clean <- gsub("RT", "", bennettweets_text_clean)
+bennettweets_text_clean <- gsub("--&gt", "", bennettweets_text_clean)
+bennettweets_text_clean <- gsub("&amp", "", bennettweets_text_clean)
+bennettweets_text_clean <- gsub("\n", "", bennettweets_text_clean)
+bennettweets_text_clean <- gsub('#\\S+', "", bennettweets_text_clean)
+bennettweets_text_clean <- gsub('.@\\S+', "", bennettweets_text_clean)
+bennettweets_text_clean <- gsub('@\\S+', "", bennettweets_text_clean)
+
+bennet_corpus <- corpus(bennettweets_text_clean) 
+bennet_corpus <- `docnames<-`(bennet_corpus, "Bennet")
+#textstat_summary(bennet_corpus)
+
+write(bennettweets_text_clean, "bennettweets.txt")
+
+#GET YANG TWEETS
+yang_tweets <- get_all_tweets(users = c("AndrewYang"),
+                              start_tweets = "2019-02-01T00:00:00Z",
+                              end_tweets = "2020-02-11T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+yangtweets_text <- as.character(yang_tweets$text)
+yangtweets_text_clean <- gsub("http[^[:space:]]*","", yangtweets_text)
+yangtweets_text_clean <- gsub("RT", "", yangtweets_text_clean)
+yangtweets_text_clean <- gsub("--&gt", "", yangtweets_text_clean)
+yangtweets_text_clean <- gsub("&amp", "", yangtweets_text_clean)
+yangtweets_text_clean <- gsub("\n", "", yangtweets_text_clean)
+yangtweets_text_clean <- gsub('#\\S+', "", yangtweets_text_clean)
+yangtweets_text_clean <- gsub('.@\\S+', "", yangtweets_text_clean)
+yangtweets_text_clean <- gsub('@\\S+', "", yangtweets_text_clean)
+
+yang_corpus <- corpus(yangtweets_text_clean) 
+yang_corpus <- `docnames<-`(yang_corpus, "Yang")
+#textstat_summary(yang_corpus)
+
+write(yangtweets_text_clean, "yangtweets.txt")
+
+#GET DELANEY TWEETS
+delaney_tweets <- get_all_tweets(users = c("JohnDelaney"),
+                              start_tweets = "2017-07-28T00:00:00Z",
+                              end_tweets = "2020-01-30T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+delaneytweets_text <- as.character(delaney_tweets$text)
+delaneytweets_text_clean <- gsub("http[^[:space:]]*","", delaneytweets_text)
+delaneytweets_text_clean <- gsub("RT", "", delaneytweets_text_clean)
+delaneytweets_text_clean <- gsub("--&gt", "", delaneytweets_text_clean)
+delaneytweets_text_clean <- gsub("&amp", "", delaneytweets_text_clean)
+delaneytweets_text_clean <- gsub("\n", "", delaneytweets_text_clean)
+delaneytweets_text_clean <- gsub('#\\S+', "", delaneytweets_text_clean)
+delaneytweets_text_clean <- gsub('.@\\S+', "", delaneytweets_text_clean)
+delaneytweets_text_clean <- gsub('@\\S+', "", delaneytweets_text_clean)
+
+delaney_corpus <- corpus(delaneytweets_text_clean) 
+delaney_corpus <- `docnames<-`(delaney_corpus, "Delaney")
+#textstat_summary(delaney_corpus)
+
+write(delaneytweets_text_clean, "delaneytweets.txt")
+
+#GET BOOKER TWEETS
+booker_tweets <- get_all_tweets(users = c("CoryBooker"),
+                              start_tweets = "2019-02-01T00:00:00Z",
+                              end_tweets = "2020-01-13T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+bookertweets_text <- as.character(booker_tweets$text)
+bookertweets_text_clean <- gsub("http[^[:space:]]*","", bookertweets_text)
+bookertweets_text_clean <- gsub("RT", "", bookertweets_text_clean)
+bookertweets_text_clean <- gsub("--&gt", "", bookertweets_text_clean)
+bookertweets_text_clean <- gsub("&amp", "", bookertweets_text_clean)
+bookertweets_text_clean <- gsub("\n", "", bookertweets_text_clean)
+bookertweets_text_clean <- gsub('#\\S+', "", bookertweets_text_clean)
+bookertweets_text_clean <- gsub('.@\\S+', "", bookertweets_text_clean)
+bookertweets_text_clean <- gsub('@\\S+', "", bookertweets_text_clean)
+
+booker_corpus <- corpus(bookertweets_text_clean) 
+booker_corpus <- `docnames<-`(booker_corpus, "Booker")
+#textstat_summary(booker_corpus)
+
+write(bookertweets_text_clean, "bookertweets.txt")
+
+#GET WILLIAMSON TWEETS
+williamson_tweets <- get_all_tweets(users = c("marwilliamson"),
+                              start_tweets = "2019-01-28T00:00:00Z",
+                              end_tweets = "2020-01-10T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+williamsontweets_text <- as.character(williamson_tweets$text)
+williamsontweets_text_clean <- gsub("http[^[:space:]]*","", williamsontweets_text)
+williamsontweets_text_clean <- gsub("RT", "", williamsontweets_text_clean)
+williamsontweets_text_clean <- gsub("--&gt", "", williamsontweets_text_clean)
+williamsontweets_text_clean <- gsub("&amp", "", williamsontweets_text_clean)
+williamsontweets_text_clean <- gsub("\n", "", williamsontweets_text_clean)
+williamsontweets_text_clean <- gsub('#\\S+', "", williamsontweets_text_clean)
+williamsontweets_text_clean <- gsub('.@\\S+', "", williamsontweets_text_clean)
+williamsontweets_text_clean <- gsub('@\\S+', "", williamsontweets_text_clean)
+
+williamson_corpus <- corpus(williamsontweets_text_clean) 
+williamson_corpus <- `docnames<-`(williamson_corpus, "Williamson")
+#textstat_summary(williamson_corpus)
+
+write(williamsontweets_text_clean, "williamsontweets.txt")
+
+#GET CASTRO TWEETS
+castro_tweets <- get_all_tweets(users = c("JulianCastro"),
+                              start_tweets = "2019-01-13T00:00:00Z",
+                              end_tweets = "2020-01-02T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+castrotweets_text <- as.character(castro_tweets$text)
+castrotweets_text_clean <- gsub("http[^[:space:]]*","", castrotweets_text)
+castrotweets_text_clean <- gsub("RT", "", castrotweets_text_clean)
+castrotweets_text_clean <- gsub("--&gt", "", castrotweets_text_clean)
+castrotweets_text_clean <- gsub("&amp", "", castrotweets_text_clean)
+castrotweets_text_clean <- gsub("\n", "", castrotweets_text_clean)
+castrotweets_text_clean <- gsub('#\\S+', "", castrotweets_text_clean)
+castrotweets_text_clean <- gsub('.@\\S+', "", castrotweets_text_clean)
+castrotweets_text_clean <- gsub('@\\S+', "", castrotweets_text_clean)
+
+castro_corpus <- corpus(castrotweets_text_clean) 
+castro_corpus <- `docnames<-`(castro_corpus, "Castro")
+#textstat_summary(castro_corpus)
+
+write(castrotweets_text_clean, "castrotweets.txt")
+
+#GET HARRIS TWEETS
+harris_tweets <- get_all_tweets(users = c("KamalaHarris"),
+                              start_tweets = "2019-01-21T00:00:00Z",
+                              end_tweets = "2019-12-03T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+harristweets_text <- as.character(harris_tweets$text)
+harristweets_text_clean <- gsub("http[^[:space:]]*","", harristweets_text)
+harristweets_text_clean <- gsub("RT", "", harristweets_text_clean)
+harristweets_text_clean <- gsub("--&gt", "", harristweets_text_clean)
+harristweets_text_clean <- gsub("&amp", "", harristweets_text_clean)
+harristweets_text_clean <- gsub("\n", "", harristweets_text_clean)
+harristweets_text_clean <- gsub('#\\S+', "", harristweets_text_clean)
+harristweets_text_clean <- gsub('.@\\S+', "", harristweets_text_clean)
+harristweets_text_clean <- gsub('@\\S+', "", harristweets_text_clean)
+
+harris_corpus <- corpus(harristweets_text_clean) 
+harris_corpus <- `docnames<-`(harris_corpus, "Harris")
+#textstat_summary(harris_corpus)
+ 
+write(harristweets_text_clean, "harristweets.txt")
+
+#GET BULLOCK TWEETS
+bullock_tweets <- get_all_tweets(users = c("GovernorBullock"),
+                              start_tweets = "2019-05-14T00:00:00Z",
+                              end_tweets = "2019-12-02T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+bullocktweets_text <- as.character(bullock_tweets$text)
+bullocktweets_text_clean <- gsub("http[^[:space:]]*","", bullocktweets_text)
+bullocktweets_text_clean <- gsub("RT", "", bullocktweets_text_clean)
+bullocktweets_text_clean <- gsub("--&gt", "", bullocktweets_text_clean)
+bullocktweets_text_clean <- gsub("&amp", "", bullocktweets_text_clean)
+bullocktweets_text_clean <- gsub("\n", "", bullocktweets_text_clean)
+bullocktweets_text_clean <- gsub('#\\S+', "", bullocktweets_text_clean)
+bullocktweets_text_clean <- gsub('.@\\S+', "", bullocktweets_text_clean)
+bullocktweets_text_clean <- gsub('@\\S+', "", bullocktweets_text_clean)
+
+bullock_corpus <- corpus(bullocktweets_text_clean) 
+bullock_corpus <- `docnames<-`(bullock_corpus, "Bullock")
+#textstat_summary(bullock_corpus)
+
+write(bullocktweets_text_clean, "bullocktweets.txt")
+
+#GET O'ROURKE TWEETS
+orourke_tweets <- get_all_tweets(users = c("BetoORourke"),
+                              start_tweets = "2019-01-13T00:00:00Z",
+                              end_tweets = "2020-01-02T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+orourketweets_text <- as.character(orourke_tweets$text)
+orourketweets_text_clean <- gsub("http[^[:space:]]*","", orourketweets_text)
+orourketweets_text_clean <- gsub("RT", "", orourketweets_text_clean)
+orourketweets_text_clean <- gsub("--&gt", "", orourketweets_text_clean)
+orourketweets_text_clean <- gsub("&amp", "", orourketweets_text_clean)
+orourketweets_text_clean <- gsub("\n", "", orourketweets_text_clean)
+orourketweets_text_clean <- gsub('#\\S+', "", orourketweets_text_clean)
+orourketweets_text_clean <- gsub('.@\\S+', "", orourketweets_text_clean)
+orourketweets_text_clean <- gsub('@\\S+', "", orourketweets_text_clean)
+
+orourke_corpus <- corpus(orourketweets_text_clean) 
+orourke_corpus <- `docnames<-`(orourke_corpus, "O'Rourke")
+#textstat_summary(orourke_corpus)
+
+write(orourketweets_text_clean, "orourketweets.txt")
+
+#GET RYAN TWEETS
+ryan_tweets <- get_all_tweets(users = c("TimRyan"),
+                              start_tweets = "2019-04-04T00:00:00Z",
+                              end_tweets = "2019-10-24T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+ryantweets_text <- as.character(ryan_tweets$text)
+ryantweets_text_clean <- gsub("http[^[:space:]]*","", ryantweets_text)
+ryantweets_text_clean <- gsub("RT", "", ryantweets_text_clean)
+ryantweets_text_clean <- gsub("--&gt", "", ryantweets_text_clean)
+ryantweets_text_clean <- gsub("&amp", "", ryantweets_text_clean)
+ryantweets_text_clean <- gsub("\n", "", ryantweets_text_clean)
+ryantweets_text_clean <- gsub('#\\S+', "", ryantweets_text_clean)
+ryantweets_text_clean <- gsub('.@\\S+', "", ryantweets_text_clean)
+ryantweets_text_clean <- gsub('@\\S+', "", ryantweets_text_clean)
+
+ryan_corpus <- corpus(ryantweets_text_clean) 
+ryan_corpus <- `docnames<-`(ryan_corpus, "Ryan")
+#textstat_summary(castro_corpus)
+
+write(ryantweets_text_clean, "ryantweets.txt")
+
+#GET DEBLASIO TWEETS
+deblasio_tweets <- get_all_tweets(users = c("BilldeBlasio"),
+                              start_tweets = "2019-01-13T00:00:00Z",
+                              end_tweets = "2020-01-02T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+deblasiotweets_text <- as.character(deblasio_tweets$text)
+deblasiotweets_text_clean <- gsub("http[^[:space:]]*","", deblasiotweets_text)
+deblasiotweets_text_clean <- gsub("RT", "", deblasiotweets_text_clean)
+deblasiotweets_text_clean <- gsub("--&gt", "", deblasiotweets_text_clean)
+deblasiotweets_text_clean <- gsub("&amp", "", deblasiotweets_text_clean)
+deblasiotweets_text_clean <- gsub("\n", "", deblasiotweets_text_clean)
+deblasiotweets_text_clean <- gsub('#\\S+', "", deblasiotweets_text_clean)
+deblasiotweets_text_clean <- gsub('.@\\S+', "", deblasiotweets_text_clean)
+deblasiotweets_text_clean <- gsub('@\\S+', "", deblasiotweets_text_clean)
+
+deblasio_corpus <- corpus(deblasiotweets_text_clean) 
+deblasio_corpus <- `docnames<-`(deblasio_corpus, "de Blasio")
+#textstat_summary(deblasio_corpus)
+
+write(deblasiotweets_text_clean, "deblasiotweets.txt")
+
+#GET GILLIBRAND TWEETS
+gillibrand_tweets <- get_all_tweets(users = c("SenGillibrand"),
+                              start_tweets = "2019-03-17T00:00:00Z",
+                              end_tweets = "2019-08-28T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+gillibrandtweets_text <- as.character(gillibrand_tweets$text)
+gillibrandtweets_text_clean <- gsub("http[^[:space:]]*","", gillibrandtweets_text)
+gillibrandtweets_text_clean <- gsub("RT", "", gillibrandtweets_text_clean)
+gillibrandtweets_text_clean <- gsub("--&gt", "", gillibrandtweets_text_clean)
+gillibrandtweets_text_clean <- gsub("&amp", "", gillibrandtweets_text_clean)
+gillibrandtweets_text_clean <- gsub("\n", "", gillibrandtweets_text_clean)
+gillibrandtweets_text_clean <- gsub('#\\S+', "", gillibrandtweets_text_clean)
+gillibrandtweets_text_clean <- gsub('.@\\S+', "", gillibrandtweets_text_clean)
+gillibrandtweets_text_clean <- gsub('@\\S+', "", gillibrandtweets_text_clean)
+
+gillibrand_corpus <- corpus(gillibrandtweets_text_clean) 
+gillibrand_corpus <- `docnames<-`(gillibrand_corpus, "Gillibrand")
+#textstat_summary(gillibrand_corpus)
+
+write(gillibrandtweets_text_clean, "gillibrandtweets.txt")
+
+#GET INSLEE TWEETS
+inslee_tweets <- get_all_tweets(users = c("JayInslee"),
+                              start_tweets = "2019-03-01T00:00:00Z",
+                              end_tweets = "2019-08-22T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+insleetweets_text <- as.character(inslee_tweets$text)
+insleetweets_text_clean <- gsub("http[^[:space:]]*","", insleetweets_text)
+insleetweets_text_clean <- gsub("RT", "", insleetweets_text_clean)
+insleetweets_text_clean <- gsub("--&gt", "", insleetweets_text_clean)
+insleetweets_text_clean <- gsub("&amp", "", insleetweets_text_clean)
+insleetweets_text_clean <- gsub("\n", "", insleetweets_text_clean)
+insleetweets_text_clean <- gsub('#\\S+', "", insleetweets_text_clean)
+insleetweets_text_clean <- gsub('.@\\S+', "", insleetweets_text_clean)
+insleetweets_text_clean <- gsub('@\\S+', "", insleetweets_text_clean)
+
+inslee_corpus <- corpus(insleetweets_text_clean) 
+inslee_corpus <- `docnames<-`(inslee_corpus, "Inslee")
+#textstat_summary(inslee_corpus)
+
+write(insleetweets_text_clean, "insleetweets.txt")
+
+#GET HICKENLOOPER TWEETS
+hickenlooper_tweets <- get_all_tweets(users = c("Hickenlooper"),
+                              start_tweets = "2019-03-04T00:00:00Z",
+                              end_tweets = "2019-08-15T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+hickenloopertweets_text <- as.character(hickenlooper_tweets$text)
+hickenloopertweets_text_clean <- gsub("http[^[:space:]]*","", hickenloopertweets_text)
+hickenloopertweets_text_clean <- gsub("RT", "", hickenloopertweets_text_clean)
+hickenloopertweets_text_clean <- gsub("--&gt", "", hickenloopertweets_text_clean)
+hickenloopertweets_text_clean <- gsub("&amp", "", hickenloopertweets_text_clean)
+hickenloopertweets_text_clean <- gsub("\n", "", hickenloopertweets_text_clean)
+hickenloopertweets_text_clean <- gsub('#\\S+', "", hickenloopertweets_text_clean)
+hickenloopertweets_text_clean <- gsub('.@\\S+', "", hickenloopertweets_text_clean)
+hickenloopertweets_text_clean <- gsub('@\\S+', "", hickenloopertweets_text_clean)
+
+hickenlooper_corpus <- corpus(hickenloopertweets_text_clean) 
+hickenlooper_corpus <- `docnames<-`(hickenlooper_corpus, "Hickenlooper")
+#textstat_summary(hickenlooper_corpus)
+
+write(hickenloopertweets_text_clean, "hickenloopertweets.txt")
+
+#GET SWALWELL TWEETS
+swalwell_tweets <- get_all_tweets(users = c("ericswalwell"),
+                              start_tweets = "2019-04-09T00:00:00Z",
+                              end_tweets = "2019-07-08T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+swalwelltweets_text <- as.character(swalwell_tweets$text)
+swalwelltweets_text_clean <- gsub("http[^[:space:]]*","", swalwelltweets_text)
+swalwelltweets_text_clean <- gsub("RT", "", swalwelltweets_text_clean)
+swalwelltweets_text_clean <- gsub("--&gt", "", swalwelltweets_text_clean)
+swalwelltweets_text_clean <- gsub("&amp", "", swalwelltweets_text_clean)
+swalwelltweets_text_clean <- gsub("\n", "", swalwelltweets_text_clean)
+swalwelltweets_text_clean <- gsub('#\\S+', "", swalwelltweets_text_clean)
+swalwelltweets_text_clean <- gsub('.@\\S+', "", swalwelltweets_text_clean)
+swalwelltweets_text_clean <- gsub('@\\S+', "", swalwelltweets_text_clean)
+
+swalwell_corpus <- corpus(swalwelltweets_text_clean) 
+swalwell_corpus <- `docnames<-`(swalwell_corpus, "Swalwell")
+#textstat_summary(swalwell_corpus)
+
+write(swalwelltweets_text_clean, "swalwelltweets.txt")
+```
+
+Get general election tweets
+```{r}
+#BIDEN 2020
+biden_tweets_ge <- get_all_tweets(users = c("JoeBiden"),
+                              start_tweets = "2020-04-08T00:00:00Z", 
+                              end_tweets = "2020-11-03T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+bidentweets_text_ge <- as.character(biden_tweets_ge$text)
+bidentweets_text_clean_ge <- gsub("http[^[:space:]]*","", bidentweets_text_ge)
+bidentweets_text_clean_ge <- gsub("RT", "", bidentweets_text_clean_ge)
+bidentweets_text_clean_ge <- gsub("--&gt", "", bidentweets_text_clean_ge)
+bidentweets_text_clean_ge <- gsub("&amp", "", bidentweets_text_clean_ge)
+bidentweets_text_clean_ge <- gsub("\n", "", bidentweets_text_clean_ge)
+bidentweets_text_clean_ge <- gsub('#\\S+', "", bidentweets_text_clean_ge)
+bidentweets_text_clean_ge <- gsub('.@\\S+', "", bidentweets_text_clean_ge)
+bidentweets_text_clean_ge <- gsub('@\\S+', "", bidentweets_text_clean_ge)
+
+biden_corpus_ge <- corpus(bidentweets_text_clean_ge) 
+biden_corpus_ge <- `docnames<-`(biden_corpus_ge, "biden_ge")
+
+write(bidentweets_text_clean_ge, "GE_biden2020tweets.txt")
+
+#HILLARY 2016
+hillary_tweets_ge <- get_all_tweets(users = c("HillaryClinton"),
+                              start_tweets = "2016-06-06T00:00:00Z", 
+                              end_tweets = "2016-11-08T00:00:00Z",
+                              bind_tweets = TRUE,
+                              page_n = 500,
+                              n = Inf)
+
+hillarytweets_text_ge <- as.character(hillary_tweets_ge$text)
+hillarytweets_text_clean_ge <- gsub("http[^[:space:]]*","", hillarytweets_text_ge)
+hillarytweets_text_clean_ge <- gsub("RT", "", hillarytweets_text_clean_ge)
+hillarytweets_text_clean_ge <- gsub("--&gt", "", hillarytweets_text_clean_ge)
+hillarytweets_text_clean_ge <- gsub("&amp", "", hillarytweets_text_clean_ge)
+hillarytweets_text_clean_ge <- gsub("\n", "", hillarytweets_text_clean_ge)
+hillarytweets_text_clean_ge <- gsub('#\\S+', "", hillarytweets_text_clean_ge)
+hillarytweets_text_clean_ge <- gsub('.@\\S+', "", hillarytweets_text_clean_ge)
+hillarytweets_text_clean_ge <- gsub('@\\S+', "", hillarytweets_text_clean_ge)
+
+hillary_corpus_ge <- corpus(hillarytweets_text_clean_ge) 
+hillary_corpus_ge <- `docnames<-`(hillary_corpus_ge, "hillary_ge")
+
+write(hillarytweets_text_clean_ge, "GE_hillary2016tweets.txt")
+
+#TRUMP 2016
+trump_tweets <- read.csv("trump_tweets.csv")
+trump_tweets_ge <- trump_tweets[trump_tweets$date > "2016-05-04" &    
+                   trump_tweets$date < "2016-11-08", ] 
+
+trumptweets_text_ge <- as.character(trump_tweets_ge$text)
+trumptweets_text_clean_ge <- gsub("http[^[:space:]]*","", trumptweets_text_ge)
+trumptweets_text_clean_ge <- gsub("RT", "", trumptweets_text_clean_ge)
+trumptweets_text_clean_ge <- gsub("--&gt", "", trumptweets_text_clean_ge)
+trumptweets_text_clean_ge <- gsub("&amp", "", trumptweets_text_clean_ge)
+trumptweets_text_clean_ge <- gsub("\n", "", trumptweets_text_clean_ge)
+trumptweets_text_clean_ge <- gsub('#\\S+', "", trumptweets_text_clean_ge)
+trumptweets_text_clean_ge <- gsub('.@\\S+', "", trumptweets_text_clean_ge)
+trumptweets_text_clean_ge <- gsub('@\\S+', "", trumptweets_text_clean_ge)
+trumptweets_text_clean_ge <- gsub('"""', "", trumptweets_text_clean_ge)
+
+sum(nchar(trumptweets_text_clean_ge))
+trump_corpus_ge <- corpus(trumptweets_text_clean_ge) 
+trump_corpus_ge <- `docnames<-`(trump_corpus_ge, "trump_ge")
+
+write(trumptweets_text_clean_ge, "GE2016_trumptweets.txt")
+
+#TRUMP 2020
+trump_tweets <- read.csv("trump_tweets.csv")
+trump_tweets_ge2020 <- trump_tweets[trump_tweets$date > "2020-03-11" &    
+                   trump_tweets$date < "2020-11-03", ] 
+
+trumptweets_text_ge2020 <- as.character(trump_tweets_ge2020$text)
+trumptweets_text_clean_ge2020 <- gsub("http[^[:space:]]*","", trumptweets_text_ge2020)
+trumptweets_text_clean_ge2020 <- gsub("RT", "", trumptweets_text_clean_ge2020)
+trumptweets_text_clean_ge2020 <- gsub("--&gt", "", trumptweets_text_clean_ge2020)
+trumptweets_text_clean_ge2020 <- gsub("&amp", "", trumptweets_text_clean_ge2020)
+trumptweets_text_clean_ge2020 <- gsub("\n", "", trumptweets_text_clean_ge2020)
+trumptweets_text_clean_ge2020 <- gsub('#\\S+', "", trumptweets_text_clean_ge2020)
+trumptweets_text_clean_ge2020 <- gsub('.@\\S+', "", trumptweets_text_clean_ge2020)
+trumptweets_text_clean_ge2020 <- gsub('@\\S+', "", trumptweets_text_clean_ge2020)
+trumptweets_text_clean_ge2020 <- gsub('"""', "", trumptweets_text_clean_ge2020)
+
+sum(nchar(trumptweets_text_clean_ge2020))
+trump_corpus_ge2020 <- corpus(trumptweets_text_clean_ge2020) 
+trump_corpus_ge2020 <- `docnames<-`(trump_corpus_ge2020, "trump_ge2020")
+
+write(trumptweets_text_clean_ge2020, "GE2020_trumptweets.txt")
+```
+

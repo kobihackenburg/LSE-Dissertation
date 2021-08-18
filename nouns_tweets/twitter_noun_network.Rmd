@@ -1,0 +1,204 @@
+---
+title: "twitter noun network"
+author: "Kobi Hackenburg"
+date: "6/18/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(quanteda)
+library(quanteda.dictionaries)
+```
+
+```{r}
+#read in list of nouns for each candidate
+#BIDEN
+biden_nouns <- readLines("biden_nouns.txt") 
+biden_nouns <- tokens(biden_nouns)
+biden_nouns <- tokens_wordstem(biden_nouns, language = quanteda_options("language_stemmer"))
+
+#SANDERS
+sanders_nouns <- readLines("sanders_nouns.txt") 
+sanders_nouns <- tokens(sanders_nouns)
+sanders_nouns <- tokens_wordstem(sanders_nouns, language = quanteda_options("language_stemmer"))
+
+#WARREN
+warren_nouns <- readLines("warren_nouns.txt") 
+warren_nouns <- tokens(warren_nouns)
+warren_nouns <- tokens_wordstem(warren_nouns, language = quanteda_options("language_stemmer"))
+
+#BUTTIGIEG
+buttigieg_nouns <- readLines("buttigieg_nouns.txt") 
+buttigieg_nouns <- tokens(buttigieg_nouns)
+buttigieg_nouns <- tokens_wordstem(buttigieg_nouns, language = quanteda_options("language_stemmer"))
+
+#KLOBUCHAR
+klobuchar_nouns <- readLines("klobuchar_nouns.txt") 
+klobuchar_nouns <- tokens(klobuchar_nouns)
+klobuchar_nouns <- tokens_wordstem(klobuchar_nouns, language = quanteda_options("language_stemmer"))
+
+#YANG
+yang_nouns <- readLines("yang_nouns.txt") 
+yang_nouns <- tokens(yang_nouns)
+yang_nouns <- tokens_wordstem(yang_nouns, language = quanteda_options("language_stemmer"))
+
+#STEYER
+steyer_nouns <- readLines("steyer_nouns.txt") 
+steyer_nouns <- tokens(steyer_nouns)
+steyer_nouns <- tokens_wordstem(steyer_nouns, language = quanteda_options("language_stemmer"))
+
+#BOOKER
+booker_nouns <- readLines("booker_nouns.txt") 
+booker_nouns <- tokens(booker_nouns)
+booker_nouns <- tokens_wordstem(booker_nouns, language = quanteda_options("language_stemmer"))
+
+#HARRIS
+harris_nouns <- readLines("harris_nouns.txt") 
+harris_nouns <- tokens(harris_nouns)
+harris_nouns <- tokens_wordstem(harris_nouns, language = quanteda_options("language_stemmer"))
+
+#get in dictionary format
+biden_nouns_list <- as.list(biden_nouns)
+names(biden_nouns_list) = biden_nouns_list
+
+sanders_nouns_list <- as.list(sanders_nouns)
+names(sanders_nouns_list) = sanders_nouns_list
+
+warren_nouns_list <- as.list(warren_nouns)
+names(warren_nouns_list) = warren_nouns_list
+
+buttigieg_nouns_list <- as.list(buttigieg_nouns)
+names(buttigieg_nouns_list) = buttigieg_nouns_list
+
+klobuchar_nouns_list <- as.list(klobuchar_nouns)
+names(klobuchar_nouns_list) = klobuchar_nouns_list
+
+steyer_nouns_list <- as.list(steyer_nouns)
+names(steyer_nouns_list) = steyer_nouns_list
+
+yang_nouns_list <- as.list(yang_nouns)
+names(yang_nouns_list) = yang_nouns_list
+
+harris_nouns_list <- as.list(harris_nouns)
+names(harris_nouns_list) = harris_nouns_list
+
+booker_nouns_list <- as.list(booker_nouns)
+names(booker_nouns_list) = booker_nouns_list
+
+#create dictionary
+biden_nouns_dict <- dictionary(biden_nouns_list)
+sanders_nouns_dict <- dictionary(sanders_nouns_list)
+warren_nouns_dict <- dictionary(warren_nouns_list)
+buttigieg_nouns_dict <- dictionary(buttigieg_nouns_list)
+klobuchar_nouns_dict <- dictionary(klobuchar_nouns_list)
+steyer_nouns_dict <- dictionary(steyer_nouns_list)
+yang_nouns_dict <- dictionary(yang_nouns_list)
+booker_nouns_dict <- dictionary(booker_nouns_list)
+harris_nouns_dict <- dictionary(harris_nouns_list)
+
+#apply dictionary & create dfm
+#BIDEN
+toks_biden <- paste(toks_biden, collapse = " ")
+toks_biden <- tokens(toks_biden) %>% tokens_tolower() %>% tokens_wordstem()
+extracted_nouns_biden <- tokens_select(toks_biden, pattern = biden_nouns_dict, valuetype = "glob")
+#sum(ntoken(extracted_nouns_biden))
+
+biden_nouns_dfm <- dfm(extracted_nouns_biden, remove = stopwords(language = "en"), tolower = TRUE, stem = TRUE)
+biden_nouns_dfm <- `docnames<-`(biden_nouns_dfm, "biden_nouns_dfm")
+
+#SANDERS
+toks_sanders <- paste(toks_sanders, collapse = " ")
+toks_sanders <- tokens(toks_sanders) %>% tokens_tolower() %>% tokens_wordstem()
+extracted_nouns_sanders <- tokens_select(toks_sanders, pattern = sanders_nouns_dict, valuetype = "glob")
+#sum(ntoken(extracted_nouns_sanders))
+
+sanders_nouns_dfm <- dfm(extracted_nouns_sanders, remove = stopwords(language = "en"), tolower = TRUE, stem = TRUE)
+sanders_nouns_dfm <- `docnames<-`(sanders_nouns_dfm, "sanders_nouns_dfm")
+
+#WARREN
+toks_warren <- paste(toks_warren, collapse = " ")
+toks_warren <- tokens(toks_warren) %>% tokens_tolower() %>% tokens_wordstem()
+extracted_nouns_warren <- tokens_select(toks_warren, pattern = warren_nouns_dict, valuetype = "glob")
+#sum(ntoken(extracted_nouns_warren))
+
+warren_nouns_dfm <- dfm(extracted_nouns_warren, remove = stopwords(language = "en"), tolower = TRUE, stem = TRUE)
+warren_nouns_dfm <- `docnames<-`(warren_nouns_dfm, "warren_nouns_dfm")
+
+#BUTTIGIEG
+toks_buttigieg <- paste(toks_buttigieg, collapse = " ")
+toks_buttigieg <- tokens(toks_buttigieg) %>% tokens_tolower() %>% tokens_wordstem()
+extracted_nouns_buttigieg <- tokens_select(toks_buttigieg, pattern = buttigieg_nouns_dict, valuetype = "glob")
+#sum(ntoken(extracted_nouns_buttigieg))
+
+buttigieg_nouns_dfm <- dfm(extracted_nouns_buttigieg, remove = stopwords(language = "en"), tolower = TRUE, stem = TRUE)
+buttigieg_nouns_dfm <- `docnames<-`(buttigieg_nouns_dfm, "buttigieg_nouns_dfm")
+
+#KLOBUCHAR
+toks_klobuchar <- paste(toks_klobuchar, collapse = " ")
+toks_klobuchar <- tokens(toks_klobuchar) %>% tokens_tolower() %>% tokens_wordstem()
+extracted_nouns_klobuchar <- tokens_select(toks_klobuchar, pattern = klobuchar_nouns_dict, valuetype = "glob")
+#sum(ntoken(extracted_nouns_klobuchar))
+
+klobuchar_nouns_dfm <- dfm(extracted_nouns_klobuchar, remove = stopwords(language = "en"), tolower = TRUE, stem = TRUE)
+klobuchar_nouns_dfm <- `docnames<-`(klobuchar_nouns_dfm, "klobuchar_nouns_dfm")
+
+#STEYER
+toks_steyer <- paste(toks_steyer, collapse = " ")
+toks_steyer <- tokens(toks_steyer) %>% tokens_tolower() %>% tokens_wordstem()
+extracted_nouns_steyer <- tokens_select(toks_steyer, pattern = steyer_nouns_dict, valuetype = "glob")
+#sum(ntoken(extracted_nouns_steyer))
+
+steyer_nouns_dfm <- dfm(extracted_nouns_steyer, remove = stopwords(language = "en"), tolower = TRUE, stem = TRUE)
+steyer_nouns_dfm <- `docnames<-`(steyer_nouns_dfm, "steyer_nouns_dfm")
+
+#YANG
+toks_yang <- paste(toks_yang, collapse = " ")
+toks_yang <- tokens(toks_yang) %>% tokens_tolower() %>% tokens_wordstem()
+extracted_nouns_yang <- tokens_select(toks_yang, pattern = yang_nouns_dict, valuetype = "glob")
+#sum(ntoken(extracted_nouns_yang))
+
+yang_nouns_dfm <- dfm(extracted_nouns_yang, remove = stopwords(language = "en"), tolower = TRUE, stem = TRUE)
+yang_nouns_dfm <- `docnames<-`(yang_nouns_dfm, "yang_nouns_dfm")
+
+#HARRIS
+toks_harris <- paste(toks_harris, collapse = " ")
+toks_harris <- tokens(toks_harris) %>% tokens_tolower() %>% tokens_wordstem()
+extracted_nouns_harris <- tokens_select(toks_harris, pattern = harris_nouns_dict, valuetype = "glob")
+#sum(ntoken(extracted_nouns_harris))
+
+harris_nouns_dfm <- dfm(extracted_nouns_harris, remove = stopwords(language = "en"), tolower = TRUE, stem = TRUE)
+harris_nouns_dfm <- `docnames<-`(harris_nouns_dfm, "harris_nouns_dfm")
+
+#BOOKER
+toks_booker <- paste(toks_booker, collapse = " ")
+toks_booker <- tokens(toks_booker) %>% tokens_tolower() %>% tokens_wordstem()
+extracted_nouns_booker <- tokens_select(toks_booker, pattern = booker_nouns_dict, valuetype = "glob")
+#sum(ntoken(extracted_nouns_booker))
+
+booker_nouns_dfm <- dfm(extracted_nouns_booker, remove = stopwords(language = "en"), tolower = TRUE, stem = TRUE)
+booker_nouns_dfm <- `docnames<-`(booker_nouns_dfm, "booker_nouns_dfm")
+
+#create combined twitter noun dfm
+combined_noun_dfm <- rbind(biden_nouns_dfm,
+                           sanders_nouns_dfm,
+                           warren_nouns_dfm,
+                           buttigieg_nouns_dfm,
+                           klobuchar_nouns_dfm,
+                           steyer_nouns_dfm,
+                           harris_nouns_dfm,
+                           booker_nouns_dfm,
+                           yang_nouns_dfm)
+
+#compute similarity between documents 
+similarities_combined_noun_dfm <- textstat_simil(combined_noun_dfm, method = "cosine")
+
+#convert to data frame
+similarities_data_combined_noun <- as.data.frame(similarities_combined_noun_dfm)
+
+#extra author similarity dendrogram
+tstat_dist <- as.dist(textstat_dist(combined_noun_dfm))
+user_clust <- hclust(tstat_dist)
+plot(user_clust)  
+```
+

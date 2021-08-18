@@ -1,0 +1,3702 @@
+---
+title: "moral language processing"
+author: "Kobi Hackenburg"
+date: "6/27/2021"
+output: html_document
+---
+Set-up and load packages
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+#load packages
+library(quanteda)
+library(quanteda.dictionaries)
+library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(tidytext)
+```
+Step 0: Load all tweet data & construct corpora
+```{r}
+#2016 Dem primary
+  #clinton
+clinton2016primarytweets <- readLines("hillary2016tweets.txt")
+clinton2016primary_corpus <- corpus(clinton2016primarytweets) 
+clinton2016primary_corpus <- `docnames<-`(clinton2016primary_corpus, "clinton_2016primary")
+
+  #sanders
+sanders2016primarytweets <- readLines("bernie2016tweets.txt")
+sanders2016primary_corpus <- corpus(sanders2016primarytweets) 
+sanders2016primary_corpus <- `docnames<-`(sanders2016primary_corpus, "sanders_2016primary")
+
+  #omalley
+omalley2016primarytweets <- readLines("omalley2016tweets.txt")
+omalley2016primary_corpus <- corpus(omalley2016primarytweets) 
+omalley2016primary_corpus <- `docnames<-`(omalley2016primary_corpus, "omalley_2016primary")
+
+#2016 Republican primary 
+trump2016primarytweets <- readLines("trumptweets.txt")
+trump_corpus <- corpus(trump2016primarytweets) 
+trump_corpus <- `docnames<-`(trump_corpus, "trump_2016primary")
+
+cruz2016primarytweets <- readLines("cruztweets.txt")
+cruz_corpus <- corpus(cruz2016primarytweets) 
+cruz_corpus <- `docnames<-`(cruz_corpus, "cruz_2016primary")
+
+kasich2016primarytweets <- readLines("kasichtweets.txt")
+kasich_corpus <- corpus(kasich2016primarytweets) 
+kasich_corpus <- `docnames<-`(kasich_corpus, "kasich_2016primary")
+
+rubio2016primarytweets <- readLines("rubiotweets.txt")
+rubio_corpus <- corpus(rubio2016primarytweets) 
+rubio_corpus <- `docnames<-`(rubio_corpus, "rubio_2016primary")
+
+carson2016primarytweets <- readLines("carsontweets.txt")
+carson_corpus <- corpus(carson2016primarytweets) 
+carson_corpus <- `docnames<-`(carson_corpus, "carson_2016primary")
+
+bush2016primarytweets <- readLines("bushtweets.txt")
+bush_corpus <- corpus(bush2016primarytweets) 
+bush_corpus <- `docnames<-`(bush_corpus, "bush_2016primary")
+
+christie2016primarytweets <- readLines("christietweets.txt")
+christie_corpus <- corpus(christie2016primarytweets) 
+christie_corpus <- `docnames<-`(christie_corpus, "christie_2016primary")
+
+paul2016primarytweets <- readLines("paultweets.txt")
+paul_corpus <- corpus(paul2016primarytweets) 
+paul_corpus <- `docnames<-`(paul_corpus, "paul_2016primary")
+
+fiorina2016primarytweets <- readLines("fiorinatweets.txt")
+fiorina_corpus <- corpus(fiorina2016primarytweets) 
+fiorina_corpus <- `docnames<-`(fiorina_corpus, "fiorina_2016primary")
+
+huckabee2016primarytweets <- readLines("huckabeetweets.txt")
+huckabee_corpus <- corpus(huckabee2016primarytweets) 
+huckabee_corpus <- `docnames<-`(huckabee_corpus, "huckabee_2016primary")
+
+walker2016primarytweets <- readLines("walkertweets.txt")
+walker_corpus <- corpus(walker2016primarytweets) 
+walker_corpus <- `docnames<-`(walker_corpus, "walker_2016primary")
+
+graham2016primarytweets <- readLines("grahamtweets.txt")
+graham_corpus <- corpus(graham2016primarytweets) 
+graham_corpus <- `docnames<-`(graham_corpus, "graham_2016primary")
+
+jindal2016primarytweets <- readLines("jindaltweets.txt")
+jindal_corpus <- corpus(jindal2016primarytweets) 
+jindal_corpus <- `docnames<-`(jindal_corpus, "jindal_2016primary")
+
+santorum2016primarytweets <- readLines("santorumtweets.txt")
+santorum_corpus <- corpus(santorum2016primarytweets) 
+santorum_corpus <- `docnames<-`(santorum_corpus, "santorum_2016primary")
+
+pataki2016primarytweets <- readLines("patakitweets.txt")
+pataki_corpus <- corpus(pataki2016primarytweets) 
+pataki_corpus <- `docnames<-`(pataki_corpus, "pataki_2016primary")
+
+perry2016primarytweets <- readLines("perrytweets.txt")
+perry_corpus <- corpus(perry2016primarytweets) 
+perry_corpus <- `docnames<-`(perry_corpus, "perry_2016primary")
+
+#2020 Dem primary
+biden2016primarytweets <- readLines("bidentweets.txt")
+biden_corpus <- corpus(biden2016primarytweets) 
+biden_corpus <- `docnames<-`(biden_corpus, "biden_2020primary")
+
+sanders2016primarytweets <- readLines("sanderstweets.txt")
+sanders_corpus <- corpus(sanders2016primarytweets) 
+sanders_corpus <- `docnames<-`(sanders_corpus, "sanders_2020primary")
+
+warren2016primarytweets <- readLines("warrentweets.txt")
+warren_corpus <- corpus(warren2016primarytweets) 
+warren_corpus <- `docnames<-`(warren_corpus, "warren_2020primary")
+
+buttigieg2016primarytweets <- readLines("buttigiegtweets.txt")
+buttigieg_corpus <- corpus(buttigieg2016primarytweets) 
+buttigieg_corpus <- `docnames<-`(buttigieg_corpus, "buttigieg_2020primary")
+
+klobuchar2016primarytweets <- readLines("klobuchartweets.txt")
+klobuchar_corpus <- corpus(klobuchar2016primarytweets) 
+klobuchar_corpus <- `docnames<-`(klobuchar_corpus, "klobuchar_2020primary")
+
+steyer2016primarytweets <- readLines("steyertweets.txt")
+steyer_corpus <- corpus(steyer2016primarytweets) 
+steyer_corpus <- `docnames<-`(steyer_corpus, "steyer_2020primary")
+
+yang2016primarytweets <- readLines("yangtweets.txt")
+yang_corpus <- corpus(yang2016primarytweets) 
+yang_corpus <- `docnames<-`(yang_corpus, "yang_2020primary")
+
+harris2016primarytweets <- readLines("harristweets.txt")
+harris_corpus <- corpus(harris2016primarytweets) 
+harris_corpus <- `docnames<-`(harris_corpus, "harris_2020primary")
+
+booker2016primarytweets <- readLines("bookertweets.txt")
+booker_corpus <- corpus(booker2016primarytweets) 
+booker_corpus <- `docnames<-`(booker_corpus, "booker_2020primary")
+
+gabbard2016primarytweets <- readLines("gabbardtweets.txt")
+gabbard_corpus <- corpus(gabbard2016primarytweets) 
+gabbard_corpus <- `docnames<-`(gabbard_corpus, "gabbard_2020primary")
+
+castro2016primarytweets <- readLines("castrotweets.txt")
+castro_corpus <- corpus(castro2016primarytweets) 
+castro_corpus <- `docnames<-`(castro_corpus, "castro_2020primary")
+
+orourke2016primarytweets <- readLines("orourketweets.txt")
+orourke_corpus <- corpus(orourke2016primarytweets) 
+orourke_corpus <- `docnames<-`(orourke_corpus, "orourke_2020primary")
+
+bloomberg2016primarytweets <- readLines("bloombergtweets.txt")
+bloomberg_corpus <- corpus(bloomberg2016primarytweets) 
+bloomberg_corpus <- `docnames<-`(bloomberg_corpus, "bloomberg_2020primary")
+
+bennet2016primarytweets <- readLines("bennettweets.txt")
+bennet_corpus <- corpus(bennet2016primarytweets) 
+bennet_corpus <- `docnames<-`(bennet_corpus, "bennet_2020primary")
+
+delaney2016primarytweets <- readLines("delaneytweets.txt")
+delaney_corpus <- corpus(delaney2016primarytweets) 
+delaney_corpus <- `docnames<-`(delaney_corpus, "delaney_2020primary")
+
+williamson2016primarytweets <- readLines("williamsontweets.txt")
+williamson_corpus <- corpus(williamson2016primarytweets) 
+williamson_corpus <- `docnames<-`(williamson_corpus, "williamson_2020primary")
+
+ryan2016primarytweets <- readLines("ryantweets.txt")
+ryan_corpus <- corpus(ryan2016primarytweets) 
+ryan_corpus <- `docnames<-`(ryan_corpus, "ryan_2020primary")
+
+deblasio2016primarytweets <- readLines("deblasiotweets.txt")
+deblasio_corpus <- corpus(deblasio2016primarytweets) 
+deblasio_corpus <- `docnames<-`(deblasio_corpus, "deblasio_2020primary")
+
+gillibrand2016primarytweets <- readLines("gillibrandtweets.txt")
+gillibrand_corpus <- corpus(gillibrand2016primarytweets) 
+gillibrand_corpus <- `docnames<-`(gillibrand_corpus, "gillibrand_2020primary")
+
+inslee2016primarytweets <- readLines("insleetweets.txt")
+inslee_corpus <- corpus(inslee2016primarytweets) 
+inslee_corpus <- `docnames<-`(inslee_corpus, "inslee_2020primary")
+
+hickenlooper2016primarytweets <- readLines("hickenloopertweets.txt")
+hickenlooper_corpus <- corpus(hickenlooper2016primarytweets) 
+hickenlooper_corpus <- `docnames<-`(hickenlooper_corpus, "hickenlooper_2020primary")
+
+bullock2016primarytweets <- readLines("bullocktweets.txt")
+bullock_corpus <- corpus(bullock2016primarytweets) 
+bullock_corpus <- `docnames<-`(bullock_corpus, "bullock_2020primary")
+
+swalwell2016primarytweets <- readLines("swalwelltweets.txt")
+swalwell_corpus <- corpus(swalwell2016primarytweets) 
+swalwell_corpus <- `docnames<-`(swalwell_corpus, "swalwell_2020primary")
+
+#2016 & 2020 GENERAL ELECTION
+  #2016
+clinton2016_GE_tweets <- readLines("GE_hillary2016tweets.txt")
+clinton2016_GE_corpus <- corpus(clinton2016_GE_tweets) 
+clinton2016_GE_corpus <- `docnames<-`(clinton2016_GE_corpus, "clinton_2016_GE")
+
+trump2016_GE_tweets <- readLines("GE2016_trumptweets.txt")
+trump2016_GE_corpus <- corpus(trump2016_GE_tweets) 
+trump2016_GE_corpus <- `docnames<-`(trump2016_GE_corpus, "trump_2016_GE")
+  
+  #2020
+biden2020_GE_tweets <- readLines("GE_biden2020tweets.txt")
+biden2020_GE_corpus <- corpus(biden2020_GE_tweets) 
+biden2020_GE_corpus <- `docnames<-`(biden2020_GE_corpus, "biden_2020_GE")
+
+trump2020_GE_tweets <- readLines("GE2020_trumptweets.txt")
+trump2020_GE_corpus <- corpus(trump2020_GE_tweets) 
+trump2020_GE_corpus <- `docnames<-`(trump2020_GE_corpus, "trump_2020_GE")
+```
+
+
+EXTRACT MORAL LANGAUGE 
+Step 1: extract moral language from each 2016 REPUBLICAN candidate and write to a .txt file
+```{r}
+#Step 1: extract moral language from each candidate and write to a .txt file 
+
+#TRUMP
+#create tokens object from trump corpus 
+toks_trump <- tokens(trump_corpus)
+
+#select dictionary matches
+moral_toks_trump <- tokens_select(toks_trump, pattern = data_dictionary_MFD, valuetype = "glob")
+
+#convert to character string & concatenate :)
+trump_moral <- as.character(moral_toks_trump)
+trump_moral <- paste0(trump_moral, collapse = ". ")
+
+#check how many dictionary matches, and then write to a .txt file
+ntoken(trump_moral)
+write(trump_moral, "trumpmoral.txt")
+
+#CRUZ
+toks_cruz <- tokens(cruz_corpus)
+moral_toks_cruz <- tokens_select(toks_cruz, pattern = data_dictionary_MFD, valuetype = "glob")
+cruz_moral <- as.character(moral_toks_cruz)
+cruz_moral <- paste0(cruz_moral, collapse = ". ")
+ntoken(cruz_moral)
+write(cruz_moral, "cruzmoral.txt")
+
+#RUBIO
+toks_rubio <- tokens(rubio_corpus)
+moral_toks_rubio <- tokens_select(toks_rubio, pattern = data_dictionary_MFD, valuetype = "glob")
+rubio_moral <- as.character(moral_toks_rubio)
+rubio_moral <- paste0(rubio_moral, collapse = ". ")
+ntoken(rubio_moral)
+write(rubio_moral, "rubiomoral.txt")
+
+#KASICH
+toks_kasich <- tokens(kasich_corpus)
+moral_toks_kasich <- tokens_select(toks_kasich, pattern = data_dictionary_MFD, valuetype = "glob")
+kasich_moral <- as.character(moral_toks_kasich)
+kasich_moral <- paste0(kasich_moral, collapse = ". ")
+ntoken(kasich_moral)
+write(kasich_moral, "kasichmoral.txt")
+
+#CARSON
+toks_carson <- tokens(carson_corpus)
+moral_toks_carson <- tokens_select(toks_carson, pattern = data_dictionary_MFD, valuetype = "glob")
+carson_moral <- as.character(moral_toks_carson)
+carson_moral <- paste0(carson_moral, collapse = ". ")
+ntoken(carson_moral)
+write(carson_moral, "carsonmoral.txt")
+
+#BUSH
+toks_bush <- tokens(bush_corpus)
+moral_toks_bush <- tokens_select(toks_bush, pattern = data_dictionary_MFD, valuetype = "glob")
+bush_moral <- as.character(moral_toks_bush)
+bush_moral <- paste0(bush_moral, collapse = ". ")
+ntoken(bush_moral)
+write(bush_moral, "bushmoral.txt")
+
+#CHRISTIE
+toks_christie <- tokens(christie_corpus)
+moral_toks_christie <- tokens_select(toks_christie, pattern = data_dictionary_MFD, valuetype = "glob")
+christie_moral <- as.character(moral_toks_christie)
+christie_moral <- paste0(christie_moral, collapse = ". ")
+ntoken(christie_moral)
+write(christie_moral, "christiemoral.txt")
+
+#PAUL
+toks_paul <- tokens(paul_corpus)
+moral_toks_paul <- tokens_select(toks_paul, pattern = data_dictionary_MFD, valuetype = "glob")
+paul_moral <- as.character(moral_toks_paul)
+paul_moral <- paste0(paul_moral, collapse = ". ")
+ntoken(paul_moral)
+write(paul_moral, "paulmoral.txt")
+
+#FIORINA
+toks_fiorina <- tokens(fiorina_corpus)
+moral_toks_fiorina <- tokens_select(toks_fiorina, pattern = data_dictionary_MFD, valuetype = "glob")
+fiorina_moral <- as.character(moral_toks_fiorina)
+fiorina_moral <- paste0(fiorina_moral, collapse = ". ")
+ntoken(fiorina_moral)
+write(fiorina_moral, "fiorinamoral.txt")
+
+#HUCKABEE
+toks_huckabee <- tokens(huckabee_corpus)
+moral_toks_huckabee <- tokens_select(toks_huckabee, pattern = data_dictionary_MFD, valuetype = "glob")
+huckabee_moral <- as.character(moral_toks_huckabee)
+huckabee_moral <- paste0(huckabee_moral, collapse = ". ")
+ntoken(huckabee_moral)
+write(huckabee_moral, "huckabeemoral.txt")
+
+#WALKER
+toks_walker <- tokens(walker_corpus)
+moral_toks_walker <- tokens_select(toks_walker, pattern = data_dictionary_MFD, valuetype = "glob")
+walker_moral <- as.character(moral_toks_walker)
+walker_moral <- paste0(walker_moral, collapse = ". ")
+ntoken(walker_moral)
+write(walker_moral, "walkermoral.txt")
+
+#GRAHAM
+toks_graham <- tokens(graham_corpus)
+moral_toks_graham <- tokens_select(toks_graham, pattern = data_dictionary_MFD, valuetype = "glob")
+graham_moral <- as.character(moral_toks_graham)
+graham_moral <- paste0(graham_moral, collapse = ". ")
+ntoken(graham_moral)
+write(graham_moral, "grahammoral.txt")
+
+#JINDAL
+toks_jindal <- tokens(jindal_corpus)
+moral_toks_jindal <- tokens_select(toks_jindal, pattern = data_dictionary_MFD, valuetype = "glob")
+jindal_moral <- as.character(moral_toks_jindal)
+jindal_moral <- paste0(jindal_moral, collapse = ". ")
+ntoken(jindal_moral)
+write(jindal_moral, "jindalmoral.txt")
+
+#SANTORUM
+toks_santorum <- tokens(santorum_corpus)
+moral_toks_santorum <- tokens_select(toks_santorum, pattern = data_dictionary_MFD, valuetype = "glob")
+santorum_moral <- as.character(moral_toks_santorum)
+santorum_moral <- paste0(santorum_moral, collapse = ". ")
+ntoken(santorum_moral)
+write(santorum_moral, "santorummoral.txt")
+
+#PATAKI
+toks_pataki <- tokens(pataki_corpus)
+moral_toks_pataki <- tokens_select(toks_pataki, pattern = data_dictionary_MFD, valuetype = "glob")
+pataki_moral <- as.character(moral_toks_pataki)
+pataki_moral <- paste0(pataki_moral, collapse = ". ")
+ntoken(pataki_moral)
+write(pataki_moral, "patakimoral.txt")
+
+#PERRY
+toks_perry <- tokens(perry_corpus)
+moral_toks_perry <- tokens_select(toks_perry, pattern = data_dictionary_MFD, valuetype = "glob")
+perry_moral <- as.character(moral_toks_perry)
+perry_moral <- paste0(perry_moral, collapse = ". ")
+ntoken(perry_moral)
+write(perry_moral, "perrymoral.txt")
+```
+Step 2: extract moral language from each 2020 DEMOCRATIC candidate and write to a .txt file
+```{r}
+#BIDEN
+toks_biden <- tokens(biden_corpus)
+moral_toks_biden <- tokens_select(toks_biden, pattern = data_dictionary_MFD, valuetype = "glob")
+biden_moral <- as.character(moral_toks_biden)
+biden_moral <- paste0(biden_moral, collapse = ". ")
+ntoken(biden_moral)
+write(biden_moral, "bidenmoral.txt")
+
+#SANDERS
+toks_sanders <- tokens(sanders_corpus)
+moral_toks_sanders <- tokens_select(toks_sanders, pattern = data_dictionary_MFD, valuetype = "glob")
+sanders_moral <- as.character(moral_toks_sanders)
+sanders_moral <- paste0(sanders_moral, collapse = ". ")
+ntoken(sanders_moral)
+write(sanders_moral, "sandersmoral.txt")
+
+#BUTTIGIEG
+toks_buttigieg <- tokens(buttigieg_corpus)
+moral_toks_buttigieg <- tokens_select(toks_buttigieg, pattern = data_dictionary_MFD, valuetype = "glob")
+buttigieg_moral <- as.character(moral_toks_buttigieg)
+buttigieg_moral <- paste0(buttigieg_moral, collapse = ". ")
+ntoken(buttigieg_moral)
+write(buttigieg_moral, "buttigiegmoral.txt")
+
+#WARREN
+toks_warren <- tokens(warren_corpus)
+moral_toks_warren <- tokens_select(toks_warren, pattern = data_dictionary_MFD, valuetype = "glob")
+warren_moral <- as.character(moral_toks_warren)
+warren_moral <- paste0(warren_moral, collapse = ". ")
+ntoken(warren_moral)
+write(warren_moral, "warrenmoral.txt")
+
+#KLOBUCHAR
+toks_klobuchar <- tokens(klobuchar_corpus)
+moral_toks_klobuchar <- tokens_select(toks_klobuchar, pattern = data_dictionary_MFD, valuetype = "glob")
+klobuchar_moral <- as.character(moral_toks_klobuchar)
+klobuchar_moral <- paste0(klobuchar_moral, collapse = ". ")
+ntoken(klobuchar_moral)
+write(klobuchar_moral, "klobucharmoral.txt")
+
+#HARRIS
+toks_harris <- tokens(harris_corpus)
+moral_toks_harris <- tokens_select(toks_harris, pattern = data_dictionary_MFD, valuetype = "glob")
+harris_moral <- as.character(moral_toks_harris)
+harris_moral <- paste0(harris_moral, collapse = ". ")
+ntoken(harris_moral)
+write(harris_moral, "harrismoral.txt")
+
+#YANG
+toks_yang <- tokens(yang_corpus)
+moral_toks_yang <- tokens_select(toks_yang, pattern = data_dictionary_MFD, valuetype = "glob")
+yang_moral <- as.character(moral_toks_yang)
+yang_moral <- paste0(yang_moral, collapse = ". ")
+ntoken(yang_moral)
+write(yang_moral, "yangmoral.txt")
+
+#STEYER
+toks_steyer <- tokens(steyer_corpus)
+moral_toks_steyer <- tokens_select(toks_steyer, pattern = data_dictionary_MFD, valuetype = "glob")
+steyer_moral <- as.character(moral_toks_steyer)
+steyer_moral <- paste0(steyer_moral, collapse = ". ")
+ntoken(steyer_moral)
+write(steyer_moral, "steyermoral.txt")
+
+#BOOKER
+toks_booker <- tokens(booker_corpus)
+moral_toks_booker <- tokens_select(toks_booker, pattern = data_dictionary_MFD, valuetype = "glob")
+booker_moral <- as.character(moral_toks_booker)
+booker_moral <- paste0(booker_moral, collapse = ". ")
+ntoken(booker_moral)
+write(booker_moral, "bookermoral.txt")
+
+#GABBARD
+toks_gabbard <- tokens(gabbard_corpus)
+moral_toks_gabbard <- tokens_select(toks_gabbard, pattern = data_dictionary_MFD, valuetype = "glob")
+gabbard_moral <- as.character(moral_toks_gabbard)
+gabbard_moral <- paste0(gabbard_moral, collapse = ". ")
+ntoken(gabbard_moral)
+write(gabbard_moral, "gabbardmoral.txt")
+
+#CASTRO
+toks_castro <- tokens(castro_corpus)
+moral_toks_castro <- tokens_select(toks_castro, pattern = data_dictionary_MFD, valuetype = "glob")
+castro_moral <- as.character(moral_toks_castro)
+castro_moral <- paste0(castro_moral, collapse = ". ")
+ntoken(castro_moral)
+write(castro_moral, "castromoral.txt")
+
+#O'ROURKE
+toks_orourke <- tokens(orourke_corpus)
+moral_toks_orourke <- tokens_select(toks_orourke, pattern = data_dictionary_MFD, valuetype = "glob")
+orourke_moral <- as.character(moral_toks_orourke)
+orourke_moral <- paste0(orourke_moral, collapse = ". ")
+ntoken(orourke_moral)
+write(orourke_moral, "orourkemoral.txt")
+
+#BLOOMBERG
+toks_bloomberg <- tokens(bloomberg_corpus)
+moral_toks_bloomberg <- tokens_select(toks_bloomberg, pattern = data_dictionary_MFD, valuetype = "glob")
+bloomberg_moral <- as.character(moral_toks_bloomberg)
+bloomberg_moral <- paste0(bloomberg_moral, collapse = ". ")
+ntoken(bloomberg_moral)
+write(bloomberg_moral, "bloombergmoral.txt")
+
+#BENNET
+toks_bennet <- tokens(bennet_corpus)
+moral_toks_bennet <- tokens_select(toks_bennet, pattern = data_dictionary_MFD, valuetype = "glob")
+bennet_moral <- as.character(moral_toks_bennet)
+bennet_moral <- paste0(bennet_moral, collapse = ". ")
+ntoken(bennet_moral)
+write(bennet_moral, "bennetmoral.txt")
+
+#DELANEY
+toks_delaney <- tokens(delaney_corpus)
+moral_toks_delaney <- tokens_select(toks_delaney, pattern = data_dictionary_MFD, valuetype = "glob")
+delaney_moral <- as.character(moral_toks_delaney)
+delaney_moral <- paste0(delaney_moral, collapse = ". ")
+ntoken(delaney_moral)
+write(delaney_moral, "delaneymoral.txt")
+
+#WILLIAMSON
+toks_williamson <- tokens(williamson_corpus)
+moral_toks_williamson <- tokens_select(toks_williamson, pattern = data_dictionary_MFD, valuetype = "glob")
+williamson_moral <- as.character(moral_toks_williamson)
+williamson_moral <- paste0(williamson_moral, collapse = ". ")
+ntoken(williamson_moral)
+write(williamson_moral, "williamsonmoral.txt")
+
+#RYAN
+toks_ryan <- tokens(ryan_corpus)
+moral_toks_ryan <- tokens_select(toks_ryan, pattern = data_dictionary_MFD, valuetype = "glob")
+ryan_moral <- as.character(moral_toks_ryan)
+ryan_moral <- paste0(ryan_moral, collapse = ". ")
+ntoken(ryan_moral)
+write(ryan_moral, "ryanmoral.txt")
+
+#DEBLASIO
+toks_deblasio <- tokens(deblasio_corpus)
+moral_toks_deblasio <- tokens_select(toks_deblasio, pattern = data_dictionary_MFD, valuetype = "glob")
+deblasio_moral <- as.character(moral_toks_deblasio)
+deblasio_moral <- paste0(deblasio_moral, collapse = ". ")
+ntoken(deblasio_moral)
+write(deblasio_moral, "deblasiomoral.txt")
+
+#GILLIBRAND
+toks_gillibrand <- tokens(gillibrand_corpus)
+moral_toks_gillibrand <- tokens_select(toks_gillibrand, pattern = data_dictionary_MFD, valuetype = "glob")
+gillibrand_moral <- as.character(moral_toks_gillibrand)
+gillibrand_moral <- paste0(gillibrand_moral, collapse = ". ")
+ntoken(gillibrand_moral)
+write(gillibrand_moral, "gillibrandmoral.txt")
+
+#INSLEE
+toks_inslee <- tokens(inslee_corpus)
+moral_toks_inslee <- tokens_select(toks_inslee, pattern = data_dictionary_MFD, valuetype = "glob")
+inslee_moral <- as.character(moral_toks_inslee)
+inslee_moral <- paste0(inslee_moral, collapse = ". ")
+ntoken(inslee_moral)
+write(inslee_moral, "insleemoral.txt")
+
+#HICKENLOOPER
+toks_hickenlooper <- tokens(hickenlooper_corpus)
+moral_toks_hickenlooper <- tokens_select(toks_hickenlooper, pattern = data_dictionary_MFD, valuetype = "glob")
+hickenlooper_moral <- as.character(moral_toks_hickenlooper)
+hickenlooper_moral <- paste0(hickenlooper_moral, collapse = ". ")
+ntoken(hickenlooper_moral)
+write(hickenlooper_moral, "hickenloopermoral.txt")
+
+#BULLOCK
+toks_bullock <- tokens(bullock_corpus)
+moral_toks_bullock <- tokens_select(toks_bullock, pattern = data_dictionary_MFD, valuetype = "glob")
+bullock_moral <- as.character(moral_toks_bullock)
+bullock_moral <- paste0(bullock_moral, collapse = ". ")
+ntoken(bullock_moral)
+write(bullock_moral, "bullockmoral.txt")
+
+#SWALWELL
+toks_swalwell <- tokens(swalwell_corpus)
+moral_toks_swalwell <- tokens_select(toks_swalwell, pattern = data_dictionary_MFD, valuetype = "glob")
+swalwell_moral <- as.character(moral_toks_swalwell)
+swalwell_moral <- paste0(swalwell_moral, collapse = ". ")
+ntoken(swalwell_moral)
+write(swalwell_moral, "swalwellmoral.txt")
+```
+Step 3: extract moral language from each 2016 DEMOCRATIC candidate and write to a .txt file
+```{r}
+#CLINTON
+toks_clinton_2016primary <- tokens(clinton2016primary_corpus)
+toks_clinton_2016primary <- tokens_tolower(toks_clinton_2016primary)
+moral_toks_clinton2016primary <- tokens_select(toks_clinton_2016primary, pattern = data_dictionary_MFD, valuetype = "glob")
+clinton_moral2016primary <- as.character(moral_toks_clinton2016primary)
+clinton_moral2016primary <- paste0(clinton_moral2016primary, collapse = ". ")
+ntoken(clinton_moral2016primary)
+write(clinton_moral2016primary, "clintonmoral2016primary.txt")
+
+
+#SANDERS
+toks_sanders_2016primary <- tokens(sanders2016primary_corpus)
+toks_sanders_2016primary <- tokens_tolower(toks_sanders_2016primary)
+moral_toks_sanders2016primary <- tokens_select(toks_sanders_2016primary, pattern = data_dictionary_MFD, valuetype = "glob")
+sanders_moral2016primary <- as.character(moral_toks_sanders2016primary)
+sanders_moral2016primary <- paste0(sanders_moral2016primary, collapse = ". ")
+ntoken(sanders_moral2016primary)
+write(sanders_moral2016primary, "sandersmoral2016primary.txt")
+
+#O'MALLEY
+toks_omalley_2016primary <- tokens(omalley2016primary_corpus)
+toks_omalley_2016primary <- tokens_tolower(toks_omalley_2016primary)
+moral_toks_omalley2016primary <- tokens_select(toks_omalley_2016primary, pattern = data_dictionary_MFD, valuetype = "glob")
+omalley_moral2016primary <- as.character(moral_toks_omalley2016primary)
+omalley_moral2016primary <- paste0(omalley_moral2016primary, collapse = ". ")
+ntoken(omalley_moral2016primary)
+write(omalley_moral2016primary, "omalleymoral2016primary.txt")
+```
+Step 4: extract moral language from 2016 & 2020 GE NOMINEES and write to a .txt file
+```{r}
+#CLINTON 2016
+toks_clinton_2016GE <- tokens(clinton2016_GE_corpus)
+moral_toks_clinton2016GE <- tokens_select(toks_clinton_2016GE, pattern = data_dictionary_MFD, valuetype = "glob")
+clinton_moral2016GE <- as.character(moral_toks_clinton2016GE)
+clinton_moral2016GE <- paste0(clinton_moral2016GE, collapse = ". ")
+ntoken(clinton_moral2016GE)
+write(clinton_moral2016GE, "clintonmoral2016GE.txt")
+
+#TRUMP 2016
+toks_trump_2016GE <- tokens(trump2016_GE_corpus)
+moral_toks_trump2016GE <- tokens_select(toks_trump_2016GE, pattern = data_dictionary_MFD, valuetype = "glob")
+trump_moral2016GE <- as.character(moral_toks_trump2016GE)
+trump_moral2016GE <- paste0(trump_moral2016GE, collapse = ". ")
+ntoken(trump_moral2016GE)
+write(trump_moral2016GE, "trumpmoral2016GE.txt")
+
+#BIDEN 2020
+toks_biden_2020GE <- tokens(biden2020_GE_corpus)
+moral_toks_biden2020GE <- tokens_select(toks_biden_2020GE, pattern = data_dictionary_MFD, valuetype = "glob")
+biden_moral2020GE <- as.character(moral_toks_biden2020GE)
+biden_moral2020GE <- paste0(biden_moral2020GE, collapse = ". ")
+ntoken(biden_moral2020GE)
+write(biden_moral2020GE, "bidenmoral2020GE.txt")
+
+#TRUMP 2020 
+toks_trump_2020GE <- tokens(trump2020_GE_corpus)
+moral_toks_trump2020GE <- tokens_select(toks_trump_2020GE, pattern = data_dictionary_MFD, valuetype = "glob")
+trump_moral2020GE <- as.character(moral_toks_trump2020GE)
+trump_moral2020GE <- paste0(trump_moral2020GE, collapse = ". ")
+ntoken(trump_moral2020GE)
+write(trump_moral2020GE, "trumpmoral2020GE.txt")
+```
+
+
+DIVIDE INTO 5 MORAL FOUNDATIONS 
+Step 5: calculate raw proportion of each moral foundation used by 2016 REPUBLICANS  
+```{r}
+#trump
+trump_moral_dfm <- dfm(trump_moral, remove_punct=TRUE)
+trump_moral_dfm <-dfm_weight(trump_moral_dfm, scheme = "prop")
+
+dict_moral_trump <- dfm_lookup(trump_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_trump <- as.data.frame(dict_moral_trump)
+
+data_moral_trump$care.virtue 
+data_moral_trump$fairness.virtue 
+data_moral_trump$loyalty.virtue 
+data_moral_trump$authority.virtue 
+data_moral_trump$sanctity.virtue 
+data_moral_trump$care.vice 
+data_moral_trump$fairness.vice 
+data_moral_trump$loyalty.vice 
+data_moral_trump$authority.vice 
+data_moral_trump$sanctity.vice
+
+#cruz
+cruz_moral_dfm <- dfm(cruz_moral, remove_punct=TRUE)
+cruz_moral_dfm <-dfm_weight(cruz_moral_dfm, scheme = "prop")
+
+dict_moral_cruz <- dfm_lookup(cruz_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_cruz <- as.data.frame(dict_moral_cruz)
+
+data_moral_cruz$care.virtue 
+data_moral_cruz$fairness.virtue 
+data_moral_cruz$loyalty.virtue 
+data_moral_cruz$authority.virtue 
+data_moral_cruz$sanctity.virtue 
+data_moral_cruz$care.vice 
+data_moral_cruz$fairness.vice 
+data_moral_cruz$loyalty.vice 
+data_moral_cruz$authority.vice 
+data_moral_cruz$sanctity.vice 
+
+#rubio
+rubio_moral_dfm <- dfm(rubio_moral, remove_punct=TRUE)
+rubio_moral_dfm <-dfm_weight(rubio_moral_dfm, scheme = "prop")
+
+dict_moral_rubio <- dfm_lookup(rubio_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_rubio <- as.data.frame(dict_moral_rubio)
+
+data_moral_rubio$care.virtue 
+data_moral_rubio$fairness.virtue 
+data_moral_rubio$loyalty.virtue 
+data_moral_rubio$authority.virtue 
+data_moral_rubio$sanctity.virtue 
+data_moral_rubio$care.vice 
+data_moral_rubio$fairness.vice 
+data_moral_rubio$loyalty.vice 
+data_moral_rubio$authority.vice 
+data_moral_rubio$sanctity.vice 
+
+#kasich
+kasich_moral_dfm <- dfm(kasich_moral, remove_punct=TRUE)
+kasich_moral_dfm <-dfm_weight(kasich_moral_dfm, scheme = "prop")
+
+dict_moral_kasich <- dfm_lookup(kasich_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_kasich <- as.data.frame(dict_moral_kasich)
+
+data_moral_kasich$care.virtue 
+data_moral_kasich$fairness.virtue 
+data_moral_kasich$loyalty.virtue 
+data_moral_kasich$authority.virtue 
+data_moral_kasich$sanctity.virtue 
+data_moral_kasich$care.vice 
+data_moral_kasich$fairness.vice 
+data_moral_kasich$loyalty.vice 
+data_moral_kasich$authority.vice 
+data_moral_kasich$sanctity.vice 
+
+#carson
+carson_moral_dfm <- dfm(carson_moral, remove_punct=TRUE)
+carson_moral_dfm <-dfm_weight(carson_moral_dfm, scheme = "prop")
+
+dict_moral_carson <- dfm_lookup(carson_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_carson <- as.data.frame(dict_moral_carson)
+
+data_moral_carson$care.virtue 
+data_moral_carson$fairness.virtue 
+data_moral_carson$loyalty.virtue 
+data_moral_carson$authority.virtue 
+data_moral_carson$sanctity.virtue 
+data_moral_carson$care.vice 
+data_moral_carson$fairness.vice 
+data_moral_carson$loyalty.vice 
+data_moral_carson$authority.vice 
+data_moral_carson$sanctity.vice 
+
+#bush
+bush_moral_dfm <- dfm(bush_moral, remove_punct=TRUE)
+bush_moral_dfm <-dfm_weight(bush_moral_dfm, scheme = "prop")
+
+dict_moral_bush <- dfm_lookup(bush_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_bush <- as.data.frame(dict_moral_bush)
+
+data_moral_bush$care.virtue 
+data_moral_bush$fairness.virtue 
+data_moral_bush$loyalty.virtue 
+data_moral_bush$authority.virtue 
+data_moral_bush$sanctity.virtue 
+data_moral_bush$care.vice 
+data_moral_bush$fairness.vice 
+data_moral_bush$loyalty.vice 
+data_moral_bush$authority.vice 
+data_moral_bush$sanctity.vice 
+
+#christie
+christie_moral_dfm <- dfm(christie_moral, remove_punct=TRUE)
+christie_moral_dfm <-dfm_weight(christie_moral_dfm, scheme = "prop")
+
+dict_moral_christie <- dfm_lookup(christie_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_christie <- as.data.frame(dict_moral_christie)
+
+data_moral_christie$care.virtue 
+data_moral_christie$fairness.virtue 
+data_moral_christie$loyalty.virtue 
+data_moral_christie$authority.virtue 
+data_moral_christie$sanctity.virtue 
+data_moral_christie$care.vice 
+data_moral_christie$fairness.vice 
+data_moral_christie$loyalty.vice 
+data_moral_christie$authority.vice 
+data_moral_christie$sanctity.vice 
+
+#paul
+paul_moral_dfm <- dfm(paul_moral, remove_punct=TRUE)
+paul_moral_dfm <-dfm_weight(paul_moral_dfm, scheme = "prop")
+
+dict_moral_paul <- dfm_lookup(paul_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_paul <- as.data.frame(dict_moral_paul)
+
+data_moral_paul$care.virtue 
+data_moral_paul$fairness.virtue 
+data_moral_paul$loyalty.virtue 
+data_moral_paul$authority.virtue 
+data_moral_paul$sanctity.virtue 
+data_moral_paul$care.vice 
+data_moral_paul$fairness.vice 
+data_moral_paul$loyalty.vice 
+data_moral_paul$authority.vice 
+data_moral_paul$sanctity.vice 
+
+#fiorina
+fiorina_moral_dfm <- dfm(fiorina_moral, remove_punct=TRUE)
+fiorina_moral_dfm <-dfm_weight(fiorina_moral_dfm, scheme = "prop")
+
+dict_moral_fiorina <- dfm_lookup(fiorina_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_fiorina <- as.data.frame(dict_moral_fiorina)
+
+data_moral_fiorina$care.virtue 
+data_moral_fiorina$fairness.virtue 
+data_moral_fiorina$loyalty.virtue 
+data_moral_fiorina$authority.virtue 
+data_moral_fiorina$sanctity.virtue 
+data_moral_fiorina$care.vice 
+data_moral_fiorina$fairness.vice 
+data_moral_fiorina$loyalty.vice 
+data_moral_fiorina$authority.vice 
+data_moral_fiorina$sanctity.vice 
+
+#huckabee
+huckabee_moral_dfm <- dfm(huckabee_moral, remove_punct=TRUE)
+huckabee_moral_dfm <-dfm_weight(huckabee_moral_dfm, scheme = "prop")
+
+dict_moral_huckabee <- dfm_lookup(huckabee_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_huckabee <- as.data.frame(dict_moral_huckabee)
+
+data_moral_huckabee$care.virtue 
+data_moral_huckabee$fairness.virtue 
+data_moral_huckabee$loyalty.virtue 
+data_moral_huckabee$authority.virtue 
+data_moral_huckabee$sanctity.virtue 
+data_moral_huckabee$care.vice 
+data_moral_huckabee$fairness.vice 
+data_moral_huckabee$loyalty.vice 
+data_moral_huckabee$authority.vice 
+data_moral_huckabee$sanctity.vice 
+
+#walker
+walker_moral_dfm <- dfm(walker_moral, remove_punct=TRUE)
+walker_moral_dfm <-dfm_weight(walker_moral_dfm, scheme = "prop")
+
+dict_moral_walker <- dfm_lookup(walker_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_walker <- as.data.frame(dict_moral_walker)
+
+data_moral_walker$care.virtue 
+data_moral_walker$fairness.virtue 
+data_moral_walker$loyalty.virtue 
+data_moral_walker$authority.virtue 
+data_moral_walker$sanctity.virtue 
+data_moral_walker$care.vice 
+data_moral_walker$fairness.vice 
+data_moral_walker$loyalty.vice 
+data_moral_walker$authority.vice 
+data_moral_walker$sanctity.vice 
+
+#graham
+graham_moral_dfm <- dfm(graham_moral, remove_punct=TRUE)
+graham_moral_dfm <-dfm_weight(graham_moral_dfm, scheme = "prop")
+
+dict_moral_graham <- dfm_lookup(graham_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_graham <- as.data.frame(dict_moral_graham)
+
+data_moral_graham$care.virtue 
+data_moral_graham$fairness.virtue 
+data_moral_graham$loyalty.virtue 
+data_moral_graham$authority.virtue 
+data_moral_graham$sanctity.virtue 
+data_moral_graham$care.vice 
+data_moral_graham$fairness.vice 
+data_moral_graham$loyalty.vice 
+data_moral_graham$authority.vice 
+data_moral_graham$sanctity.vice 
+
+#jindal
+jindal_moral_dfm <- dfm(jindal_moral, remove_punct=TRUE)
+jindal_moral_dfm <-dfm_weight(jindal_moral_dfm, scheme = "prop")
+
+dict_moral_jindal <- dfm_lookup(jindal_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_jindal <- as.data.frame(dict_moral_jindal)
+
+data_moral_jindal$care.virtue 
+data_moral_jindal$fairness.virtue 
+data_moral_jindal$loyalty.virtue 
+data_moral_jindal$authority.virtue 
+data_moral_jindal$sanctity.virtue 
+data_moral_jindal$care.vice 
+data_moral_jindal$fairness.vice 
+data_moral_jindal$loyalty.vice 
+data_moral_jindal$authority.vice 
+data_moral_jindal$sanctity.vice 
+
+#santorum
+santorum_moral_dfm <- dfm(santorum_moral, remove_punct=TRUE)
+santorum_moral_dfm <-dfm_weight(santorum_moral_dfm, scheme = "prop")
+
+dict_moral_santorum <- dfm_lookup(santorum_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_santorum <- as.data.frame(dict_moral_santorum)
+
+data_moral_santorum$care.virtue 
+data_moral_santorum$fairness.virtue 
+data_moral_santorum$loyalty.virtue 
+data_moral_santorum$authority.virtue 
+data_moral_santorum$sanctity.virtue 
+data_moral_santorum$care.vice 
+data_moral_santorum$fairness.vice 
+data_moral_santorum$loyalty.vice 
+data_moral_santorum$authority.vice 
+data_moral_santorum$sanctity.vice 
+
+#pataki
+pataki_moral_dfm <- dfm(pataki_moral, remove_punct=TRUE)
+pataki_moral_dfm <-dfm_weight(pataki_moral_dfm, scheme = "prop")
+
+dict_moral_pataki <- dfm_lookup(pataki_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_pataki <- as.data.frame(dict_moral_pataki)
+
+data_moral_pataki$care.virtue 
+data_moral_pataki$fairness.virtue 
+data_moral_pataki$loyalty.virtue 
+data_moral_pataki$authority.virtue 
+data_moral_pataki$sanctity.virtue 
+data_moral_pataki$care.vice 
+data_moral_pataki$fairness.vice 
+data_moral_pataki$loyalty.vice 
+data_moral_pataki$authority.vice 
+data_moral_pataki$sanctity.vice 
+
+#perry
+perry_moral_dfm <- dfm(perry_moral, remove_punct=TRUE)
+perry_moral_dfm <-dfm_weight(perry_moral_dfm, scheme = "prop")
+
+dict_moral_perry <- dfm_lookup(perry_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_perry <- as.data.frame(dict_moral_perry)
+
+data_moral_perry$care.virtue 
+data_moral_perry$fairness.virtue 
+data_moral_perry$loyalty.virtue 
+data_moral_perry$authority.virtue 
+data_moral_perry$sanctity.virtue 
+data_moral_perry$care.vice 
+data_moral_perry$fairness.vice 
+data_moral_perry$loyalty.vice 
+data_moral_perry$authority.vice 
+data_moral_perry$sanctity.vice 
+```
+Step 6: calculate raw proportion of each moral foundation used by 2020 DEMOCRATS
+```{r}
+#BIDEN
+biden_moral_dfm <- dfm(biden_moral, remove_punct=TRUE)
+biden_moral_dfm <-dfm_weight(biden_moral_dfm, scheme = "prop")
+
+dict_moral_biden <- dfm_lookup(biden_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_biden <- as.data.frame(dict_moral_biden)
+
+data_moral_biden$care.virtue 
+data_moral_biden$fairness.virtue 
+data_moral_biden$loyalty.virtue 
+data_moral_biden$authority.virtue 
+data_moral_biden$sanctity.virtue 
+data_moral_biden$care.vice 
+data_moral_biden$fairness.vice 
+data_moral_biden$loyalty.vice 
+data_moral_biden$authority.vice 
+data_moral_biden$sanctity.vice 
+
+#SANDERS
+sanders_moral_dfm <- dfm(sanders_moral, remove_punct=TRUE)
+sanders_moral_dfm <-dfm_weight(sanders_moral_dfm, scheme = "prop")
+
+dict_moral_sanders <- dfm_lookup(sanders_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_sanders <- as.data.frame(dict_moral_sanders)
+
+data_moral_sanders$care.virtue # 0.2951413
+data_moral_sanders$fairness.virtue # 0.08349261
+data_moral_sanders$loyalty.virtue # 0.257117
+data_moral_sanders$authority.virtue # 0.1289609
+data_moral_sanders$sanctity.virtue # 0.02846796
+data_moral_sanders$care.vice # 0.1222211
+data_moral_sanders$fairness.vice #  0.03480535
+data_moral_sanders$loyalty.vice # 0.003218992
+data_moral_sanders$authority.vice # 0.008449854 
+data_moral_sanders$sanctity.vice # 0.05230862
+
+#WARREN
+warren_moral_dfm <- dfm(warren_moral, remove_punct=TRUE)
+warren_moral_dfm <-dfm_weight(warren_moral_dfm, scheme = "prop")
+
+dict_moral_warren <- dfm_lookup(warren_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_warren <- as.data.frame(dict_moral_warren)
+
+data_moral_warren$care.virtue # 0.2144479
+data_moral_warren$fairness.virtue # 0.08820089
+data_moral_warren$loyalty.virtue # 0.2282078
+data_moral_warren$authority.virtue # 0.1375301
+data_moral_warren$sanctity.virtue # 0.02187822
+data_moral_warren$care.vice # 0.2272446
+data_moral_warren$fairness.vice # 0.0372893
+data_moral_warren$loyalty.vice #   0.0003439972
+data_moral_warren$authority.vice #  0.005985552
+data_moral_warren$sanctity.vice # 0.05304438
+
+#KLOBUCHAR
+klobuchar_moral_dfm <- dfm(klobuchar_moral, remove_punct=TRUE)
+klobuchar_moral_dfm <-dfm_weight(klobuchar_moral_dfm, scheme = "prop")
+
+dict_moral_klobuchar <- dfm_lookup(klobuchar_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_klobuchar <- as.data.frame(dict_moral_klobuchar)
+
+data_moral_klobuchar$care.virtue # 0.2263856
+data_moral_klobuchar$fairness.virtue # 0.08665105
+data_moral_klobuchar$loyalty.virtue # 0.2466823
+data_moral_klobuchar$authority.virtue # 0.2534478
+data_moral_klobuchar$sanctity.virtue # 0.03148582
+data_moral_klobuchar$care.vice # 0.1074681
+data_moral_klobuchar$fairness.vice # 0.0156128
+data_moral_klobuchar$loyalty.vice #   0.00156128
+data_moral_klobuchar$authority.vice #  0.007285974
+data_moral_klobuchar$sanctity.vice # 0.04553734
+
+#BUTTIGIEG
+buttigieg_moral_dfm <- dfm(buttigieg_moral, remove_punct=TRUE)
+buttigieg_moral_dfm <-dfm_weight(buttigieg_moral_dfm, scheme = "prop")
+
+dict_moral_buttigieg <- dfm_lookup(buttigieg_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_buttigieg <- as.data.frame(dict_moral_buttigieg)
+
+data_moral_buttigieg$care.virtue # 0.2348873
+data_moral_buttigieg$fairness.virtue # 0.08606557
+data_moral_buttigieg$loyalty.virtue # 0.3007172
+data_moral_buttigieg$authority.virtue # 0.2005635
+data_moral_buttigieg$sanctity.virtue # 0.03714139
+data_moral_buttigieg$care.vice # 0.08760246
+data_moral_buttigieg$fairness.vice # 0.03150615
+data_moral_buttigieg$loyalty.vice #   0.00204918
+data_moral_buttigieg$authority.vice #  0.006915984
+data_moral_buttigieg$sanctity.vice # 0.01895492
+
+#YANG
+yang_moral_dfm <- dfm(yang_moral, remove_punct=TRUE)
+yang_moral_dfm <-dfm_weight(yang_moral_dfm, scheme = "prop")
+
+dict_moral_yang <- dfm_lookup(yang_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_yang <- as.data.frame(dict_moral_yang)
+
+data_moral_yang$care.virtue # 0.2742857
+data_moral_yang$fairness.virtue # 0.04707483
+data_moral_yang$loyalty.virtue # 0.2778231
+data_moral_yang$authority.virtue # 0.2234014
+data_moral_yang$sanctity.virtue # 0.04680272
+data_moral_yang$care.vice # 0.07183673
+data_moral_yang$fairness.vice # 0.01605442
+data_moral_yang$loyalty.vice #   0.002993197
+data_moral_yang$authority.vice #  0.001632653
+data_moral_yang$sanctity.vice # 0.04435374
+
+#STEYER
+steyer_moral_dfm <- dfm(steyer_moral, remove_punct=TRUE)
+steyer_moral_dfm <-dfm_weight(steyer_moral_dfm, scheme = "prop")
+
+dict_moral_steyer <- dfm_lookup(steyer_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_steyer <- as.data.frame(dict_moral_steyer)
+
+data_moral_steyer$care.virtue # 0.2558654
+data_moral_steyer$fairness.virtue # 0.0894201
+data_moral_steyer$loyalty.virtue # 0.1646746
+data_moral_steyer$authority.virtue # 0.2246569
+data_moral_steyer$sanctity.virtue # 0.02567508
+data_moral_steyer$care.vice # 0.1164232
+data_moral_steyer$fairness.vice # 0.09871625
+data_moral_steyer$loyalty.vice #   0.005754759
+data_moral_steyer$authority.vice #  0.008410801
+data_moral_steyer$sanctity.vice # 0.03098716
+
+#HARRIS
+harris_moral_dfm <- dfm(harris_moral, remove_punct=TRUE)
+harris_moral_dfm <-dfm_weight(harris_moral_dfm, scheme = "prop")
+
+dict_moral_harris <- dfm_lookup(harris_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_harris <- as.data.frame(dict_moral_harris)
+
+data_moral_harris$care.virtue # 0.2292484
+data_moral_harris$fairness.virtue # 0.1139701
+data_moral_harris$loyalty.virtue # 0.2025004
+data_moral_harris$authority.virtue # 0.1955226
+data_moral_harris$sanctity.virtue # 0.03445268
+data_moral_harris$care.vice # 0.1804041
+data_moral_harris$fairness.vice # 0.02936473
+data_moral_harris$loyalty.vice #   0.0014537
+data_moral_harris$authority.vice #  0.006105539
+data_moral_harris$sanctity.vice # 0.02500363
+
+#BOOKER
+booker_moral_dfm <- dfm(booker_moral, remove_punct=TRUE)
+booker_moral_dfm <-dfm_weight(booker_moral_dfm, scheme = "prop")
+
+dict_moral_booker <- dfm_lookup(booker_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_booker <- as.data.frame(dict_moral_booker)
+
+data_moral_booker$care.virtue #  0.2180451
+data_moral_booker$fairness.virtue # 0.1163202
+data_moral_booker$loyalty.virtue # 0.2494471
+data_moral_booker$authority.virtue # 0.1508182
+data_moral_booker$sanctity.virtue # 0.0495356
+data_moral_booker$care.vice # 0.1510394
+data_moral_booker$fairness.vice # 0.03162318
+data_moral_booker$loyalty.vice #   0.0008845644
+data_moral_booker$authority.vice #  0.005307386
+data_moral_booker$sanctity.vice # 0.036046
+
+#GABBARD
+gabbard_moral_dfm <- dfm(gabbard_moral, remove_punct=TRUE)
+gabbard_moral_dfm <-dfm_weight(gabbard_moral_dfm, scheme = "prop")
+
+dict_moral_gabbard <- dfm_lookup(gabbard_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_gabbard <- as.data.frame(dict_moral_gabbard)
+
+data_moral_gabbard$care.virtue 
+data_moral_gabbard$fairness.virtue 
+data_moral_gabbard$loyalty.virtue 
+data_moral_gabbard$authority.virtue 
+data_moral_gabbard$sanctity.virtue 
+data_moral_gabbard$care.vice 
+data_moral_gabbard$fairness.vice 
+data_moral_gabbard$loyalty.vice 
+data_moral_gabbard$authority.vice 
+data_moral_gabbard$sanctity.vice 
+
+#CASTRO
+castro_moral_dfm <- dfm(castro_moral, remove_punct=TRUE)
+castro_moral_dfm <-dfm_weight(castro_moral_dfm, scheme = "prop")
+
+dict_moral_castro <- dfm_lookup(castro_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_castro <- as.data.frame(dict_moral_castro)
+
+data_moral_castro$care.virtue 
+data_moral_castro$fairness.virtue 
+data_moral_castro$loyalty.virtue 
+data_moral_castro$authority.virtue 
+data_moral_castro$sanctity.virtue 
+data_moral_castro$care.vice 
+data_moral_castro$fairness.vice 
+data_moral_castro$loyalty.vice 
+data_moral_castro$authority.vice 
+data_moral_castro$sanctity.vice 
+
+#OROURKE
+orourke_moral_dfm <- dfm(orourke_moral, remove_punct=TRUE)
+orourke_moral_dfm <-dfm_weight(orourke_moral_dfm, scheme = "prop")
+
+dict_moral_orourke <- dfm_lookup(orourke_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_orourke <- as.data.frame(dict_moral_orourke)
+
+data_moral_orourke$care.virtue 
+data_moral_orourke$fairness.virtue 
+data_moral_orourke$loyalty.virtue 
+data_moral_orourke$authority.virtue 
+data_moral_orourke$sanctity.virtue 
+data_moral_orourke$care.vice 
+data_moral_orourke$fairness.vice 
+data_moral_orourke$loyalty.vice 
+data_moral_orourke$authority.vice 
+data_moral_orourke$sanctity.vice 
+
+#BLOOMBERG
+bloomberg_moral_dfm <- dfm(bloomberg_moral, remove_punct=TRUE)
+bloomberg_moral_dfm <-dfm_weight(bloomberg_moral_dfm, scheme = "prop")
+
+dict_moral_bloomberg <- dfm_lookup(bloomberg_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_bloomberg <- as.data.frame(dict_moral_bloomberg)
+
+data_moral_bloomberg$care.virtue 
+data_moral_bloomberg$fairness.virtue 
+data_moral_bloomberg$loyalty.virtue 
+data_moral_bloomberg$authority.virtue 
+data_moral_bloomberg$sanctity.virtue 
+data_moral_bloomberg$care.vice 
+data_moral_bloomberg$fairness.vice 
+data_moral_bloomberg$loyalty.vice 
+data_moral_bloomberg$authority.vice 
+data_moral_bloomberg$sanctity.vice 
+
+#BENNET
+bennet_moral_dfm <- dfm(bennet_moral, remove_punct=TRUE)
+bennet_moral_dfm <-dfm_weight(bennet_moral_dfm, scheme = "prop")
+
+dict_moral_bennet <- dfm_lookup(bennet_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_bennet <- as.data.frame(dict_moral_bennet)
+
+data_moral_bennet$care.virtue 
+data_moral_bennet$fairness.virtue 
+data_moral_bennet$loyalty.virtue 
+data_moral_bennet$authority.virtue 
+data_moral_bennet$sanctity.virtue 
+data_moral_bennet$care.vice 
+data_moral_bennet$fairness.vice 
+data_moral_bennet$loyalty.vice 
+data_moral_bennet$authority.vice 
+data_moral_bennet$sanctity.vice 
+
+#DELANEY
+delaney_moral_dfm <- dfm(delaney_moral, remove_punct=TRUE)
+delaney_moral_dfm <-dfm_weight(delaney_moral_dfm, scheme = "prop")
+
+dict_moral_delaney <- dfm_lookup(delaney_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_delaney <- as.data.frame(dict_moral_delaney)
+
+data_moral_delaney$care.virtue 
+data_moral_delaney$fairness.virtue 
+data_moral_delaney$loyalty.virtue 
+data_moral_delaney$authority.virtue 
+data_moral_delaney$sanctity.virtue 
+data_moral_delaney$care.vice 
+data_moral_delaney$fairness.vice 
+data_moral_delaney$loyalty.vice 
+data_moral_delaney$authority.vice 
+data_moral_delaney$sanctity.vice 
+
+#WILLIAMSON
+williamson_moral_dfm <- dfm(williamson_moral, remove_punct=TRUE)
+williamson_moral_dfm <-dfm_weight(williamson_moral_dfm, scheme = "prop")
+
+dict_moral_williamson <- dfm_lookup(williamson_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_williamson <- as.data.frame(dict_moral_williamson)
+
+data_moral_williamson$care.virtue 
+data_moral_williamson$fairness.virtue 
+data_moral_williamson$loyalty.virtue 
+data_moral_williamson$authority.virtue 
+data_moral_williamson$sanctity.virtue 
+data_moral_williamson$care.vice 
+data_moral_williamson$fairness.vice 
+data_moral_williamson$loyalty.vice 
+data_moral_williamson$authority.vice 
+data_moral_williamson$sanctity.vice 
+
+#RYAN
+ryan_moral_dfm <- dfm(ryan_moral, remove_punct=TRUE)
+ryan_moral_dfm <-dfm_weight(ryan_moral_dfm, scheme = "prop")
+
+dict_moral_ryan <- dfm_lookup(ryan_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_ryan <- as.data.frame(dict_moral_ryan)
+
+data_moral_ryan$care.virtue 
+data_moral_ryan$fairness.virtue 
+data_moral_ryan$loyalty.virtue 
+data_moral_ryan$authority.virtue 
+data_moral_ryan$sanctity.virtue 
+data_moral_ryan$care.vice 
+data_moral_ryan$fairness.vice 
+data_moral_ryan$loyalty.vice 
+data_moral_ryan$authority.vice 
+data_moral_ryan$sanctity.vice 
+
+#DE BLASIO
+deblasio_moral_dfm <- dfm(deblasio_moral, remove_punct=TRUE)
+deblasio_moral_dfm <-dfm_weight(deblasio_moral_dfm, scheme = "prop")
+
+dict_moral_deblasio <- dfm_lookup(deblasio_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_deblasio <- as.data.frame(dict_moral_deblasio)
+
+data_moral_deblasio$care.virtue 
+data_moral_deblasio$fairness.virtue 
+data_moral_deblasio$loyalty.virtue 
+data_moral_deblasio$authority.virtue 
+data_moral_deblasio$sanctity.virtue 
+data_moral_deblasio$care.vice 
+data_moral_deblasio$fairness.vice 
+data_moral_deblasio$loyalty.vice 
+data_moral_deblasio$authority.vice 
+data_moral_deblasio$sanctity.vice 
+
+#GILLIBRAND
+gillibrand_moral_dfm <- dfm(gillibrand_moral, remove_punct=TRUE)
+gillibrand_moral_dfm <-dfm_weight(gillibrand_moral_dfm, scheme = "prop")
+
+dict_moral_gillibrand <- dfm_lookup(gillibrand_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_gillibrand <- as.data.frame(dict_moral_gillibrand)
+
+data_moral_gillibrand$care.virtue 
+data_moral_gillibrand$fairness.virtue 
+data_moral_gillibrand$loyalty.virtue 
+data_moral_gillibrand$authority.virtue 
+data_moral_gillibrand$sanctity.virtue 
+data_moral_gillibrand$care.vice 
+data_moral_gillibrand$fairness.vice 
+data_moral_gillibrand$loyalty.vice 
+data_moral_gillibrand$authority.vice 
+data_moral_gillibrand$sanctity.vice 
+
+#INSLEE
+inslee_moral_dfm <- dfm(inslee_moral, remove_punct=TRUE)
+inslee_moral_dfm <-dfm_weight(inslee_moral_dfm, scheme = "prop")
+
+dict_moral_inslee <- dfm_lookup(inslee_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_inslee <- as.data.frame(dict_moral_inslee)
+
+data_moral_inslee$care.virtue 
+data_moral_inslee$fairness.virtue 
+data_moral_inslee$loyalty.virtue 
+data_moral_inslee$authority.virtue 
+data_moral_inslee$sanctity.virtue 
+data_moral_inslee$care.vice 
+data_moral_inslee$fairness.vice 
+data_moral_inslee$loyalty.vice 
+data_moral_inslee$authority.vice 
+data_moral_inslee$sanctity.vice 
+
+#HICKENLOOPER
+hickenlooper_moral_dfm <- dfm(hickenlooper_moral, remove_punct=TRUE)
+hickenlooper_moral_dfm <-dfm_weight(hickenlooper_moral_dfm, scheme = "prop")
+
+dict_moral_hickenlooper <- dfm_lookup(hickenlooper_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_hickenlooper <- as.data.frame(dict_moral_hickenlooper)
+
+data_moral_hickenlooper$care.virtue 
+data_moral_hickenlooper$fairness.virtue 
+data_moral_hickenlooper$loyalty.virtue 
+data_moral_hickenlooper$authority.virtue 
+data_moral_hickenlooper$sanctity.virtue 
+data_moral_hickenlooper$care.vice 
+data_moral_hickenlooper$fairness.vice 
+data_moral_hickenlooper$loyalty.vice 
+data_moral_hickenlooper$authority.vice 
+data_moral_hickenlooper$sanctity.vice 
+
+#BULLOCK
+bullock_moral_dfm <- dfm(bullock_moral, remove_punct=TRUE)
+bullock_moral_dfm <-dfm_weight(bullock_moral_dfm, scheme = "prop")
+
+dict_moral_bullock <- dfm_lookup(bullock_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_bullock <- as.data.frame(dict_moral_bullock)
+
+data_moral_bullock$care.virtue 
+data_moral_bullock$fairness.virtue 
+data_moral_bullock$loyalty.virtue 
+data_moral_bullock$authority.virtue 
+data_moral_bullock$sanctity.virtue 
+data_moral_bullock$care.vice 
+data_moral_bullock$fairness.vice 
+data_moral_bullock$loyalty.vice 
+data_moral_bullock$authority.vice 
+data_moral_bullock$sanctity.vice 
+
+#SWALWELL
+swalwell_moral_dfm <- dfm(swalwell_moral, remove_punct=TRUE)
+swalwell_moral_dfm <-dfm_weight(swalwell_moral_dfm, scheme = "prop")
+
+dict_moral_swalwell <- dfm_lookup(swalwell_moral_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_swalwell <- as.data.frame(dict_moral_swalwell)
+
+data_moral_swalwell$care.virtue 
+data_moral_swalwell$fairness.virtue 
+data_moral_swalwell$loyalty.virtue 
+data_moral_swalwell$authority.virtue 
+data_moral_swalwell$sanctity.virtue 
+data_moral_swalwell$care.vice 
+data_moral_swalwell$fairness.vice 
+data_moral_swalwell$loyalty.vice 
+data_moral_swalwell$authority.vice 
+data_moral_swalwell$sanctity.vice 
+```
+Step 7: calculate raw proportion of each moral foundation used by 2016 DEMOCRATS
+```{r}
+#CLINTON
+clinton_moral2016primary_dfm <- dfm(clinton_moral2016primary, remove_punct=TRUE)
+clinton_moral2016primary_dfm <-dfm_weight(clinton_moral2016primary_dfm, scheme = "prop")
+sum(ntoken(clinton_moral2016primary))
+dict_moral_clinton2016primary <- dfm_lookup(clinton_moral2016primary_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_clinton2016primary <- as.data.frame(dict_moral_clinton2016primary)
+
+data_moral_clinton2016primary$care.virtue 
+data_moral_clinton2016primary$fairness.virtue 
+data_moral_clinton2016primary$loyalty.virtue 
+data_moral_clinton2016primary$authority.virtue 
+data_moral_clinton2016primary$sanctity.virtue 
+data_moral_clinton2016primary$care.vice 
+data_moral_clinton2016primary$fairness.vice 
+data_moral_clinton2016primary$loyalty.vice 
+data_moral_clinton2016primary$authority.vice 
+data_moral_clinton2016primary$sanctity.vice 
+
+#SANDERS
+sanders_moral2016primary_dfm <- dfm(sanders_moral2016primary, remove_punct=TRUE)
+sanders_moral2016primary_dfm <-dfm_weight(sanders_moral2016primary_dfm, scheme = "prop")
+
+dict_moral_sanders2016primary <- dfm_lookup(sanders_moral2016primary_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_sanders2016primary <- as.data.frame(dict_moral_sanders2016primary)
+
+data_moral_sanders2016primary$care.virtue 
+data_moral_sanders2016primary$fairness.virtue 
+data_moral_sanders2016primary$loyalty.virtue 
+data_moral_sanders2016primary$authority.virtue 
+data_moral_sanders2016primary$sanctity.virtue 
+data_moral_sanders2016primary$care.vice 
+data_moral_sanders2016primary$fairness.vice 
+data_moral_sanders2016primary$loyalty.vice 
+data_moral_sanders2016primary$authority.vice 
+data_moral_sanders2016primary$sanctity.vice  
+
+#OMALLEY
+omalley_moral2016primary_dfm <- dfm(omalley_moral2016primary, remove_punct=TRUE)
+omalley_moral2016primary_dfm <-dfm_weight(omalley_moral2016primary_dfm, scheme = "prop")
+
+dict_moral_omalley2016primary <- dfm_lookup(omalley_moral2016primary_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_omalley2016primary <- as.data.frame(dict_moral_omalley2016primary)
+
+data_moral_omalley2016primary$care.virtue 
+data_moral_omalley2016primary$fairness.virtue 
+data_moral_omalley2016primary$loyalty.virtue 
+data_moral_omalley2016primary$authority.virtue 
+data_moral_omalley2016primary$sanctity.virtue 
+data_moral_omalley2016primary$care.vice 
+data_moral_omalley2016primary$fairness.vice 
+data_moral_omalley2016primary$loyalty.vice 
+data_moral_omalley2016primary$authority.vice 
+data_moral_omalley2016primary$sanctity.vice 
+```
+Step 8: calculate raw proportion from 2016 & 2020 GE NOMINEES
+```{r}
+#CLINTON 2016
+clinton_moral2016_GE_dfm <- dfm(clinton_moral2016GE, remove_punct=TRUE)
+clinton_moral2016_GE_dfm <-dfm_weight(clinton_moral2016_GE_dfm, scheme = "prop")
+
+dict_moral_clinton2016_GE <- dfm_lookup(clinton_moral2016_GE_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_clinton2016_GE <- as.data.frame(dict_moral_clinton2016_GE)
+
+data_moral_clinton2016_GE$care.virtue 
+data_moral_clinton2016_GE$fairness.virtue 
+data_moral_clinton2016_GE$loyalty.virtue 
+data_moral_clinton2016_GE$authority.virtue 
+data_moral_clinton2016_GE$sanctity.virtue 
+data_moral_clinton2016_GE$care.vice 
+data_moral_clinton2016_GE$fairness.vice 
+data_moral_clinton2016_GE$loyalty.vice 
+data_moral_clinton2016_GE$authority.vice 
+data_moral_clinton2016_GE$sanctity.vice 
+
+#TRUMP 2016
+trump_moral2016_GE_dfm <- dfm(trump_moral2016GE, remove_punct=TRUE, remove = "crooked")
+trump_moral2016_GE_dfm <-dfm_weight(trump_moral2016_GE_dfm, scheme = "prop")
+
+dict_moral_trump2016_GE <- dfm_lookup(trump_moral2016_GE_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_trump2016_GE <- as.data.frame(dict_moral_trump2016_GE)
+
+data_moral_trump2016_GE$care.virtue 
+data_moral_trump2016_GE$fairness.virtue 
+data_moral_trump2016_GE$loyalty.virtue 
+data_moral_trump2016_GE$authority.virtue 
+data_moral_trump2016_GE$sanctity.virtue 
+data_moral_trump2016_GE$care.vice 
+data_moral_trump2016_GE$fairness.vice 
+data_moral_trump2016_GE$loyalty.vice 
+data_moral_trump2016_GE$authority.vice 
+data_moral_trump2016_GE$sanctity.vice
+
+#BIDEN 2020
+biden_moral2020_GE_dfm <- dfm(biden_moral2020GE, remove_punct=TRUE)
+biden_moral2020_GE_dfm <-dfm_weight(biden_moral2020_GE_dfm, scheme = "prop")
+
+dict_moral_biden2020_GE <- dfm_lookup(biden_moral2020_GE_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_biden2020_GE <- as.data.frame(dict_moral_biden2020_GE)
+
+data_moral_biden2020_GE$care.virtue 
+data_moral_biden2020_GE$fairness.virtue 
+data_moral_biden2020_GE$loyalty.virtue 
+data_moral_biden2020_GE$authority.virtue 
+data_moral_biden2020_GE$sanctity.virtue 
+data_moral_biden2020_GE$care.vice 
+data_moral_biden2020_GE$fairness.vice 
+data_moral_biden2020_GE$loyalty.vice 
+data_moral_biden2020_GE$authority.vice 
+data_moral_biden2020_GE$sanctity.vice 
+
+#TRUMP 2020
+trump_moral2020_GE_dfm <- dfm(trump_moral2020GE, remove_punct=TRUE)
+trump_moral2020_GE_dfm <-dfm_weight(trump_moral2020_GE_dfm, scheme = "prop")
+
+dict_moral_trump2020_GE <- dfm_lookup(trump_moral2020_GE_dfm, dictionary = data_dictionary_MFD, verbose = FALSE)
+data_moral_trump2020_GE <- as.data.frame(dict_moral_trump2020_GE)
+
+data_moral_trump2020_GE$care.virtue 
+data_moral_trump2020_GE$fairness.virtue 
+data_moral_trump2020_GE$loyalty.virtue 
+data_moral_trump2020_GE$authority.virtue 
+data_moral_trump2020_GE$sanctity.virtue 
+data_moral_trump2020_GE$care.vice 
+data_moral_trump2020_GE$fairness.vice 
+data_moral_trump2020_GE$loyalty.vice 
+data_moral_trump2020_GE$authority.vice 
+data_moral_trump2020_GE$sanctity.vice
+
+trump_fairness.vice <- tokens_select(toks_trump_2016GE, pattern = data_dictionary_MFD$fairness.vice, valuetype = "glob")
+trump_fairness.vice <- as.character(trump_fairness.vice) #crooked :/
+```
+
+
+WEIGHT & FILTER 
+Step 9: Unweight dfm's and add document names & add min_term_freq of 3 to help compute more accurate tf-idf later
+```{r}
+#unweight and add document names, add min_term freq of 2 to help compute more accurate tf-idf later
+  #repubs 2016
+trump_moral_dfm <- dfm(trump_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+trump_moral_dfm <- dfm_trim(trump_moral_dfm, min_termfreq = 3)
+trump_moral_dfm <- `docnames<-`(trump_moral_dfm, "trump_moral_dfm")
+cruz_moral_dfm <- dfm(cruz_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+cruz_moral_dfm <- dfm_trim(cruz_moral_dfm, min_termfreq = 3)
+cruz_moral_dfm <- `docnames<-`(cruz_moral_dfm, "cruz_moral_dfm")
+rubio_moral_dfm <- dfm(rubio_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+rubio_moral_dfm <- dfm_trim(rubio_moral_dfm, min_termfreq = 3)
+rubio_moral_dfm <- `docnames<-`(rubio_moral_dfm, "rubio_moral_dfm")
+kasich_moral_dfm <- dfm(kasich_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+kasich_moral_dfm <- dfm_trim(kasich_moral_dfm, min_termfreq = 3)
+kasich_moral_dfm <- `docnames<-`(kasich_moral_dfm, "kasich_moral_dfm")
+carson_moral_dfm <- dfm(carson_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+carson_moral_dfm <- dfm_trim(carson_moral_dfm, min_termfreq = 3)
+carson_moral_dfm <- `docnames<-`(carson_moral_dfm, "carson_moral_dfm")
+bush_moral_dfm <- dfm(bush_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+bush_moral_dfm <- dfm_trim(bush_moral_dfm, min_termfreq = 3)
+bush_moral_dfm <- `docnames<-`(bush_moral_dfm, "bush_moral_dfm")
+christie_moral_dfm <- dfm(christie_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+christie_moral_dfm <- dfm_trim(christie_moral_dfm, min_termfreq = 3)
+christie_moral_dfm <- `docnames<-`(christie_moral_dfm, "christie_moral_dfm")
+paul_moral_dfm <- dfm(paul_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+paul_moral_dfm <- dfm_trim(paul_moral_dfm, min_termfreq = 3)
+paul_moral_dfm <- `docnames<-`(paul_moral_dfm, "paul_moral_dfm")
+fiorina_moral_dfm <- dfm(fiorina_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+fiorina_moral_dfm <- dfm_trim(fiorina_moral_dfm, min_termfreq = 3)
+fiorina_moral_dfm <- `docnames<-`(fiorina_moral_dfm, "fiorina_moral_dfm")
+huckabee_moral_dfm <- dfm(huckabee_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+huckabee_moral_dfm <- dfm_trim(huckabee_moral_dfm, min_termfreq = 3)
+huckabee_moral_dfm <- `docnames<-`(huckabee_moral_dfm, "huckabee_moral_dfm")
+walker_moral_dfm <- dfm(walker_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+walker_moral_dfm <- dfm_trim(walker_moral_dfm, min_termfreq = 3)
+walker_moral_dfm <- `docnames<-`(walker_moral_dfm, "walker_moral_dfm")
+graham_moral_dfm <- dfm(graham_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+graham_moral_dfm <- dfm_trim(graham_moral_dfm, min_termfreq = 3)
+graham_moral_dfm <- `docnames<-`(graham_moral_dfm, "graham_moral_dfm")
+jindal_moral_dfm <- dfm(jindal_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+jindal_moral_dfm <- dfm_trim(jindal_moral_dfm, min_termfreq = 3)
+jindal_moral_dfm <- `docnames<-`(jindal_moral_dfm, "jindal_moral_dfm")
+santorum_moral_dfm <- dfm(santorum_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+santorum_moral_dfm <- dfm_trim(santorum_moral_dfm, min_termfreq = 3)
+santorum_moral_dfm <- `docnames<-`(santorum_moral_dfm, "santorum_moral_dfm")
+pataki_moral_dfm <- dfm(pataki_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+pataki_moral_dfm <- dfm_trim(pataki_moral_dfm, min_termfreq = 3)
+pataki_moral_dfm <- `docnames<-`(pataki_moral_dfm, "pataki_moral_dfm")
+perry_moral_dfm <- dfm(perry_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+perry_moral_dfm <- dfm_trim(perry_moral_dfm, min_termfreq = 3)
+perry_moral_dfm <- `docnames<-`(perry_moral_dfm, "perry_moral_dfm")
+
+  #dems 2020
+biden_moral_dfm <- dfm(biden_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+biden_moral_dfm <- dfm_trim(biden_moral_dfm, min_termfreq = 3)
+biden_moral_dfm <- `docnames<-`(biden_moral_dfm, "biden_moral_dfm")
+sanders_moral_dfm <- dfm(sanders_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+sanders_moral_dfm <- dfm_trim(sanders_moral_dfm, min_termfreq = 3)
+sanders_moral_dfm <- `docnames<-`(sanders_moral_dfm, "sanders_moral_dfm")
+warren_moral_dfm <- dfm(warren_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+warren_moral_dfm <- dfm_trim(warren_moral_dfm, min_termfreq = 3)
+warren_moral_dfm <- `docnames<-`(warren_moral_dfm, "warren_moral_dfm")
+buttigieg_moral_dfm <- dfm(buttigieg_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+buttigieg_moral_dfm <- dfm_trim(buttigieg_moral_dfm, min_termfreq = 3)
+buttigieg_moral_dfm <- `docnames<-`(buttigieg_moral_dfm, "buttigieg_moral_dfm")
+klobuchar_moral_dfm <- dfm(klobuchar_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+klobuchar_moral_dfm <- dfm_trim(klobuchar_moral_dfm, min_termfreq = 3)
+klobuchar_moral_dfm <- `docnames<-`(klobuchar_moral_dfm, "klobuchar_moral_dfm")
+steyer_moral_dfm <- dfm(steyer_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+steyer_moral_dfm <- dfm_trim(steyer_moral_dfm, min_termfreq = 3)
+steyer_moral_dfm <- `docnames<-`(steyer_moral_dfm, "steyer_moral_dfm")
+yang_moral_dfm <- dfm(yang_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+yang_moral_dfm <- dfm_trim(yang_moral_dfm, min_termfreq = 3)
+yang_moral_dfm <- `docnames<-`(yang_moral_dfm, "yang_moral_dfm")
+harris_moral_dfm <- dfm(harris_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+harris_moral_dfm <- dfm_trim(harris_moral_dfm, min_termfreq = 3)
+harris_moral_dfm <- `docnames<-`(harris_moral_dfm, "harris_moral_dfm")
+booker_moral_dfm <- dfm(booker_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+booker_moral_dfm <- dfm_trim(booker_moral_dfm, min_termfreq = 3)
+booker_moral_dfm <- `docnames<-`(booker_moral_dfm, "booker_moral_dfm")
+
+gabbard_moral_dfm <- dfm(gabbard_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+gabbard_moral_dfm <- dfm_trim(gabbard_moral_dfm, min_termfreq = 3)
+gabbard_moral_dfm <- `docnames<-`(gabbard_moral_dfm, "gabbard_moral_dfm")
+
+castro_moral_dfm <- dfm(castro_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+castro_moral_dfm <- dfm_trim(castro_moral_dfm, min_termfreq = 3)
+castro_moral_dfm <- `docnames<-`(castro_moral_dfm, "castro_moral_dfm")
+
+orourke_moral_dfm <- dfm(orourke_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+orourke_moral_dfm <- dfm_trim(orourke_moral_dfm, min_termfreq = 3)
+orourke_moral_dfm <- `docnames<-`(orourke_moral_dfm, "orourke_moral_dfm")
+
+bloomberg_moral_dfm <- dfm(bloomberg_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+bloomberg_moral_dfm <- dfm_trim(bloomberg_moral_dfm, min_termfreq = 3)
+bloomberg_moral_dfm <- `docnames<-`(bloomberg_moral_dfm, "bloomberg_moral_dfm")
+
+bennet_moral_dfm <- dfm(bennet_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+bennet_moral_dfm <- dfm_trim(bennet_moral_dfm, min_termfreq = 3)
+bennet_moral_dfm <- `docnames<-`(bennet_moral_dfm, "bennet_moral_dfm")
+
+delaney_moral_dfm <- dfm(delaney_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+delaney_moral_dfm <- dfm_trim(delaney_moral_dfm, min_termfreq = 3)
+delaney_moral_dfm <- `docnames<-`(delaney_moral_dfm, "delaney_moral_dfm")
+
+williamson_moral_dfm <- dfm(williamson_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+williamson_moral_dfm <- dfm_trim(williamson_moral_dfm, min_termfreq = 3)
+williamson_moral_dfm <- `docnames<-`(williamson_moral_dfm, "williamson_moral_dfm")
+
+ryan_moral_dfm <- dfm(ryan_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+ryan_moral_dfm <- dfm_trim(ryan_moral_dfm, min_termfreq = 3)
+ryan_moral_dfm <- `docnames<-`(ryan_moral_dfm, "ryan_moral_dfm")
+
+deblasio_moral_dfm <- dfm(deblasio_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+deblasio_moral_dfm <- dfm_trim(deblasio_moral_dfm, min_termfreq = 3)
+deblasio_moral_dfm <- `docnames<-`(deblasio_moral_dfm, "deblasio_moral_dfm")
+
+gillibrand_moral_dfm <- dfm(gillibrand_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+gillibrand_moral_dfm <- dfm_trim(gillibrand_moral_dfm, min_termfreq = 3)
+gillibrand_moral_dfm <- `docnames<-`(gillibrand_moral_dfm, "gillibrand_moral_dfm")
+
+inslee_moral_dfm <- dfm(inslee_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+inslee_moral_dfm <- dfm_trim(inslee_moral_dfm, min_termfreq = 3)
+inslee_moral_dfm <- `docnames<-`(inslee_moral_dfm, "inslee_moral_dfm")
+
+hickenlooper_moral_dfm <- dfm(hickenlooper_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+hickenlooper_moral_dfm <- dfm_trim(hickenlooper_moral_dfm, min_termfreq = 3)
+hickenlooper_moral_dfm <- `docnames<-`(hickenlooper_moral_dfm, "hickenlooper_moral_dfm")
+
+bullock_moral_dfm <- dfm(bullock_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+bullock_moral_dfm <- dfm_trim(bullock_moral_dfm, min_termfreq = 3)
+bullock_moral_dfm <- `docnames<-`(bullock_moral_dfm, "bullock_moral_dfm")
+
+swalwell_moral_dfm <- dfm(swalwell_moral, remove_punct=TRUE, remove = stopwords(language = "en"))
+swalwell_moral_dfm <- dfm_trim(swalwell_moral_dfm, min_termfreq = 3)
+swalwell_moral_dfm <- `docnames<-`(swalwell_moral_dfm, "swalwell_moral_dfm")
+
+#dems primary 2016
+clinton_moral2016primary_dfm <- dfm(clinton_moral2016primary, remove_punct=TRUE, remove = stopwords(language = "en"))
+clinton_moral2016primary_dfm <- dfm_trim(clinton_moral2016primary_dfm, min_termfreq = 3)
+clinton_moral2016primary_dfm <- `docnames<-`(clinton_moral2016primary_dfm, "clinton_moral2016primary_dfm")
+
+sanders_moral2016primary_dfm <- dfm(sanders_moral2016primary, remove_punct=TRUE, remove = stopwords(language = "en"))
+sanders_moral2016primary_dfm <- dfm_trim(sanders_moral2016primary_dfm, min_termfreq = 3)
+sanders_moral2016primary_dfm <- `docnames<-`(sanders_moral2016primary_dfm, "sanders_moral2016primary_dfm")
+
+omalley_moral2016primary_dfm <- dfm(omalley_moral2016primary, remove_punct=TRUE, remove = stopwords(language = "en"))
+omalley_moral2016primary_dfm <- dfm_trim(omalley_moral2016primary_dfm, min_termfreq = 3)
+omalley_moral2016primary_dfm <- `docnames<-`(omalley_moral2016primary_dfm, "omalley_moral2016primary_dfm")
+
+#GE 2016 & 2020
+  #2016
+clinton_moral2016GE_dfm <- dfm(clinton_moral2016GE, remove_punct=TRUE, remove = stopwords(language = "en"))
+clinton_moral2016GE_dfm <- dfm_trim(clinton_moral2016GE_dfm, min_termfreq = 3)
+clinton_moral2016GE_dfm <- `docnames<-`(clinton_moral2016GE_dfm, "clinton_moral2016GE_dfm")
+
+trump_moral2016GE_dfm <- dfm(trump_moral2016GE, remove_punct=TRUE, remove = c("crooked", stopwords(language = "en")))
+trump_moral2016GE_dfm <- dfm_trim(trump_moral2016GE_dfm, min_termfreq = 3)
+trump_moral2016GE_dfm <- `docnames<-`(trump_moral2016GE_dfm, "trump_moral2016GE_dfm")
+
+  #2020
+trump_moral2020GE_dfm <- dfm(trump_moral2020GE, remove_punct=TRUE, remove = stopwords(language = "en"))
+trump_moral2020GE_dfm <- dfm_trim(trump_moral2020GE_dfm, min_termfreq = 3)
+trump_moral2020GE_dfm <- `docnames<-`(trump_moral2020GE_dfm, "trump_moral2020GE_dfm")
+
+biden_moral2020GE_dfm <- dfm(biden_moral2020GE, remove_punct=TRUE, remove = stopwords(language = "en"))
+biden_moral2020GE_dfm <- dfm_trim(biden_moral2020GE_dfm, min_termfreq = 3)
+biden_moral2020GE_dfm <- `docnames<-`(biden_moral2020GE_dfm, "biden_moral2020GE_dfm")
+```
+Step 10 : Find "specific" moral terms by ranking all features by tf-idf frequency score
+```{r}
+#create combined dfm for 2016 primary 
+   
+trump_moral_dfm1 <- trump_moral_dfm
+cruz_moral_dfm1 <- cruz_moral_dfm
+rubio_moral_dfm1 <- rubio_moral_dfm
+kasich_moral_dfm1 <- kasich_moral_dfm
+carson_moral_dfm1 <- carson_moral_dfm
+bush_moral_dfm1 <- bush_moral_dfm
+paul_moral_dfm1 <- paul_moral_dfm
+fiorina_moral_dfm1 <- fiorina_moral_dfm
+graham_moral_dfm1 <- graham_moral_dfm
+huckabee_moral_dfm1 <- huckabee_moral_dfm
+ 
+#FINAL WEIGHTING; all data included, 26 dem dcuments 26 repub documents exluding 4 outliers, 2 dem and 2 repub. top 10 2016 repub primary candidates included twice to upsample.                          
+bipartisan_moral2016primary_dfm <- rbind(trump_moral_dfm,
+                                         trump_moral_dfm1,
+                                         cruz_moral_dfm,
+                                         cruz_moral_dfm1,
+                                         rubio_moral_dfm,
+                                         rubio_moral_dfm1,
+                                         kasich_moral_dfm,
+                                         kasich_moral_dfm1,
+                                         carson_moral_dfm,
+                                         carson_moral_dfm1,
+                                         bush_moral_dfm,
+                                         bush_moral_dfm1,
+                                         paul_moral_dfm,
+                                         paul_moral_dfm1,
+                                         fiorina_moral_dfm,
+                                         fiorina_moral_dfm1,
+                                         graham_moral_dfm,
+                                         graham_moral_dfm1,
+                                         huckabee_moral_dfm,
+                                         huckabee_moral_dfm1,
+                                         walker_moral_dfm,
+                                         jindal_moral_dfm,
+                                         santorum_moral_dfm,
+                                         pataki_moral_dfm,
+                                         clinton_moral2016primary_dfm,
+                                         sanders_moral2016primary_dfm,
+                                         omalley_moral2016primary_dfm,
+                                         biden_moral_dfm,
+                                         buttigieg_moral_dfm,
+                                         warren_moral_dfm,
+                                         klobuchar_moral_dfm,
+                                         warren_moral_dfm,
+                                         harris_moral_dfm,
+                                         booker_moral_dfm,
+                                         steyer_moral_dfm,
+                                         yang_moral_dfm,
+                                         gabbard_moral_dfm,
+                                         castro_moral_dfm,
+                                         orourke_moral_dfm,
+                                         bennet_moral_dfm,
+                                         delaney_moral_dfm,
+                                         williamson_moral_dfm,
+                                         ryan_moral_dfm,
+                                         gillibrand_moral_dfm,
+                                         inslee_moral_dfm,
+                                         hickenlooper_moral_dfm,
+                                         bullock_moral_dfm,
+                                         swalwell_moral_dfm,
+                                         clinton_moral2016GE_dfm,
+                                         trump_moral2020GE_dfm,
+                                         biden_moral2020GE_dfm,
+                                         trump_moral2016GE_dfm)
+
+
+#lowercase and remove stopwords
+bipartisan_moral2016primary_dfm <- dfm(bipartisan_moral2016primary_dfm, tolower = TRUE, remove = stopwords(language = "en"))
+#plot unweighted rank/frequency distribution (power law)
+plot(topfeatures(bipartisan_moral2016primary_dfm, n = 1000))
+
+#weight by tf-idf
+tfidf_bipartisan_moral2016primary_dfm <- dfm_tfidf(bipartisan_moral2016primary_dfm, scheme_tf = "prop")
+
+#rank all features by tf-idf score
+tfidf_topfeatures_moral2016primary <- as.data.frame(topfeatures(tfidf_bipartisan_moral2016primary_dfm, n=1000))
+hist(tfidf_topfeatures_moral2016primary$`topfeatures(tfidf_bipartisan_moral2016primary_dfm, n = 1000)`)
+
+#plot histogram tf-idf frequency distribution
+ggplot(tfidf_topfeatures_moral2016primary, aes(x = `topfeatures(tfidf_bipartisan_moral2016primary_dfm, n = 1000)`)) + geom_histogram(color="black", fill="darkgrey", bins = 200) + ggtitle("TF-IDF Frequency Distribution of Moral Terms") + labs(y = "Count", x = "TF-IDF Frequency") + theme(plot.title = element_text(hjust = 0.5)) 
+
+#+ geom_density(alpha=.2) 
+
+
+#plot log(rank)-log(term frequency) graph showing moral language used by each candidate 
+  #raw
+zipf_moral <- tidy(bipartisan_moral2016primary_dfm) %>%
+  group_by(document) %>%
+  arrange(desc(count)) %>%
+  mutate(rank = row_number(),
+         total = sum(count),
+         `term frequency` = count / total)
+zipf_moral %>%
+  ggplot(aes(rank, `term frequency`, color = document)) +
+  geom_line(alpha = 0.8, show.legend = FALSE) + 
+  scale_x_log10() +
+  scale_y_log10() +
+  ggtitle("Rank-Frequency Distribution of Moral Terms by Candidate") +
+  labs(y= "log (Term Frequency)", x = "log (Term Rank)") +
+  theme(plot.title = element_text(hjust = 0.5)) 
+  
+#, subtitle = ("Axis scaled logarithmically")
+
+  #tf-idf
+zipf_moral_tfidf <- tidy(tfidf_bipartisan_moral2016primary_dfm) %>%
+  group_by(document) %>%
+  arrange(desc(count)) %>%
+  mutate(rank = row_number(),
+         total = sum(count),
+         `term frequency` = count / total)
+h <- .0014
+zipf_moral_tfidf %>%
+  ggplot(aes(rank, `term frequency`, color = document)) +
+  geom_line(alpha = 0.8, show.legend = FALSE) + 
+  scale_x_log10() +
+  scale_y_log10() + 
+  geom_line(aes(y=.0014), color="black", show.legend = FALSE, linetype="dashed") + 
+  geom_text(aes(0,h,label = "y = .0014", vjust = -1, hjust = -2), show.legend=FALSE, color = "black") +
+  ggtitle("TF-IDF Rank-Frequency Distribution of Moral Terms by Candidate") +
+  labs(y= "log (TF-IDF Term Frequency)", x = "log (Term Rank)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+
+
+#select filtering threshold
+tfidf_topfeat_selected <- as.data.frame(topfeatures(tfidf_bipartisan_moral2016primary_dfm, n=575)) 
+
+tfidf_topfeat_names <- as.character(row.names(tfidf_topfeat_selected))
+
+#create txt file of selected terms to be used as new dictionary
+bipartisan_toks_specific <- tokens(tfidf_topfeat_names)
+sum(ntoken(bipartisan_toks_specific))
+bipartisan_toks_specific <- as.character(bipartisan_toks_specific)
+write(bipartisan_toks_specific, "specificmoral2016primary.txt")
+```
+Step 11: Construct new dictionary of "specific" terms
+```{r}
+#apply original mfd to list of extracted terms to see how the extracted terms are divided between categories 
+specific_moral_terms <- readLines("specificmoral2016primary.txt")
+specific_moral_terms_corpus <- corpus(specific_moral_terms)
+
+#divide selected terms into 10 subcategories
+toks_specific_moral <- tokens(specific_moral_terms_corpus)
+  
+  #care.virtue
+extracted_toks_care.virtue <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$care.virtue, valuetype = "glob") 
+extracted_toks_care.virtue <- as.character(extracted_toks_care.virtue)
+  #care.vice
+extracted_toks_care.vice <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$care.vice, valuetype = "glob") 
+extracted_toks_care.vice <- as.character(extracted_toks_care.vice)
+  
+  #fairness.virtue
+extracted_toks_fairness.virtue <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$fairness.virtue, valuetype = "glob") 
+extracted_toks_fairness.virtue <- as.character(extracted_toks_fairness.virtue)
+  #fairness.vice
+extracted_toks_fairness.vice <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$fairness.vice, valuetype = "glob") 
+extracted_toks_fairness.vice <- as.character(extracted_toks_fairness.vice)
+  
+  #loyalty.virtue
+extracted_toks_loyalty.virtue <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$loyalty.virtue, valuetype = "glob") 
+extracted_toks_loyalty.virtue <- as.character(extracted_toks_loyalty.virtue)
+  #loyalty.vice
+extracted_toks_loyalty.vice <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$loyalty.vice, valuetype = "glob") 
+extracted_toks_loyalty.vice <- as.character(extracted_toks_loyalty.vice)
+  
+  #authority.virtue
+extracted_toks_authority.virtue <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$authority.virtue, valuetype = "glob") 
+extracted_toks_authority.virtue <- as.character(extracted_toks_authority.virtue)
+  #authority.vice
+extracted_toks_authority.vice <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$authority.vice, valuetype = "glob") 
+extracted_toks_authority.vice <- as.character(extracted_toks_authority.vice)
+  
+  #sanctity.virtue
+extracted_toks_sanctity.virtue <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$sanctity.virtue, valuetype = "glob") 
+extracted_toks_sanctity.virtue <- as.character(extracted_toks_sanctity.virtue)
+  #sanctity.vice
+extracted_toks_sanctity.vice <- tokens_select(toks_specific_moral, pattern = data_dictionary_MFD$sanctity.vice, valuetype = "glob") 
+extracted_toks_sanctity.vice <- as.character(extracted_toks_sanctity.vice)
+
+
+#convert extracted lists to a format suitable for creation of sub-dictionaries 
+  #care
+extracted_care.virtue_list <- as.list(extracted_toks_care.virtue)
+names(extracted_care.virtue_list) = extracted_toks_care.virtue
+
+extracted_care.vice_list <- as.list(extracted_toks_care.vice)
+names(extracted_care.vice_list) = extracted_toks_care.vice
+  
+  #fairness
+extracted_fairness.virtue_list <- as.list(extracted_toks_fairness.virtue)
+names(extracted_fairness.virtue_list) = extracted_toks_fairness.virtue
+
+extracted_fairness.vice_list <- as.list(extracted_toks_fairness.vice)
+names(extracted_fairness.vice_list) = extracted_toks_fairness.vice
+
+  #loyalty 
+extracted_loyalty.virtue_list <- as.list(extracted_toks_loyalty.virtue)
+names(extracted_loyalty.virtue_list) = extracted_toks_loyalty.virtue
+
+extracted_loyalty.vice_list <- as.list(extracted_toks_loyalty.vice)
+names(extracted_loyalty.vice_list) = extracted_toks_loyalty.vice
+
+  #authority
+extracted_authority.virtue_list <- as.list(extracted_toks_authority.virtue)
+names(extracted_authority.virtue_list) = extracted_toks_authority.virtue
+
+extracted_authority.vice_list <- as.list(extracted_toks_authority.vice)
+names(extracted_authority.vice_list) = extracted_toks_authority.vice
+
+  #sanctity 
+extracted_sanctity.virtue_list <- as.list(extracted_toks_sanctity.virtue)
+names(extracted_sanctity.virtue_list) = extracted_toks_sanctity.virtue
+
+extracted_sanctity.vice_list <- as.list(extracted_toks_sanctity.vice)
+names(extracted_sanctity.vice_list) = extracted_toks_sanctity.vice
+
+#create dictionary from extracted "specific" terms: 
+extracted_dict <- dictionary(list(care.virtue_ex = extracted_care.virtue_list,
+                                  care.vice_ex = extracted_care.vice_list,
+                                  fairness.virtue_ex = extracted_fairness.virtue_list,
+                                  fairness.vice_ex = extracted_fairness.vice_list,
+                                  loyalty.virtue_ex = extracted_loyalty.virtue_list,
+                                  loyalty.vice_ex = extracted_loyalty.vice_list,
+                                  authority.virtue_ex = extracted_authority.virtue_list,
+                                  authority.vice_ex = extracted_authority.vice_list,
+                                  sanctity.virtue_ex = extracted_sanctity.virtue_list,
+                                  sanctity.vice_ex = extracted_sanctity.vice_list))
+```
+
+
+APPLY WEIGHTED & FILTERED DICTIONARY 
+Step 12: Apply new "specific" dictionary to each 2020 DEMOCRATIC PRIMARY candidate corpus
+```{r}
+#SANDERS
+extracted_moral_toks_sanders <- tokens_select(toks_sanders, pattern = extracted_dict, valuetype = "glob")
+sanders_moral_extracted <- as.character(extracted_moral_toks_sanders)
+sum(ntoken(sanders_moral_extracted))
+
+sanders_moral_dfm_extracted <- dfm(sanders_moral_extracted, remove_punct=TRUE, remove = c("damn", "pandemic"))
+sanders_moral_dfm_extracted <-dfm_weight(sanders_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_sanders_extracted <- dfm_lookup(sanders_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_sanders_extracted <- as.data.frame(dict_moral_sanders_extracted)
+
+sum(data_moral_sanders_extracted$care.virtue) 
+sum(data_moral_sanders_extracted$fairness.virtue) 
+sum(data_moral_sanders_extracted$loyalty.virtue) 
+sum(data_moral_sanders_extracted$authority.virtue) 
+sum(data_moral_sanders_extracted$sanctity.virtue) 
+sum(data_moral_sanders_extracted$care.vice) 
+sum(data_moral_sanders_extracted$fairness.vice) 
+sum(data_moral_sanders_extracted$loyalty.vice) 
+sum(data_moral_sanders_extracted$authority.vice) 
+sum(data_moral_sanders_extracted$sanctity.vice) 
+2739/7635
+826/7635
+1560/7635
+599/7635
+274/7635
+774/7635
+329/7635
+32/7635
+83/7635
+388/7635
+
+#BUTTIGIEG
+extracted_moral_toks_buttigieg <- tokens_select(toks_buttigieg, pattern = extracted_dict, valuetype = "glob")
+buttigieg_moral_extracted <- as.character(extracted_moral_toks_buttigieg)
+sum(ntoken(buttigieg_moral_extracted))
+
+buttigieg_moral_dfm_extracted <- dfm(buttigieg_moral_extracted, remove_punct=TRUE)
+buttigieg_moral_dfm_extracted <-dfm_weight(buttigieg_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_buttigieg_extracted <- dfm_lookup(buttigieg_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_buttigieg_extracted <- as.data.frame(dict_moral_buttigieg_extracted)
+
+sum(data_moral_buttigieg_extracted$care.virtue) 
+sum(data_moral_buttigieg_extracted$fairness.virtue) 
+sum(data_moral_buttigieg_extracted$loyalty.virtue) 
+sum(data_moral_buttigieg_extracted$authority.virtue) 
+sum(data_moral_buttigieg_extracted$sanctity.virtue) 
+sum(data_moral_buttigieg_extracted$care.vice) 
+sum(data_moral_buttigieg_extracted$fairness.vice) 
+sum(data_moral_buttigieg_extracted$loyalty.vice) 
+sum(data_moral_buttigieg_extracted$authority.vice) 
+sum(data_moral_buttigieg_extracted$sanctity.vice) 
+838/2777
+330/2777
+770/2777
+259/2777
+137/2777
+264/2777
+116/2777
+5/2777
+22/2777
+70/2777
+
+buttigieg_loyalty.virtue <- tokens_select(toks_buttigieg, pattern = extracted_dict$loyalty.virtue_ex, valuetype = "glob")
+buttigieg_loyalty.virtue <- as.character(buttigieg_loyalty.virtue)
+
+#BIDEN
+extracted_moral_toks_biden <- tokens_select(toks_biden, pattern = extracted_dict, valuetype = "glob")
+biden_moral_extracted <- as.character(extracted_moral_toks_biden)
+sum(ntoken(biden_moral_extracted))
+
+biden_moral_dfm_extracted <- dfm(biden_moral_extracted, remove_punct=TRUE)
+biden_moral_dfm_extracted <-dfm_weight(biden_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_biden_extracted <- dfm_lookup(biden_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_biden_extracted <- as.data.frame(dict_moral_biden_extracted)
+
+sum(data_moral_biden_extracted$care.virtue) 
+sum(data_moral_biden_extracted$fairness.virtue) 
+sum(data_moral_biden_extracted$loyalty.virtue) 
+sum(data_moral_biden_extracted$authority.virtue) 
+sum(data_moral_biden_extracted$sanctity.virtue) 
+sum(data_moral_biden_extracted$care.vice)
+sum(data_moral_biden_extracted$fairness.vice) 
+sum(data_moral_biden_extracted$loyalty.vice)
+sum(data_moral_biden_extracted$authority.vice) 
+sum(data_moral_biden_extracted$sanctity.vice) 
+1078/3960
+385/3960
+923/3960
+358/3960
+337/3960
+573/3960
+99/3960
+13/3960
+28/3960
+239/3960
+
+biden_sanctity.virtue <- tokens_select(toks_biden, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+biden_sanctity.virtue <- as.character(biden_sanctity.virtue)
+
+#WARREN
+extracted_moral_toks_warren <- tokens_select(toks_warren, pattern = extracted_dict, valuetype = "glob")
+warren_moral_extracted <- as.character(extracted_moral_toks_warren)
+sum(ntoken(warren_moral_extracted))
+
+warren_moral_dfm_extracted <- dfm(warren_moral_extracted, remove_punct=TRUE)
+warren_moral_dfm_extracted <-dfm_weight(warren_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_warren_extracted <- dfm_lookup(warren_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_warren_extracted <- as.data.frame(dict_moral_warren_extracted)
+
+sum(data_moral_warren_extracted$care.virtue) 
+sum(data_moral_warren_extracted$fairness.virtue) 
+sum(data_moral_warren_extracted$loyalty.virtue) 
+sum(data_moral_warren_extracted$authority.virtue)
+sum(data_moral_warren_extracted$sanctity.virtue)
+sum(data_moral_warren_extracted$care.vice)
+sum(data_moral_warren_extracted$fairness.vice) 
+sum(data_moral_warren_extracted$loyalty.vice)
+sum(data_moral_warren_extracted$authority.vice) 
+sum(data_moral_warren_extracted$sanctity.vice)
+2637/9415
+1267/9415
+1742/9415
+696/9415
+311/9415
+1612/9415
+520/9415
+5/9415
+85/9415
+746/9415
+
+warren_sanctity.virtue <- tokens_select(toks_warren, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+warren_sanctity.virtue <- as.character(warren_sanctity.virtue)
+
+#KLOBUCHAR
+extracted_moral_toks_klobuchar <- tokens_select(toks_klobuchar, pattern = extracted_dict, valuetype = "glob")
+klobuchar_moral_extracted <- as.character(extracted_moral_toks_klobuchar)
+sum(ntoken(klobuchar_moral_extracted))
+
+klobuchar_moral_dfm_extracted <- dfm(klobuchar_moral_extracted, remove_punct=TRUE)
+klobuchar_moral_dfm_extracted <-dfm_weight(klobuchar_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_klobuchar_extracted <- dfm_lookup(klobuchar_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_klobuchar_extracted <- as.data.frame(dict_moral_klobuchar_extracted)
+
+sum(data_moral_klobuchar_extracted$care.virtue)
+sum(data_moral_klobuchar_extracted$fairness.virtue) 
+sum(data_moral_klobuchar_extracted$loyalty.virtue) 
+sum(data_moral_klobuchar_extracted$authority.virtue) 
+sum(data_moral_klobuchar_extracted$sanctity.virtue) 
+sum(data_moral_klobuchar_extracted$care.vice) 
+sum(data_moral_klobuchar_extracted$fairness.vice) 
+sum(data_moral_klobuchar_extracted$loyalty.vice) 
+sum(data_moral_klobuchar_extracted$authority.vice) 
+sum(data_moral_klobuchar_extracted$sanctity.vice) 
+761/2569
+329/2569
+567/2569
+301/2569
+108/2569
+289/2569
+56/2569
+5/2569
+28/2569
+171/2569
+
+klobuchar_authority.virtue <- tokens_select(toks_klobuchar, pattern = extracted_dict$authority.virtue_ex, valuetype = "glob")
+klobuchar_authority.virtue <- as.character(klobuchar_authority.virtue)
+
+#YANG
+extracted_moral_toks_yang <- tokens_select(toks_yang, pattern = extracted_dict, valuetype = "glob")
+yang_moral_extracted <- as.character(extracted_moral_toks_yang)
+sum(ntoken(yang_moral_extracted))
+
+yang_moral_dfm_extracted <- dfm(yang_moral_extracted, remove_punct=TRUE)
+yang_moral_dfm_extracted <-dfm_weight(yang_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_yang_extracted <- dfm_lookup(yang_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_yang_extracted <- as.data.frame(dict_moral_yang_extracted)
+
+sum(data_moral_yang_extracted$care.virtue) 
+sum(data_moral_yang_extracted$fairness.virtue) 
+sum(data_moral_yang_extracted$loyalty.virtue) 
+sum(data_moral_yang_extracted$authority.virtue)
+sum(data_moral_yang_extracted$sanctity.virtue)
+sum(data_moral_yang_extracted$care.vice) 
+sum(data_moral_yang_extracted$fairness.vice) 
+sum(data_moral_yang_extracted$loyalty.vice) 
+sum(data_moral_yang_extracted$authority.vice) 
+sum(data_moral_yang_extracted$sanctity.vice)
+756/2417
+161/2417
+644/2417
+298/2417
+162/2417
+210/2417
+53/2417
+9/2417
+5/2417
+148/2417
+
+yang_sanctity.virtue <- tokens_select(toks_yang, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+yang_sanctity.virtue <- as.character(yang_sanctity.virtue)
+
+#STEYER
+extracted_moral_toks_steyer <- tokens_select(toks_steyer, pattern = extracted_dict, valuetype = "glob")
+steyer_moral_extracted <- as.character(extracted_moral_toks_steyer)
+sum(ntoken(steyer_moral_extracted))
+
+steyer_moral_dfm_extracted <- dfm(steyer_moral_extracted, remove_punct=TRUE)
+steyer_moral_dfm_extracted <-dfm_weight(steyer_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_steyer_extracted <- dfm_lookup(steyer_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_steyer_extracted <- as.data.frame(dict_moral_steyer_extracted)
+
+sum(data_moral_steyer_extracted$care.virtue) 
+sum(data_moral_steyer_extracted$fairness.virtue)  
+sum(data_moral_steyer_extracted$loyalty.virtue) 
+sum(data_moral_steyer_extracted$authority.virtue) 
+sum(data_moral_steyer_extracted$sanctity.virtue)  
+sum(data_moral_steyer_extracted$care.vice) 
+sum(data_moral_steyer_extracted$fairness.vice)  
+sum(data_moral_steyer_extracted$loyalty.vice) 
+sum(data_moral_steyer_extracted$authority.vice)
+sum(data_moral_steyer_extracted$sanctity.vice)
+1070/3373
+400/3373
+476/3373
+365/3373
+110/3373
+364/3373
+437/3373
+26/3373
+38/3373
+132/3373
+
+steyer_fairness.vice <- tokens_select(toks_steyer, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+steyer_fairness.vice <- as.character(steyer_fairness.vice)
+
+#HARRIS
+extracted_moral_toks_harris <- tokens_select(toks_harris, pattern = extracted_dict, valuetype = "glob")
+harris_moral_extracted <- as.character(extracted_moral_toks_harris)
+sum(ntoken(harris_moral_extracted))
+
+harris_moral_dfm_extracted <- dfm(harris_moral_extracted, remove_punct=TRUE)
+harris_moral_dfm_extracted <-dfm_weight(harris_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_harris_extracted <- dfm_lookup(harris_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_harris_extracted <- as.data.frame(dict_moral_harris_extracted)
+
+sum(data_moral_harris_extracted$care.virtue)   
+sum(data_moral_harris_extracted$fairness.virtue)  
+sum(data_moral_harris_extracted$loyalty.virtue) 
+sum(data_moral_harris_extracted$authority.virtue) 
+sum(data_moral_harris_extracted$sanctity.virtue) 
+sum(data_moral_harris_extracted$care.vice)  
+sum(data_moral_harris_extracted$fairness.vice)   
+sum(data_moral_harris_extracted$loyalty.vice) 
+sum(data_moral_harris_extracted$authority.vice)  
+sum(data_moral_harris_extracted$sanctity.vice) 
+1421/4697
+782/4697
+787/4697
+356/4697
+233/4697
+811/4697
+188/4697
+4/4697
+41/4697
+163/4697
+
+harris_fairness.vice <- tokens_select(toks_harris, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+harris_fairness.vice <- as.character(harris_fairness.vice)
+
+#BOOKER
+extracted_moral_toks_booker <- tokens_select(toks_booker, pattern = extracted_dict, valuetype = "glob")
+booker_moral_extracted <- as.character(extracted_moral_toks_booker)
+sum(ntoken(booker_moral_extracted))
+
+booker_moral_dfm_extracted <- dfm(booker_moral_extracted, remove_punct=TRUE)
+booker_moral_dfm_extracted <-dfm_weight(booker_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_booker_extracted <- dfm_lookup(booker_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_booker_extracted <- as.data.frame(dict_moral_booker_extracted)
+
+sum(data_moral_booker_extracted$care.virtue)  
+sum(data_moral_booker_extracted$fairness.virtue)  
+sum(data_moral_booker_extracted$loyalty.virtue)  
+sum(data_moral_booker_extracted$authority.virtue)  
+sum(data_moral_booker_extracted$sanctity.virtue) 
+sum(data_moral_booker_extracted$care.vice)  
+sum(data_moral_booker_extracted$fairness.vice)  
+sum(data_moral_booker_extracted$loyalty.vice)  
+sum(data_moral_booker_extracted$authority.vice) 
+sum(data_moral_booker_extracted$sanctity.vice) 
+833/3259
+520/3259
+687/3259
+243/3259
+210/3259
+490/3259
+137/3259
+4/3259
+21/3259
+155/3259
+
+booker_sanctity.virtue <- tokens_select(toks_booker, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+booker_sanctity.virtue <- as.character(booker_sanctity.virtue)
+
+#GABBARD
+extracted_moral_toks_gabbard <- tokens_select(toks_gabbard, pattern = extracted_dict, valuetype = "glob")
+gabbard_moral_extracted <- as.character(extracted_moral_toks_gabbard)
+sum(ntoken(gabbard_moral_extracted))
+
+gabbard_moral_dfm_extracted <- dfm(gabbard_moral_extracted, remove_punct=TRUE)
+gabbard_moral_dfm_extracted <-dfm_weight(gabbard_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_gabbard_extracted <- dfm_lookup(gabbard_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_gabbard_extracted <- as.data.frame(dict_moral_gabbard_extracted)
+
+sum(data_moral_gabbard_extracted$care.virtue) 
+sum(data_moral_gabbard_extracted$fairness.virtue) 
+sum(data_moral_gabbard_extracted$loyalty.virtue) 
+sum(data_moral_gabbard_extracted$authority.virtue) 
+sum(data_moral_gabbard_extracted$sanctity.virtue) 
+sum(data_moral_gabbard_extracted$care.vice)
+sum(data_moral_gabbard_extracted$fairness.vice) 
+sum(data_moral_gabbard_extracted$loyalty.vice)
+sum(data_moral_gabbard_extracted$authority.vice) 
+sum(data_moral_gabbard_extracted$sanctity.vice) 
+378/1845
+117/1845
+606/1845
+246/1845
+132/1845
+202/1845
+37/1845
+7/1845
+18/1845
+139/1845
+
+gabbard_sanctity.virtue <- tokens_select(toks_gabbard, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+gabbard_sanctity.virtue <- as.character(gabbard_sanctity.virtue)
+
+#CASTRO
+extracted_moral_toks_castro <- tokens_select(toks_castro, pattern = extracted_dict, valuetype = "glob")
+castro_moral_extracted <- as.character(extracted_moral_toks_castro)
+sum(ntoken(castro_moral_extracted))
+
+castro_moral_dfm_extracted <- dfm(castro_moral_extracted, remove_punct=TRUE)
+castro_moral_dfm_extracted <-dfm_weight(castro_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_castro_extracted <- dfm_lookup(castro_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_castro_extracted <- as.data.frame(dict_moral_castro_extracted)
+
+sum(data_moral_castro_extracted$care.virtue)
+sum(data_moral_castro_extracted$fairness.virtue) 
+sum(data_moral_castro_extracted$loyalty.virtue) 
+sum(data_moral_castro_extracted$authority.virtue) 
+sum(data_moral_castro_extracted$sanctity.virtue) 
+sum(data_moral_castro_extracted$care.vice)
+sum(data_moral_castro_extracted$fairness.vice) 
+sum(data_moral_castro_extracted$loyalty.vice)
+sum(data_moral_castro_extracted$authority.vice) 
+sum(data_moral_castro_extracted$sanctity.vice) 
+888/3641
+467/3641
+801/3641
+493/3641
+162/3641
+638/3641
+151/3641
+4/3641
+43/3641
+95/3641
+
+castro_sanctity.virtue <- tokens_select(toks_castro, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+castro_sanctity.virtue <- as.character(castro_sanctity.virtue)
+
+#O'ROURKE
+extracted_moral_toks_orourke <- tokens_select(toks_orourke, pattern = extracted_dict, valuetype = "glob")
+orourke_moral_extracted <- as.character(extracted_moral_toks_orourke)
+sum(ntoken(orourke_moral_extracted))
+
+orourke_moral_dfm_extracted <- dfm(orourke_moral_extracted, remove_punct=TRUE)
+orourke_moral_dfm_extracted <-dfm_weight(orourke_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_orourke_extracted <- dfm_lookup(orourke_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_orourke_extracted <- as.data.frame(dict_moral_orourke_extracted)
+
+sum(data_moral_orourke_extracted$care.virtue) 
+sum(data_moral_orourke_extracted$fairness.virtue) 
+sum(data_moral_orourke_extracted$loyalty.virtue) 
+sum(data_moral_orourke_extracted$authority.virtue) 
+sum(data_moral_orourke_extracted$sanctity.virtue) 
+sum(data_moral_orourke_extracted$care.vice)
+sum(data_moral_orourke_extracted$fairness.vice) 
+sum(data_moral_orourke_extracted$loyalty.vice)
+sum(data_moral_orourke_extracted$authority.vice) 
+sum(data_moral_orourke_extracted$sanctity.vice) 
+924/4012
+589/4012
+989/4012
+251/4012
+165/4012
+704/4012
+202/4012
+4/4012
+49/4012
+192/4012
+
+orourke_sanctity.virtue <- tokens_select(toks_orourke, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+orourke_sanctity.virtue <- as.character(orourke_sanctity.virtue)
+
+#BENNET
+extracted_moral_toks_bennet <- tokens_select(toks_bennet, pattern = extracted_dict, valuetype = "glob")
+bennet_moral_extracted <- as.character(extracted_moral_toks_bennet)
+sum(ntoken(bennet_moral_extracted))
+
+bennet_moral_dfm_extracted <- dfm(bennet_moral_extracted, remove_punct=TRUE)
+bennet_moral_dfm_extracted <-dfm_weight(bennet_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_bennet_extracted <- dfm_lookup(bennet_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_bennet_extracted <- as.data.frame(dict_moral_bennet_extracted)
+
+sum(data_moral_bennet_extracted$care.virtue) 
+sum(data_moral_bennet_extracted$fairness.virtue) 
+sum(data_moral_bennet_extracted$loyalty.virtue) 
+sum(data_moral_bennet_extracted$authority.virtue) 
+sum(data_moral_bennet_extracted$sanctity.virtue) 
+sum(data_moral_bennet_extracted$care.vice)
+sum(data_moral_bennet_extracted$fairness.vice) 
+sum(data_moral_bennet_extracted$loyalty.vice)
+sum(data_moral_bennet_extracted$authority.vice) 
+sum(data_moral_bennet_extracted$sanctity.vice) 
+735/2119
+202/2119
+540/2119
+194/2119
+77/2119
+201/2119
+73/2119
+3/2119
+25/2119
+98/2119
+
+bennet_sanctity.virtue <- tokens_select(toks_bennet, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+bennet_sanctity.virtue <- as.character(bennet_sanctity.virtue)
+
+#DELANEY
+extracted_moral_toks_delaney <- tokens_select(toks_delaney, pattern = extracted_dict, valuetype = "glob")
+delaney_moral_extracted <- as.character(extracted_moral_toks_delaney)
+sum(ntoken(delaney_moral_extracted))
+
+delaney_moral_dfm_extracted <- dfm(delaney_moral_extracted, remove_punct=TRUE)
+delaney_moral_dfm_extracted <-dfm_weight(delaney_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_delaney_extracted <- dfm_lookup(delaney_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_delaney_extracted <- as.data.frame(dict_moral_delaney_extracted)
+
+sum(data_moral_delaney_extracted$care.virtue) 
+sum(data_moral_delaney_extracted$fairness.virtue) 
+sum(data_moral_delaney_extracted$loyalty.virtue) 
+sum(data_moral_delaney_extracted$authority.virtue) 
+sum(data_moral_delaney_extracted$sanctity.virtue) 
+sum(data_moral_delaney_extracted$care.vice)
+sum(data_moral_delaney_extracted$fairness.vice) 
+sum(data_moral_delaney_extracted$loyalty.vice)
+sum(data_moral_delaney_extracted$authority.vice) 
+sum(data_moral_delaney_extracted$sanctity.vice) 
+1415/4593
+426/4593
+1093/4593
+525/4593
+341/4593
+494/4593
+123/4593
+13/4593
+50/4593
+177/4593
+
+delaney_sanctity.virtue <- tokens_select(toks_delaney, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+delaney_sanctity.virtue <- as.character(delaney_sanctity.virtue)
+
+#RYAN
+extracted_moral_toks_ryan <- tokens_select(toks_ryan, pattern = extracted_dict, valuetype = "glob")
+ryan_moral_extracted <- as.character(extracted_moral_toks_ryan)
+sum(ntoken(ryan_moral_extracted))
+
+ryan_moral_dfm_extracted <- dfm(ryan_moral_extracted, remove_punct=TRUE)
+ryan_moral_dfm_extracted <-dfm_weight(ryan_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_ryan_extracted <- dfm_lookup(ryan_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_ryan_extracted <- as.data.frame(dict_moral_ryan_extracted)
+
+sum(data_moral_ryan_extracted$care.virtue) 
+sum(data_moral_ryan_extracted$fairness.virtue) 
+sum(data_moral_ryan_extracted$loyalty.virtue) 
+sum(data_moral_ryan_extracted$authority.virtue) 
+sum(data_moral_ryan_extracted$sanctity.virtue) 
+sum(data_moral_ryan_extracted$care.vice)
+sum(data_moral_ryan_extracted$fairness.vice) 
+sum(data_moral_ryan_extracted$loyalty.vice)
+sum(data_moral_ryan_extracted$authority.vice) 
+sum(data_moral_ryan_extracted$sanctity.vice) 
+719/1758
+87/1758
+383/1758
+127/1758
+144/1758
+204/1758
+37/1758
+1/1758
+5/1758
+81/1758
+
+ryan_sanctity.virtue <- tokens_select(toks_ryan, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+ryan_sanctity.virtue <- as.character(ryan_sanctity.virtue)
+
+#GILLIBRAND
+extracted_moral_toks_gillibrand <- tokens_select(toks_gillibrand, pattern = extracted_dict, valuetype = "glob")
+gillibrand_moral_extracted <- as.character(extracted_moral_toks_gillibrand)
+sum(ntoken(gillibrand_moral_extracted))
+
+gillibrand_moral_dfm_extracted <- dfm(gillibrand_moral_extracted, remove_punct=TRUE)
+gillibrand_moral_dfm_extracted <-dfm_weight(gillibrand_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_gillibrand_extracted <- dfm_lookup(gillibrand_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_gillibrand_extracted <- as.data.frame(dict_moral_gillibrand_extracted)
+
+sum(data_moral_gillibrand_extracted$care.virtue) 
+sum(data_moral_gillibrand_extracted$fairness.virtue) 
+sum(data_moral_gillibrand_extracted$loyalty.virtue) 
+sum(data_moral_gillibrand_extracted$authority.virtue) 
+sum(data_moral_gillibrand_extracted$sanctity.virtue) 
+sum(data_moral_gillibrand_extracted$care.vice)
+sum(data_moral_gillibrand_extracted$fairness.vice) 
+sum(data_moral_gillibrand_extracted$loyalty.vice)
+sum(data_moral_gillibrand_extracted$authority.vice) 
+sum(data_moral_gillibrand_extracted$sanctity.vice) 
+688/2054
+348/2054
+216/2054
+158/2054
+84/2054
+386/2054
+65/2054
+0/2054
+14/2054
+131/2054
+
+gillibrand_sanctity.virtue <- tokens_select(toks_gillibrand, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+gillibrand_sanctity.virtue <- as.character(gillibrand_sanctity.virtue)
+
+#INSLEE
+extracted_moral_toks_inslee <- tokens_select(toks_inslee, pattern = extracted_dict, valuetype = "glob")
+inslee_moral_extracted <- as.character(extracted_moral_toks_inslee)
+sum(ntoken(inslee_moral_extracted))
+
+inslee_moral_dfm_extracted <- dfm(inslee_moral_extracted, remove_punct=TRUE)
+inslee_moral_dfm_extracted <-dfm_weight(inslee_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_inslee_extracted <- dfm_lookup(inslee_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_inslee_extracted <- as.data.frame(dict_moral_inslee_extracted)
+
+sum(data_moral_inslee_extracted$care.virtue) 
+sum(data_moral_inslee_extracted$fairness.virtue) 
+sum(data_moral_inslee_extracted$loyalty.virtue) 
+sum(data_moral_inslee_extracted$authority.virtue) 
+sum(data_moral_inslee_extracted$sanctity.virtue) 
+sum(data_moral_inslee_extracted$care.vice)
+sum(data_moral_inslee_extracted$fairness.vice) 
+sum(data_moral_inslee_extracted$loyalty.vice)
+sum(data_moral_inslee_extracted$authority.vice) 
+sum(data_moral_inslee_extracted$sanctity.vice) 
+463/2113
+238/2113
+443/2113
+250/2113
+248/2113
+307/2113
+98/2113
+2/2113
+25/2113
+75/2113
+
+inslee_sanctity.virtue <- tokens_select(toks_inslee, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+inslee_sanctity.virtue <- as.character(inslee_sanctity.virtue)
+
+#HICKENLOOPER
+extracted_moral_toks_hickenlooper <- tokens_select(toks_hickenlooper, pattern = extracted_dict, valuetype = "glob")
+hickenlooper_moral_extracted <- as.character(extracted_moral_toks_hickenlooper)
+sum(ntoken(hickenlooper_moral_extracted))
+
+hickenlooper_moral_dfm_extracted <- dfm(hickenlooper_moral_extracted, remove_punct=TRUE)
+hickenlooper_moral_dfm_extracted <-dfm_weight(hickenlooper_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_hickenlooper_extracted <- dfm_lookup(hickenlooper_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_hickenlooper_extracted <- as.data.frame(dict_moral_hickenlooper_extracted)
+
+sum(data_moral_hickenlooper_extracted$care.virtue) 
+sum(data_moral_hickenlooper_extracted$fairness.virtue) 
+sum(data_moral_hickenlooper_extracted$loyalty.virtue) 
+sum(data_moral_hickenlooper_extracted$authority.virtue) 
+sum(data_moral_hickenlooper_extracted$sanctity.virtue) 
+sum(data_moral_hickenlooper_extracted$care.vice)
+sum(data_moral_hickenlooper_extracted$fairness.vice) 
+sum(data_moral_hickenlooper_extracted$loyalty.vice)
+sum(data_moral_hickenlooper_extracted$authority.vice) 
+sum(data_moral_hickenlooper_extracted$sanctity.vice) 
+304/1156
+125/1156
+246/1156
+212/1156
+49/1156
+162/1156
+30/1156
+2/1156
+6/1156
+30/1156
+
+hickenlooper_sanctity.virtue <- tokens_select(toks_hickenlooper, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+hickenlooper_sanctity.virtue <- as.character(hickenlooper_sanctity.virtue)
+
+#BULLOCK
+extracted_moral_toks_bullock <- tokens_select(toks_bullock, pattern = extracted_dict, valuetype = "glob")
+bullock_moral_extracted <- as.character(extracted_moral_toks_bullock)
+sum(ntoken(bullock_moral_extracted))
+
+bullock_moral_dfm_extracted <- dfm(bullock_moral_extracted, remove_punct=TRUE)
+bullock_moral_dfm_extracted <-dfm_weight(bullock_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_bullock_extracted <- dfm_lookup(bullock_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_bullock_extracted <- as.data.frame(dict_moral_bullock_extracted)
+
+sum(data_moral_bullock_extracted$care.virtue) 
+sum(data_moral_bullock_extracted$fairness.virtue) 
+sum(data_moral_bullock_extracted$loyalty.virtue) 
+sum(data_moral_bullock_extracted$authority.virtue) 
+sum(data_moral_bullock_extracted$sanctity.virtue) 
+sum(data_moral_bullock_extracted$care.vice)
+sum(data_moral_bullock_extracted$fairness.vice) 
+sum(data_moral_bullock_extracted$loyalty.vice)
+sum(data_moral_bullock_extracted$authority.vice) 
+sum(data_moral_bullock_extracted$sanctity.vice) 
+391/1934
+357/1934
+404/1934
+326/1934
+33/1934
+224/1934
+35/1934
+2/1934
+13/1934
+166/1934
+
+bullock_sanctity.virtue <- tokens_select(toks_bullock, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+bullock_sanctity.virtue <- as.character(bullock_sanctity.virtue)
+
+#SWALWELL
+extracted_moral_toks_swalwell <- tokens_select(toks_swalwell, pattern = extracted_dict, valuetype = "glob")
+swalwell_moral_extracted <- as.character(extracted_moral_toks_swalwell)
+sum(ntoken(swalwell_moral_extracted))
+
+swalwell_moral_dfm_extracted <- dfm(swalwell_moral_extracted, remove_punct=TRUE)
+swalwell_moral_dfm_extracted <-dfm_weight(swalwell_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_swalwell_extracted <- dfm_lookup(swalwell_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_swalwell_extracted <- as.data.frame(dict_moral_swalwell_extracted)
+
+sum(data_moral_swalwell_extracted$care.virtue) 
+sum(data_moral_swalwell_extracted$fairness.virtue) 
+sum(data_moral_swalwell_extracted$loyalty.virtue) 
+sum(data_moral_swalwell_extracted$authority.virtue) 
+sum(data_moral_swalwell_extracted$sanctity.virtue) 
+sum(data_moral_swalwell_extracted$care.vice)
+sum(data_moral_swalwell_extracted$fairness.vice) 
+sum(data_moral_swalwell_extracted$loyalty.vice)
+sum(data_moral_swalwell_extracted$authority.vice) 
+sum(data_moral_swalwell_extracted$sanctity.vice) 
+239/960
+97/960
+141/960
+83/960
+46/960
+278/960
+25/960
+4/960
+18/960
+46/960
+
+swalwell_sanctity.virtue <- tokens_select(toks_swalwell, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+swalwell_sanctity.virtue <- as.character(swalwell_sanctity.virtue)
+
+#WILLIAMSON
+extracted_moral_toks_williamson <- tokens_select(toks_williamson, pattern = extracted_dict, valuetype = "glob")
+williamson_moral_extracted <- as.character(extracted_moral_toks_williamson)
+sum(ntoken(williamson_moral_extracted))
+
+williamson_moral_dfm_extracted <- dfm(williamson_moral_extracted, remove_punct=TRUE)
+williamson_moral_dfm_extracted <-dfm_weight(williamson_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_williamson_extracted <- dfm_lookup(williamson_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_williamson_extracted <- as.data.frame(dict_moral_williamson_extracted)
+
+sum(data_moral_williamson_extracted$care.virtue) 
+sum(data_moral_williamson_extracted$fairness.virtue) 
+sum(data_moral_williamson_extracted$loyalty.virtue) 
+sum(data_moral_williamson_extracted$authority.virtue) 
+sum(data_moral_williamson_extracted$sanctity.virtue) 
+sum(data_moral_williamson_extracted$care.vice)
+sum(data_moral_williamson_extracted$fairness.vice) 
+sum(data_moral_williamson_extracted$loyalty.vice)
+sum(data_moral_williamson_extracted$authority.vice) 
+sum(data_moral_williamson_extracted$sanctity.vice) 
+744/2684
+256/2684
+492/2684
+334/2684
+345/2684
+301/2684
+103/2684
+0/2684
+26/2684
+131/2684
+
+williamson_sanctity.virtue <- tokens_select(toks_williamson, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+williamson_sanctity.virtue <- as.character(williamson_sanctity.virtue)
+```
+Step 13: Apply new "specific" dictionary to each 2016 REPUBLICAN PRIMARY candidate corpus
+```{r}
+#TRUMP
+extracted_moral_toks_trump <- tokens_select(toks_trump, pattern = extracted_dict, valuetype = "glob")
+trump_moral_extracted <- as.character(extracted_moral_toks_trump)
+sum(ntoken(trump_moral_extracted))
+
+trump_moral_dfm_extracted <- dfm(trump_moral_extracted, remove_punct=TRUE)
+trump_moral_dfm_extracted <-dfm_weight(trump_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_trump_extracted <- dfm_lookup(trump_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_trump_extracted <- as.data.frame(dict_moral_trump_extracted)
+
+sum(data_moral_trump_extracted$care.virtue) 
+sum(data_moral_trump_extracted$fairness.virtue)
+sum(data_moral_trump_extracted$loyalty.virtue) 
+sum(data_moral_trump_extracted$authority.virtue) 
+sum(data_moral_trump_extracted$sanctity.virtue)
+sum(data_moral_trump_extracted$care.vice) 
+sum(data_moral_trump_extracted$fairness.vice)
+sum(data_moral_trump_extracted$loyalty.vice) 
+sum(data_moral_trump_extracted$authority.vice) 
+sum(data_moral_trump_extracted$sanctity.vice) 
+227/1678
+125/1678
+228/1678
+330/1678
+129/1678
+197/1678
+210/1678
+19/1678
+125/1678
+105/1678
+
+trump_fairness.vice <- tokens_select(extracted_moral_toks_trump, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+trump_fairness.vice <- as.character(trump_fairness.vice)
+
+#CRUZ
+extracted_moral_toks_cruz <- tokens_select(toks_cruz, pattern = extracted_dict, valuetype = "glob")
+cruz_moral_extracted <- as.character(extracted_moral_toks_cruz)
+sum(ntoken(cruz_moral_extracted))
+
+cruz_moral_dfm_extracted <- dfm(cruz_moral_extracted, remove_punct=TRUE)
+cruz_moral_dfm_extracted <-dfm_weight(cruz_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_cruz_extracted <- dfm_lookup(cruz_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_cruz_extracted <- as.data.frame(dict_moral_cruz_extracted)
+
+sum(data_moral_cruz_extracted$care.virtue) 
+sum(data_moral_cruz_extracted$fairness.virtue) 
+sum(data_moral_cruz_extracted$loyalty.virtue) 
+sum(data_moral_cruz_extracted$authority.virtue) 
+sum(data_moral_cruz_extracted$sanctity.virtue) 
+sum(data_moral_cruz_extracted$care.vice) 
+sum(data_moral_cruz_extracted$fairness.vice) 
+sum(data_moral_cruz_extracted$loyalty.vice) 
+sum(data_moral_cruz_extracted$authority.vice) 
+sum(data_moral_cruz_extracted$sanctity.vice) 
+368/2393
+232/2393
+569/2393
+456/2393
+342/2393
+257/2393
+47/2393
+35/2393
+71/2393
+52/2393
+
+cruz_loyalty.virtue <- tokens_select(toks_cruz, pattern = extracted_dict$care.virtue_ex, valuetype = "glob")
+cruz_loyalty.virtue <- as.character(cruz_loyalty.virtue)
+
+#RUBIO
+extracted_moral_toks_rubio <- tokens_select(toks_rubio, pattern = extracted_dict, valuetype = "glob")
+rubio_moral_extracted <- as.character(extracted_moral_toks_rubio)
+sum(ntoken(rubio_moral_extracted))
+
+rubio_moral_dfm_extracted <- dfm(rubio_moral_extracted, remove_punct=TRUE)
+rubio_moral_dfm_extracted <-dfm_weight(rubio_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_rubio_extracted <- dfm_lookup(rubio_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_rubio_extracted <- as.data.frame(dict_moral_rubio_extracted)
+
+sum(data_moral_rubio_extracted$care.virtue)  
+sum(data_moral_rubio_extracted$fairness.virtue) 
+sum(data_moral_rubio_extracted$loyalty.virtue)  
+sum(data_moral_rubio_extracted$authority.virtue) 
+sum(data_moral_rubio_extracted$sanctity.virtue)  
+sum(data_moral_rubio_extracted$care.vice)  
+sum(data_moral_rubio_extracted$fairness.vice) 
+sum(data_moral_rubio_extracted$loyalty.vice) 
+sum(data_moral_rubio_extracted$authority.vice)  
+sum(data_moral_rubio_extracted$sanctity.vice) 
+207/826
+38/826
+172/826
+189/826
+107/826
+99/826
+6/826
+6/826
+9/826
+10/826
+
+rubio_loyalty.virtue <- tokens_select(toks_rubio, pattern = extracted_dict$care.virtue_ex, valuetype = "glob")
+rubio_loyalty.virtue <- as.character(rubio_loyalty.virtue)
+
+#KASICH
+extracted_moral_toks_kasich <- tokens_select(toks_kasich, pattern = extracted_dict, valuetype = "glob")
+extracted_moral_toks_kasich <- tokens_select(extracted_moral_toks_kasich, pattern = "help*", selection = "remove", valuetype = "glob")
+kasich_moral_extracted <- as.character(extracted_moral_toks_kasich)
+sum(ntoken(kasich_moral_extracted))
+
+kasich_moral_dfm_extracted <- dfm(kasich_moral_extracted, remove_punct=TRUE)
+kasich_moral_dfm_extracted <-dfm_weight(kasich_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_kasich_extracted <- dfm_lookup(kasich_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_kasich_extracted <- as.data.frame(dict_moral_kasich_extracted)
+
+sum(data_moral_kasich_extracted$care.virtue)  
+sum(data_moral_kasich_extracted$fairness.virtue)  
+sum(data_moral_kasich_extracted$loyalty.virtue) 
+sum(data_moral_kasich_extracted$authority.virtue)  
+sum(data_moral_kasich_extracted$sanctity.virtue)  
+sum(data_moral_kasich_extracted$care.vice)  
+sum(data_moral_kasich_extracted$fairness.vice)  
+sum(data_moral_kasich_extracted$loyalty.vice)  
+sum(data_moral_kasich_extracted$authority.vice)   
+sum(data_moral_kasich_extracted$sanctity.vice)  
+120/739
+18/739
+215/739
+216/739
+56/739
+81/739
+3/739
+6/739
+4/739
+29/739
+
+
+kasich_loyalty.virtue <- tokens_select(extracted_moral_toks_kasich, pattern = extracted_dict$care.virtue_ex, valuetype = "glob")
+kasich_loyalty.virtue <- as.character(kasich_loyalty.virtue)
+
+#CARSON
+extracted_moral_toks_carson <- tokens_select(toks_carson, pattern = extracted_dict, valuetype = "glob")
+carson_moral_extracted <- as.character(extracted_moral_toks_carson)
+sum(ntoken(carson_moral_extracted))
+
+carson_moral_dfm_extracted <- dfm(carson_moral_extracted, remove_punct=TRUE)
+carson_moral_dfm_extracted <-dfm_weight(carson_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_carson_extracted <- dfm_lookup(carson_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_carson_extracted <- as.data.frame(dict_moral_carson_extracted)
+
+sum(data_moral_carson_extracted$care.virtue)  
+sum(data_moral_carson_extracted$fairness.virtue)  
+sum(data_moral_carson_extracted$loyalty.virtue) 
+sum(data_moral_carson_extracted$authority.virtue)  
+sum(data_moral_carson_extracted$sanctity.virtue) 
+sum(data_moral_carson_extracted$care.vice)  
+sum(data_moral_carson_extracted$fairness.vice)   
+sum(data_moral_carson_extracted$loyalty.vice)  
+sum(data_moral_carson_extracted$authority.vice) 
+sum(data_moral_carson_extracted$sanctity.vice) 
+144/785
+62/785
+240/785
+120/785
+128/785
+71/785
+7/785
+8/785
+13/785
+9/785
+
+carson_loyalty.virtue <- tokens_select(toks_carson, pattern = extracted_dict$loyalty.virtue_ex, valuetype = "glob")
+carson_loyalty.virtue <- as.character(carson_loyalty.virtue)
+
+#BUSH
+extracted_moral_toks_bush <- tokens_select(toks_bush, pattern = extracted_dict, valuetype = "glob")
+bush_moral_extracted <- as.character(extracted_moral_toks_bush)
+sum(ntoken(bush_moral_extracted))
+
+bush_moral_dfm_extracted <- dfm(bush_moral_extracted, remove_punct=TRUE)
+bush_moral_dfm_extracted <-dfm_weight(bush_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_bush_extracted <- dfm_lookup(bush_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_bush_extracted <- as.data.frame(dict_moral_bush_extracted)
+
+sum(data_moral_bush_extracted$care.virtue)  
+sum(data_moral_bush_extracted$fairness.virtue)  
+sum(data_moral_bush_extracted$loyalty.virtue) 
+sum(data_moral_bush_extracted$authority.virtue) 
+sum(data_moral_bush_extracted$sanctity.virtue)  
+sum(data_moral_bush_extracted$care.vice)  
+sum(data_moral_bush_extracted$fairness.vice)   
+sum(data_moral_bush_extracted$loyalty.vice)  
+sum(data_moral_bush_extracted$authority.vice)  
+sum(data_moral_bush_extracted$sanctity.vice)  
+168/941
+48/941
+196/941
+235/941
+104/941
+145/941
+9/941
+6/941
+26/941
+30/941
+
+bush_loyalty.virtue <- tokens_select(toks_bush, pattern = extracted_dict$loyalty.virtue_ex, valuetype = "glob")
+bush_loyalty.virtue <- as.character(bush_loyalty.virtue)
+
+#PAUL
+extracted_moral_toks_paul <- tokens_select(toks_paul, pattern = extracted_dict, valuetype = "glob")
+paul_moral_extracted <- as.character(extracted_moral_toks_paul)
+sum(ntoken(paul_moral_extracted))
+
+paul_moral_dfm_extracted <- dfm(paul_moral_extracted, remove_punct=TRUE)
+paul_moral_dfm_extracted <-dfm_weight(paul_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_paul_extracted <- dfm_lookup(paul_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_paul_extracted <- as.data.frame(dict_moral_paul_extracted)
+
+sum(data_moral_paul_extracted$care.virtue)  
+sum(data_moral_paul_extracted$fairness.virtue)  
+sum(data_moral_paul_extracted$loyalty.virtue)  
+sum(data_moral_paul_extracted$authority.virtue) 
+sum(data_moral_paul_extracted$sanctity.virtue)  
+sum(data_moral_paul_extracted$care.vice)  
+sum(data_moral_paul_extracted$fairness.vice)   
+sum(data_moral_paul_extracted$loyalty.vice)  
+sum(data_moral_paul_extracted$authority.vice)   
+sum(data_moral_paul_extracted$sanctity.vice)  
+397/1799
+216/1799
+430/1799
+353/1799
+69/1799
+123/1799
+29/1799
+13/1799
+120/1799
+74/1799
+
+paul_loyalty.virtue <- tokens_select(toks_paul, pattern = extracted_dict$loyalty.virtue_ex, valuetype = "glob")
+paul_loyalty.virtue <- as.character(paul_loyalty.virtue)
+
+#FIORINA
+extracted_moral_toks_fiorina <- tokens_select(toks_fiorina, pattern = extracted_dict, valuetype = "glob")
+fiorina_moral_extracted <- as.character(extracted_moral_toks_fiorina)
+sum(ntoken(fiorina_moral_extracted))
+
+fiorina_moral_dfm_extracted <- dfm(fiorina_moral_extracted, remove_punct=TRUE)
+fiorina_moral_dfm_extracted <-dfm_weight(fiorina_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_fiorina_extracted <- dfm_lookup(fiorina_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_fiorina_extracted <- as.data.frame(dict_moral_fiorina_extracted)
+
+sum(data_moral_fiorina_extracted$care.virtue)  
+sum(data_moral_fiorina_extracted$fairness.virtue)  
+sum(data_moral_fiorina_extracted$loyalty.virtue) 
+sum(data_moral_fiorina_extracted$authority.virtue) 
+sum(data_moral_fiorina_extracted$sanctity.virtue)
+sum(data_moral_fiorina_extracted$care.vice) 
+sum(data_moral_fiorina_extracted$fairness.vice)  
+sum(data_moral_fiorina_extracted$loyalty.vice) 
+sum(data_moral_fiorina_extracted$authority.vice)  
+sum(data_moral_fiorina_extracted$sanctity.vice) 
+122/453
+31/453
+165/453
+66/453
+19/453
+29/453
+6/453
+6/453
+7/453
+5/453
+
+fiorina_loyalty.virtue <- tokens_select(toks_fiorina, pattern = extracted_dict$loyalty.virtue_ex, valuetype = "glob")
+fiorina_loyalty.virtue <- as.character(fiorina_loyalty.virtue)
+
+#HUCKABEE
+extracted_moral_toks_huckabee <- tokens_select(toks_huckabee, pattern = extracted_dict, valuetype = "glob")
+huckabee_moral_extracted <- as.character(extracted_moral_toks_huckabee)
+sum(ntoken(huckabee_moral_extracted))
+
+huckabee_moral_dfm_extracted <- dfm(huckabee_moral_extracted, remove_punct=TRUE)
+huckabee_moral_dfm_extracted <-dfm_weight(huckabee_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_huckabee_extracted <- dfm_lookup(huckabee_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_huckabee_extracted <- as.data.frame(dict_moral_huckabee_extracted)
+
+sum(data_moral_huckabee_extracted$care.virtue) 
+sum(data_moral_huckabee_extracted$fairness.virtue) 
+sum(data_moral_huckabee_extracted$loyalty.virtue) 
+sum(data_moral_huckabee_extracted$authority.virtue) 
+sum(data_moral_huckabee_extracted$sanctity.virtue) 
+sum(data_moral_huckabee_extracted$care.vice) 
+sum(data_moral_huckabee_extracted$fairness.vice) 
+sum(data_moral_huckabee_extracted$loyalty.vice) 
+sum(data_moral_huckabee_extracted$authority.vice) 
+sum(data_moral_huckabee_extracted$sanctity.vice) 
+147/943
+107/943
+124/943
+148/943
+192/943
+141/943
+35/943
+12/943
+29/943
+30/943
+
+huckabee_fairness.vice <- tokens_select(extracted_moral_toks_huckabee, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+huckabee_fairness.vice <- as.character(huckabee_fairness.vice)
+
+#WALKER
+extracted_moral_toks_walker <- tokens_select(toks_walker, pattern = extracted_dict, valuetype = "glob")
+walker_moral_extracted <- as.character(extracted_moral_toks_walker)
+sum(ntoken(walker_moral_extracted))
+
+walker_moral_dfm_extracted <- dfm(walker_moral_extracted, remove_punct=TRUE)
+walker_moral_dfm_extracted <-dfm_weight(walker_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_walker_extracted <- dfm_lookup(walker_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_walker_extracted <- as.data.frame(dict_moral_walker_extracted)
+
+sum(data_moral_walker_extracted$care.virtue) 
+sum(data_moral_walker_extracted$fairness.virtue) 
+sum(data_moral_walker_extracted$loyalty.virtue) 
+sum(data_moral_walker_extracted$authority.virtue) 
+sum(data_moral_walker_extracted$sanctity.virtue) 
+sum(data_moral_walker_extracted$care.vice) 
+sum(data_moral_walker_extracted$fairness.vice) 
+sum(data_moral_walker_extracted$loyalty.vice) 
+sum(data_moral_walker_extracted$authority.vice) 
+sum(data_moral_walker_extracted$sanctity.vice) 
+69/425
+41/425
+74/425
+144/425
+23/425
+53/425
+4/425
+5/425
+10/425
+10/425
+
+walker_fairness.vice <- tokens_select(extracted_moral_toks_walker, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+walker_fairness.vice <- as.character(walker_fairness.vice)
+
+#GRAHAM
+extracted_moral_toks_graham <- tokens_select(toks_graham, pattern = extracted_dict, valuetype = "glob")
+graham_moral_extracted <- as.character(extracted_moral_toks_graham)
+sum(ntoken(graham_moral_extracted))
+
+graham_moral_dfm_extracted <- dfm(graham_moral_extracted, remove_punct=TRUE)
+graham_moral_dfm_extracted <-dfm_weight(graham_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_graham_extracted <- dfm_lookup(graham_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_graham_extracted <- as.data.frame(dict_moral_graham_extracted)
+
+sum(data_moral_graham_extracted$care.virtue) 
+sum(data_moral_graham_extracted$fairness.virtue) 
+sum(data_moral_graham_extracted$loyalty.virtue) 
+sum(data_moral_graham_extracted$authority.virtue) 
+sum(data_moral_graham_extracted$sanctity.virtue) 
+sum(data_moral_graham_extracted$care.vice) 
+sum(data_moral_graham_extracted$fairness.vice) 
+sum(data_moral_graham_extracted$loyalty.vice) 
+sum(data_moral_graham_extracted$authority.vice) 
+sum(data_moral_graham_extracted$sanctity.vice) 
+128/966
+42/966
+272/966
+157/966
+53/966
+272/966
+8/966
+14/966
+6/966
+28/966
+
+graham_fairness.vice <- tokens_select(extracted_moral_toks_graham, pattern = extracted_dict$care.vice_ex, valuetype = "glob")
+graham_fairness.vice <- as.character(graham_fairness.vice)
+
+#JINDAL
+extracted_moral_toks_jindal <- tokens_select(toks_jindal, pattern = extracted_dict, valuetype = "glob")
+jindal_moral_extracted <- as.character(extracted_moral_toks_jindal)
+sum(ntoken(jindal_moral_extracted))
+
+jindal_moral_dfm_extracted <- dfm(jindal_moral_extracted, remove_punct=TRUE)
+jindal_moral_dfm_extracted <-dfm_weight(jindal_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_jindal_extracted <- dfm_lookup(jindal_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_jindal_extracted <- as.data.frame(dict_moral_jindal_extracted)
+
+sum(data_moral_jindal_extracted$care.virtue) 
+sum(data_moral_jindal_extracted$fairness.virtue) 
+sum(data_moral_jindal_extracted$loyalty.virtue) 
+sum(data_moral_jindal_extracted$authority.virtue) 
+sum(data_moral_jindal_extracted$sanctity.virtue) 
+sum(data_moral_jindal_extracted$care.vice) 
+sum(data_moral_jindal_extracted$fairness.vice) 
+sum(data_moral_jindal_extracted$loyalty.vice) 
+sum(data_moral_jindal_extracted$authority.vice) 
+sum(data_moral_jindal_extracted$sanctity.vice) 
+102/421
+33/421
+52/421
+81/421
+78/421
+42/421
+11/421
+6/421
+16/421
+9/421
+
+jindal_fairness.vice <- tokens_select(extracted_moral_toks_jindal, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+jindal_fairness.vice <- as.character(jindal_fairness.vice)
+
+#SANTORUM
+extracted_moral_toks_santorum <- tokens_select(toks_santorum, pattern = extracted_dict, valuetype = "glob")
+santorum_moral_extracted <- as.character(extracted_moral_toks_santorum)
+sum(ntoken(santorum_moral_extracted))
+
+santorum_moral_dfm_extracted <- dfm(santorum_moral_extracted, remove_punct=TRUE)
+santorum_moral_dfm_extracted <-dfm_weight(santorum_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_santorum_extracted <- dfm_lookup(santorum_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_santorum_extracted <- as.data.frame(dict_moral_santorum_extracted)
+
+sum(data_moral_santorum_extracted$care.virtue) 
+sum(data_moral_santorum_extracted$fairness.virtue) 
+sum(data_moral_santorum_extracted$loyalty.virtue) 
+sum(data_moral_santorum_extracted$authority.virtue) 
+sum(data_moral_santorum_extracted$sanctity.virtue) 
+sum(data_moral_santorum_extracted$care.vice) 
+sum(data_moral_santorum_extracted$fairness.vice) 
+sum(data_moral_santorum_extracted$loyalty.vice) 
+sum(data_moral_santorum_extracted$authority.vice) 
+sum(data_moral_santorum_extracted$sanctity.vice) 
+61/410
+26/410
+134/410
+53/410
+66/410
+40/410
+8/410
+10/410
+9/410
+11/410
+
+santorum_fairness.vice <- tokens_select(extracted_moral_toks_santorum, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+santorum_fairness.vice <- as.character(santorum_fairness.vice)
+
+#PATAKI
+extracted_moral_toks_pataki <- tokens_select(toks_pataki, pattern = extracted_dict, valuetype = "glob")
+pataki_moral_extracted <- as.character(extracted_moral_toks_pataki)
+sum(ntoken(pataki_moral_extracted))
+
+pataki_moral_dfm_extracted <- dfm(pataki_moral_extracted, remove_punct=TRUE)
+pataki_moral_dfm_extracted <-dfm_weight(pataki_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_pataki_extracted <- dfm_lookup(pataki_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_pataki_extracted <- as.data.frame(dict_moral_pataki_extracted)
+
+sum(data_moral_pataki_extracted$care.virtue) 
+sum(data_moral_pataki_extracted$fairness.virtue) 
+sum(data_moral_pataki_extracted$loyalty.virtue) 
+sum(data_moral_pataki_extracted$authority.virtue) 
+sum(data_moral_pataki_extracted$sanctity.virtue) 
+sum(data_moral_pataki_extracted$care.vice) 
+sum(data_moral_pataki_extracted$fairness.vice) 
+sum(data_moral_pataki_extracted$loyalty.vice) 
+sum(data_moral_pataki_extracted$authority.vice) 
+sum(data_moral_pataki_extracted$sanctity.vice) 
+35/359
+40/359
+72/359
+78/359
+44/359
+78/359
+2/359
+8/359
+4/359
+11/359
+
+pataki_fairness.vice <- tokens_select(extracted_moral_toks_pataki, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+pataki_fairness.vice <- as.character(pataki_fairness.vice)
+```
+Step 14: Apply new "specific" dictionary to each 2016 DEMCRATIC PRIMARY candidate corpus
+```{r}
+#CLINTON
+extracted_moral_toks_clinton_primary <- tokens_select(toks_clinton_2016primary, pattern = extracted_dict, valuetype = "glob")
+clinton_primary_moral_extracted <- as.character(extracted_moral_toks_clinton_primary)
+sum(ntoken(clinton_primary_moral_extracted))
+
+clinton_primary_moral_dfm_extracted <- dfm(clinton_primary_moral_extracted, remove_punct=TRUE)
+clinton_primary_moral_dfm_extracted <-dfm_weight(clinton_primary_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_clinton_primary_extracted <- dfm_lookup(clinton_primary_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_clinton_primary_extracted <- as.data.frame(dict_moral_clinton_primary_extracted)
+
+sum(data_moral_clinton_primary_extracted$care.virtue) 
+sum(data_moral_clinton_primary_extracted$fairness.virtue) 
+sum(data_moral_clinton_primary_extracted$loyalty.virtue) 
+sum(data_moral_clinton_primary_extracted$authority.virtue) 
+sum(data_moral_clinton_primary_extracted$sanctity.virtue) 
+sum(data_moral_clinton_primary_extracted$care.vice) 
+sum(data_moral_clinton_primary_extracted$fairness.vice) 
+sum(data_moral_clinton_primary_extracted$loyalty.vice) 
+sum(data_moral_clinton_primary_extracted$authority.vice) 
+sum(data_moral_clinton_primary_extracted$sanctity.vice) 
+915/2953
+533/2953
+379/2953
+244/2953
+149/2953
+499/2953
+161/2953
+6/2953
+30/2953
+96/2953
+
+
+clinton_primary_fairness.vice <- tokens_select(extracted_moral_toks_clinton_primary, pattern = extracted_dict$care.virtue_ex, valuetype = "glob")
+clinton_primary_fairness.vice <- as.character(clinton_primary_fairness.vice)
+
+#sanders
+extracted_moral_toks_sanders_primary <- tokens_select(toks_sanders_2016primary, pattern = extracted_dict, valuetype = "glob")
+sanders_primary_moral_extracted <- as.character(extracted_moral_toks_sanders_primary)
+sum(ntoken(sanders_primary_moral_extracted))
+
+sanders_primary_moral_dfm_extracted <- dfm(sanders_primary_moral_extracted, remove_punct=TRUE)
+sanders_primary_moral_dfm_extracted <-dfm_weight(sanders_primary_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_sanders_primary_extracted <- dfm_lookup(sanders_primary_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_sanders_primary_extracted <- as.data.frame(dict_moral_sanders_primary_extracted)
+
+sum(data_moral_sanders_primary_extracted$care.virtue) 
+sum(data_moral_sanders_primary_extracted$fairness.virtue) 
+sum(data_moral_sanders_primary_extracted$loyalty.virtue) 
+sum(data_moral_sanders_primary_extracted$authority.virtue) 
+sum(data_moral_sanders_primary_extracted$sanctity.virtue) 
+sum(data_moral_sanders_primary_extracted$care.vice) 
+sum(data_moral_sanders_primary_extracted$fairness.vice) 
+sum(data_moral_sanders_primary_extracted$loyalty.vice) 
+sum(data_moral_sanders_primary_extracted$authority.vice) 
+sum(data_moral_sanders_primary_extracted$sanctity.vice) 
+1050/3587
+370/3587
+980/3587
+400/3587
+149/3587
+304/3587
+175/3587
+1/3587
+28/3587
+197/3587
+
+sanders_primary_fairness.vice <- tokens_select(extracted_moral_toks_sanders_primary, pattern = extracted_dict$care.virtue_ex, valuetype = "glob")
+sanders_primary_fairness.vice <- as.character(sanders_primary_fairness.vice)
+
+#O'MALLEY
+extracted_moral_toks_omalley_primary <- tokens_select(toks_omalley_2016primary, pattern = extracted_dict, valuetype = "glob")
+omalley_primary_moral_extracted <- as.character(extracted_moral_toks_omalley_primary)
+sum(ntoken(omalley_primary_moral_extracted))
+
+omalley_primary_moral_dfm_extracted <- dfm(omalley_primary_moral_extracted, remove_punct=TRUE)
+omalley_primary_moral_dfm_extracted <-dfm_weight(omalley_primary_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_omalley_primary_extracted <- dfm_lookup(omalley_primary_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_omalley_primary_extracted <- as.data.frame(dict_moral_omalley_primary_extracted)
+
+sum(data_moral_omalley_primary_extracted$care.virtue) 
+sum(data_moral_omalley_primary_extracted$fairness.virtue) 
+sum(data_moral_omalley_primary_extracted$loyalty.virtue) 
+sum(data_moral_omalley_primary_extracted$authority.virtue) 
+sum(data_moral_omalley_primary_extracted$sanctity.virtue) 
+sum(data_moral_omalley_primary_extracted$care.vice) 
+sum(data_moral_omalley_primary_extracted$fairness.vice) 
+sum(data_moral_omalley_primary_extracted$loyalty.vice) 
+sum(data_moral_omalley_primary_extracted$authority.vice) 
+sum(data_moral_omalley_primary_extracted$sanctity.vice) 
+244/985
+147/985
+175/985
+211/985
+110/985
+68/985
+24/985
+2/985
+0/985
+18/985
+
+omalley_primary_fairness.vice <- tokens_select(extracted_moral_toks_omalley_primary, pattern = extracted_dict$sanctity.virtue_ex, valuetype = "glob")
+omalley_primary_fairness.vice <- as.character(omalley_primary_fairness.vice)
+```
+Step 15: Apply new "specific" dictionary to each 2016 & 2020 GENERAL ELECTION candidate corpus
+```{r}
+#TRUMP 2016
+extracted_moral_toks_trump_moral2016GE <- tokens_select(toks_trump_2016GE, pattern = extracted_dict, valuetype = "glob")
+extracted_moral_toks_trump_moral2016GE <- tokens_remove(extracted_moral_toks_trump_moral2016GE, pattern = c("crooked", "Crooked", "CROOKED"), valuetype = "glob")
+
+trump_moral2016GE_moral_extracted <- as.character(extracted_moral_toks_trump_moral2016GE)
+sum(ntoken(trump_moral2016GE_moral_extracted))
+
+trump_moral2016GE_moral_dfm_extracted <- dfm(trump_moral2016GE_moral_extracted, remove_punct=TRUE)
+trump_moral2016GE_moral_dfm_extracted <-dfm_weight(trump_moral2016GE_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_trump_moral2016GE_extracted <- dfm_lookup(trump_moral2016GE_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_trump_moral2016GE_extracted <- as.data.frame(dict_moral_trump_moral2016GE_extracted)
+
+sum(data_moral_trump_moral2016GE_extracted$care.virtue) 
+sum(data_moral_trump_moral2016GE_extracted$fairness.virtue) 
+sum(data_moral_trump_moral2016GE_extracted$loyalty.virtue) 
+sum(data_moral_trump_moral2016GE_extracted$authority.virtue) 
+sum(data_moral_trump_moral2016GE_extracted$sanctity.virtue) 
+sum(data_moral_trump_moral2016GE_extracted$care.vice) 
+sum(data_moral_trump_moral2016GE_extracted$fairness.vice) 
+sum(data_moral_trump_moral2016GE_extracted$loyalty.vice) 
+sum(data_moral_trump_moral2016GE_extracted$authority.vice)
+sum(data_moral_trump_moral2016GE_extracted$sanctity.vice) 
+136/841
+59/841
+143/841
+150/841
+37/841
+131/841
+114/841
+9/841
+32/841
+51/841
+
+trump_moral2016GE_fairness.vice <- tokens_select(extracted_moral_toks_trump_moral2016GE, pattern = extracted_dict$care.vice_ex, valuetype = "glob")
+trump_moral2016GE_fairness.vice <- as.character(trump_moral2016GE_fairness.vice)
+
+#CLINTON 2016
+extracted_moral_toks_clinton_moral2016GE <- tokens_select(toks_clinton_2016GE, pattern = extracted_dict, valuetype = "glob")
+clinton_moral2016GE_moral_extracted <- as.character(extracted_moral_toks_clinton_moral2016GE)
+sum(ntoken(clinton_moral2016GE_moral_extracted))
+
+clinton_moral2016GE_moral_dfm_extracted <- dfm(clinton_moral2016GE_moral_extracted, remove_punct=TRUE)
+clinton_moral2016GE_moral_dfm_extracted <-dfm_weight(clinton_moral2016GE_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_clinton_moral2016GE_extracted <- dfm_lookup(clinton_moral2016GE_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_clinton_moral2016GE_extracted <- as.data.frame(dict_moral_clinton_moral2016GE_extracted)
+
+sum(data_moral_clinton_moral2016GE_extracted$care.virtue) 
+sum(data_moral_clinton_moral2016GE_extracted$fairness.virtue) 
+sum(data_moral_clinton_moral2016GE_extracted$loyalty.virtue) 
+sum(data_moral_clinton_moral2016GE_extracted$authority.virtue) 
+sum(data_moral_clinton_moral2016GE_extracted$sanctity.virtue)
+sum(data_moral_clinton_moral2016GE_extracted$care.vice) 
+sum(data_moral_clinton_moral2016GE_extracted$fairness.vice) 
+sum(data_moral_clinton_moral2016GE_extracted$loyalty.vice) 
+sum(data_moral_clinton_moral2016GE_extracted$authority.vice) 
+sum(data_moral_clinton_moral2016GE_extracted$sanctity.vice) 
+469/1850
+227/1850
+382/1850
+246/1850
+83/1850
+285/1850
+120/1850
+4/1850
+34/1850
+42/1850
+
+clinton_moral2016GE_fairness.vice <- tokens_select(extracted_moral_toks_clinton_moral2016GE, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+clinton_moral2016GE_fairness.vice <- as.character(clinton_moral2016GE_fairness.vice)
+
+#TRUMP 2020
+extracted_moral_toks_trump_moral2020GE <- tokens_select(toks_trump_2020GE, pattern = extracted_dict, valuetype = "glob")
+trump_moral2020GE_moral_extracted <- as.character(extracted_moral_toks_trump_moral2020GE)
+sum(ntoken(trump_moral2020GE_moral_extracted))
+
+trump_moral2020GE_moral_dfm_extracted <- dfm(trump_moral2020GE_moral_extracted, remove_punct=TRUE)
+trump_moral2020GE_moral_dfm_extracted <-dfm_weight(trump_moral2020GE_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_trump_moral2020GE_extracted <- dfm_lookup(trump_moral2020GE_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_trump_moral2020GE_extracted <- as.data.frame(dict_moral_trump_moral2020GE_extracted)
+
+sum(data_moral_trump_moral2020GE_extracted$care.virtue) 
+sum(data_moral_trump_moral2020GE_extracted$fairness.virtue) 
+sum(data_moral_trump_moral2020GE_extracted$loyalty.virtue) 
+sum(data_moral_trump_moral2020GE_extracted$authority.virtue) 
+sum(data_moral_trump_moral2020GE_extracted$sanctity.virtue) 
+sum(data_moral_trump_moral2020GE_extracted$care.vice) 
+sum(data_moral_trump_moral2020GE_extracted$fairness.vice) 
+sum(data_moral_trump_moral2020GE_extracted$loyalty.vice) 
+sum(data_moral_trump_moral2020GE_extracted$authority.vice) 
+sum(data_moral_trump_moral2020GE_extracted$sanctity.vice) 
+951/5093
+418/5093
+810/5093
+1015/5093
+305/5093
+566/5093
+329/5093
+63/5093
+277/5093
+476/5093
+
+trump_moral2020GE_fairness.vice <- tokens_select(extracted_moral_toks_trump_moral2020GE, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+trump_moral2020GE_fairness.vice <- as.character(trump_moral2020GE_fairness.vice)
+
+#BIDEN 2020
+extracted_moral_toks_biden_moral2020GE <- tokens_select(toks_biden_2020GE, pattern = extracted_dict, valuetype = "glob")
+biden_moral2020GE_moral_extracted <- as.character(extracted_moral_toks_biden_moral2020GE)
+sum(ntoken(biden_moral2020GE_moral_extracted))
+
+biden_moral2020GE_moral_dfm_extracted <- dfm(biden_moral2020GE_moral_extracted, remove_punct=TRUE)
+biden_moral2020GE_moral_dfm_extracted <-dfm_weight(biden_moral2020GE_moral_dfm_extracted, scheme = "prop")
+
+dict_moral_biden_moral2020GE_extracted <- dfm_lookup(biden_moral2020GE_moral_dfm_extracted, dictionary = data_dictionary_MFD)
+data_moral_biden_moral2020GE_extracted <- as.data.frame(dict_moral_biden_moral2020GE_extracted)
+
+sum(data_moral_biden_moral2020GE_extracted$care.virtue) 
+sum(data_moral_biden_moral2020GE_extracted$fairness.virtue) 
+sum(data_moral_biden_moral2020GE_extracted$loyalty.virtue) 
+sum(data_moral_biden_moral2020GE_extracted$authority.virtue) 
+sum(data_moral_biden_moral2020GE_extracted$sanctity.virtue) 
+sum(data_moral_biden_moral2020GE_extracted$care.vice) 
+sum(data_moral_biden_moral2020GE_extracted$fairness.vice) 
+sum(data_moral_biden_moral2020GE_extracted$loyalty.vice) 
+sum(data_moral_biden_moral2020GE_extracted$authority.vice) 
+sum(data_moral_biden_moral2020GE_extracted$sanctity.vice) 
+706/2567
+246/2567
+657/2567
+222/2567
+198/2567
+261/2567
+56/2567
+7/2567
+42/2567
+200/2567
+
+biden_moral2020GE_fairness.vice <- tokens_select(extracted_moral_toks_biden_moral2020GE, pattern = extracted_dict$fairness.vice_ex, valuetype = "glob")
+biden_moral2020GE_fairness.vice <- as.character(biden_moral2020GE_fairness.vice)
+```
+
+
+EXPORT FILES OF WIEGHTED MORAL LANGAUGE 
+Step 16: Write a new .txt file for the weighted moral language used by each 2020 DEMOCRATIC PRIMARY candidate 
+```{r}
+#BIDEN
+toks_biden <- tokens(biden_corpus)
+moral_toks_biden <- tokens_select(toks_biden, pattern = extracted_dict, valuetype = "glob")
+biden_moral <- as.character(moral_toks_biden)
+biden_moral <- paste0(biden_moral, collapse = ". ")
+ntoken(biden_moral)
+write(biden_moral, "biden_weighted_moral.txt")
+
+#SANDERS
+toks_sanders <- tokens(sanders_corpus)
+moral_toks_sanders <- tokens_select(toks_sanders, pattern = extracted_dict, valuetype = "glob")
+sanders_moral <- as.character(moral_toks_sanders)
+sanders_moral <- paste0(sanders_moral, collapse = ". ")
+ntoken(sanders_moral)
+write(sanders_moral, "sanders_weighted_moral.txt")
+
+#BUTTIGIEG
+toks_buttigieg <- tokens(buttigieg_corpus)
+moral_toks_buttigieg <- tokens_select(toks_buttigieg, pattern = extracted_dict, valuetype = "glob")
+buttigieg_moral <- as.character(moral_toks_buttigieg)
+buttigieg_moral <- paste0(buttigieg_moral, collapse = ". ")
+ntoken(buttigieg_moral)
+write(buttigieg_moral, "buttigieg_weighted_moral.txt")
+
+#WARREN
+toks_warren <- tokens(warren_corpus)
+moral_toks_warren <- tokens_select(toks_warren, pattern = extracted_dict, valuetype = "glob")
+warren_moral <- as.character(moral_toks_warren)
+warren_moral <- paste0(warren_moral, collapse = ". ")
+ntoken(warren_moral)
+write(warren_moral, "warren_weighted_moral.txt")
+
+#KLOBUCHAR
+toks_klobuchar <- tokens(klobuchar_corpus)
+moral_toks_klobuchar <- tokens_select(toks_klobuchar, pattern = extracted_dict, valuetype = "glob")
+klobuchar_moral <- as.character(moral_toks_klobuchar)
+klobuchar_moral <- paste0(klobuchar_moral, collapse = ". ")
+ntoken(klobuchar_moral)
+write(klobuchar_moral, "klobuchar_weighted_moral.txt")
+
+#HARRIS
+toks_harris <- tokens(harris_corpus)
+moral_toks_harris <- tokens_select(toks_harris, pattern = extracted_dict, valuetype = "glob")
+harris_moral <- as.character(moral_toks_harris)
+harris_moral <- paste0(harris_moral, collapse = ". ")
+ntoken(harris_moral)
+write(harris_moral, "harris_weighted_moral.txt")
+
+#YANG
+toks_yang <- tokens(yang_corpus)
+moral_toks_yang <- tokens_select(toks_yang, pattern = extracted_dict, valuetype = "glob")
+yang_moral <- as.character(moral_toks_yang)
+yang_moral <- paste0(yang_moral, collapse = ". ")
+ntoken(yang_moral)
+write(yang_moral, "yang_weighted_moral.txt")
+
+#STEYER
+toks_steyer <- tokens(steyer_corpus)
+moral_toks_steyer <- tokens_select(toks_steyer, pattern = extracted_dict, valuetype = "glob")
+steyer_moral <- as.character(moral_toks_steyer)
+steyer_moral <- paste0(steyer_moral, collapse = ". ")
+ntoken(steyer_moral)
+write(steyer_moral, "steyer_weighted_moral.txt")
+
+#BOOKER
+toks_booker <- tokens(booker_corpus)
+moral_toks_booker <- tokens_select(toks_booker, pattern = extracted_dict, valuetype = "glob")
+booker_moral <- as.character(moral_toks_booker)
+booker_moral <- paste0(booker_moral, collapse = ". ")
+ntoken(booker_moral)
+write(booker_moral, "booker_weighted_moral.txt")
+
+#GABBARD
+toks_gabbard <- tokens(gabbard_corpus)
+moral_toks_gabbard <- tokens_select(toks_gabbard, pattern = extracted_dict, valuetype = "glob")
+gabbard_moral <- as.character(moral_toks_gabbard)
+gabbard_moral <- paste0(gabbard_moral, collapse = ". ")
+ntoken(gabbard_moral)
+write(gabbard_moral, "gabbard_weighted_moral.txt")
+
+#CASTRO
+toks_castro <- tokens(castro_corpus)
+moral_toks_castro <- tokens_select(toks_castro, pattern = extracted_dict, valuetype = "glob")
+castro_moral <- as.character(moral_toks_castro)
+castro_moral <- paste0(castro_moral, collapse = ". ")
+ntoken(castro_moral)
+write(castro_moral, "castro_weighted_moral.txt")
+
+#OROURKE
+toks_orourke <- tokens(orourke_corpus)
+moral_toks_orourke <- tokens_select(toks_orourke, pattern = extracted_dict, valuetype = "glob")
+orourke_moral <- as.character(moral_toks_orourke)
+orourke_moral <- paste0(orourke_moral, collapse = ". ")
+ntoken(orourke_moral)
+write(orourke_moral, "orourke_weighted_moral.txt")
+
+#BENNET
+toks_bennet <- tokens(bennet_corpus)
+moral_toks_bennet <- tokens_select(toks_bennet, pattern = extracted_dict, valuetype = "glob")
+bennet_moral <- as.character(moral_toks_bennet)
+bennet_moral <- paste0(bennet_moral, collapse = ". ")
+ntoken(bennet_moral)
+write(bennet_moral, "bennet_weighted_moral.txt")
+
+#DELANEY
+toks_delaney <- tokens(delaney_corpus)
+moral_toks_delaney <- tokens_select(toks_delaney, pattern = extracted_dict, valuetype = "glob")
+delaney_moral <- as.character(moral_toks_delaney)
+delaney_moral <- paste0(delaney_moral, collapse = ". ")
+ntoken(delaney_moral)
+write(delaney_moral, "delaney_weighted_moral.txt")
+
+#WILLIAMSON
+toks_williamson <- tokens(williamson_corpus)
+moral_toks_williamson <- tokens_select(toks_williamson, pattern = extracted_dict, valuetype = "glob")
+williamson_moral <- as.character(moral_toks_williamson)
+williamson_moral <- paste0(williamson_moral, collapse = ". ")
+ntoken(williamson_moral)
+write(williamson_moral, "williamson_weighted_moral.txt")
+
+#RYAN
+toks_ryan <- tokens(ryan_corpus)
+moral_toks_ryan <- tokens_select(toks_ryan, pattern = extracted_dict, valuetype = "glob")
+ryan_moral <- as.character(moral_toks_ryan)
+ryan_moral <- paste0(ryan_moral, collapse = ". ")
+ntoken(ryan_moral)
+write(ryan_moral, "ryan_weighted_moral.txt")
+
+#GILLIBRAND
+toks_gillibrand <- tokens(gillibrand_corpus)
+moral_toks_gillibrand <- tokens_select(toks_gillibrand, pattern = extracted_dict, valuetype = "glob")
+gillibrand_moral <- as.character(moral_toks_gillibrand)
+gillibrand_moral <- paste0(gillibrand_moral, collapse = ". ")
+ntoken(gillibrand_moral)
+write(gillibrand_moral, "gillibrand_weighted_moral.txt")
+
+#INSLEE
+toks_inslee <- tokens(inslee_corpus)
+moral_toks_inslee <- tokens_select(toks_inslee, pattern = extracted_dict, valuetype = "glob")
+inslee_moral <- as.character(moral_toks_inslee)
+inslee_moral <- paste0(inslee_moral, collapse = ". ")
+ntoken(inslee_moral)
+write(inslee_moral, "inslee_weighted_moral.txt")
+
+#HICKENLOOPER
+toks_hickenlooper <- tokens(hickenlooper_corpus)
+moral_toks_hickenlooper <- tokens_select(toks_hickenlooper, pattern = extracted_dict, valuetype = "glob")
+hickenlooper_moral <- as.character(moral_toks_hickenlooper)
+hickenlooper_moral <- paste0(hickenlooper_moral, collapse = ". ")
+ntoken(hickenlooper_moral)
+write(hickenlooper_moral, "hickenlooper_weighted_moral.txt")
+
+#BULLOCK
+toks_bullock <- tokens(bullock_corpus)
+moral_toks_bullock <- tokens_select(toks_bullock, pattern = extracted_dict, valuetype = "glob")
+bullock_moral <- as.character(moral_toks_bullock)
+bullock_moral <- paste0(bullock_moral, collapse = ". ")
+ntoken(bullock_moral)
+write(bullock_moral, "bullock_weighted_moral.txt")
+
+#SWALWELL
+toks_swalwell <- tokens(swalwell_corpus)
+moral_toks_swalwell <- tokens_select(toks_swalwell, pattern = extracted_dict, valuetype = "glob")
+swalwell_moral <- as.character(moral_toks_swalwell)
+swalwell_moral <- paste0(swalwell_moral, collapse = ". ")
+ntoken(swalwell_moral)
+write(swalwell_moral, "swalwell_weighted_moral.txt")
+```
+Step 17: Write a new .txt file for the weighted moral language used by each 2016 REPUBLICAN PRIMARY candidate 
+```{r}
+#TRUMP
+#create tokens object from trump corpus 
+toks_trump <- tokens(trump_corpus)
+
+#select dictionary matches
+moral_toks_trump <- tokens_select(toks_trump, pattern = extracted_dict, valuetype = "glob")
+
+#convert to character string & concatenate :)
+trump_moral <- as.character(moral_toks_trump)
+trump_moral <- paste0(trump_moral, collapse = ". ")
+
+#check how many dictionary matches, and then write to a .txt file
+ntoken(trump_moral)
+write(trump_moral, "trump_weighted_moral.txt")
+
+#CRUZ
+toks_cruz <- tokens(cruz_corpus)
+moral_toks_cruz <- tokens_select(toks_cruz, pattern = extracted_dict, valuetype = "glob")
+cruz_moral <- as.character(moral_toks_cruz)
+cruz_moral <- paste0(cruz_moral, collapse = ". ")
+ntoken(cruz_moral)
+write(cruz_moral, "cruz_weighted_moral.txt")
+
+#RUBIO
+toks_rubio <- tokens(rubio_corpus)
+moral_toks_rubio <- tokens_select(toks_rubio, pattern = extracted_dict, valuetype = "glob")
+rubio_moral <- as.character(moral_toks_rubio)
+rubio_moral <- paste0(rubio_moral, collapse = ". ")
+ntoken(rubio_moral)
+write(rubio_moral, "rubio_weighted_moral.txt")
+
+#KASICH
+toks_kasich <- tokens(kasich_corpus)
+moral_toks_kasich <- tokens_select(toks_kasich, pattern = extracted_dict, valuetype = "glob")
+kasich_moral <- as.character(moral_toks_kasich)
+kasich_moral <- paste0(kasich_moral, collapse = ". ")
+ntoken(kasich_moral)
+write(kasich_moral, "kasich_weighted_moral.txt")
+
+#CARSON
+toks_carson <- tokens(carson_corpus)
+moral_toks_carson <- tokens_select(toks_carson, pattern = extracted_dict, valuetype = "glob")
+carson_moral <- as.character(moral_toks_carson)
+carson_moral <- paste0(carson_moral, collapse = ". ")
+ntoken(carson_moral)
+write(carson_moral, "carson_weighted_moral.txt")
+
+#BUSH
+toks_bush <- tokens(bush_corpus)
+moral_toks_bush <- tokens_select(toks_bush, pattern = extracted_dict, valuetype = "glob")
+bush_moral <- as.character(moral_toks_bush)
+bush_moral <- paste0(bush_moral, collapse = ". ")
+ntoken(bush_moral)
+write(bush_moral, "bush_weighted_moral.txt")
+
+#CHRISTIE
+toks_christie <- tokens(christie_corpus)
+moral_toks_christie <- tokens_select(toks_christie, pattern = extracted_dict, valuetype = "glob")
+christie_moral <- as.character(moral_toks_christie)
+christie_moral <- paste0(christie_moral, collapse = ". ")
+ntoken(christie_moral)
+write(christie_moral, "christie_weighted_moral.txt")
+
+#PAUL
+toks_paul <- tokens(paul_corpus)
+moral_toks_paul <- tokens_select(toks_paul, pattern = extracted_dict, valuetype = "glob")
+paul_moral <- as.character(moral_toks_paul)
+paul_moral <- paste0(paul_moral, collapse = ". ")
+ntoken(paul_moral)
+write(paul_moral, "paul_weighted_moral.txt")
+
+#FIORINA
+toks_fiorina <- tokens(fiorina_corpus)
+moral_toks_fiorina <- tokens_select(toks_fiorina, pattern = extracted_dict, valuetype = "glob")
+fiorina_moral <- as.character(moral_toks_fiorina)
+fiorina_moral <- paste0(fiorina_moral, collapse = ". ")
+ntoken(fiorina_moral)
+write(fiorina_moral, "fiorina_weighted_moral.txt")
+
+#HUCKABEE
+toks_huckabee <- tokens(huckabee_corpus)
+moral_toks_huckabee <- tokens_select(toks_huckabee, pattern = extracted_dict, valuetype = "glob")
+huckabee_moral <- as.character(moral_toks_huckabee)
+huckabee_moral <- paste0(huckabee_moral, collapse = ". ")
+ntoken(huckabee_moral)
+write(huckabee_moral, "huckabee_weighted_moral.txt")
+
+#WALKER
+toks_walker <- tokens(walker_corpus)
+moral_toks_walker <- tokens_select(toks_walker, pattern = extracted_dict, valuetype = "glob")
+walker_moral <- as.character(moral_toks_walker)
+walker_moral <- paste0(walker_moral, collapse = ". ")
+ntoken(walker_moral)
+write(walker_moral, "walker_weighted_moral.txt")
+
+#GRAHAM
+toks_graham <- tokens(graham_corpus)
+moral_toks_graham <- tokens_select(toks_graham, pattern = extracted_dict, valuetype = "glob")
+graham_moral <- as.character(moral_toks_graham)
+graham_moral <- paste0(graham_moral, collapse = ". ")
+ntoken(graham_moral)
+write(graham_moral, "graham_weighted_moral.txt")
+
+#JINDAL
+toks_jindal <- tokens(jindal_corpus)
+moral_toks_jindal <- tokens_select(toks_jindal, pattern = extracted_dict, valuetype = "glob")
+jindal_moral <- as.character(moral_toks_jindal)
+jindal_moral <- paste0(jindal_moral, collapse = ". ")
+ntoken(jindal_moral)
+write(jindal_moral, "jindal_weighted_moral.txt")
+
+#SANTORUM
+toks_santorum <- tokens(santorum_corpus)
+moral_toks_santorum <- tokens_select(toks_santorum, pattern = extracted_dict, valuetype = "glob")
+santorum_moral <- as.character(moral_toks_santorum)
+santorum_moral <- paste0(santorum_moral, collapse = ". ")
+ntoken(santorum_moral)
+write(santorum_moral, "santorum_weighted_moral.txt")
+
+#PATAKI
+toks_pataki <- tokens(pataki_corpus)
+moral_toks_pataki <- tokens_select(toks_pataki, pattern = extracted_dict, valuetype = "glob")
+pataki_moral <- as.character(moral_toks_pataki)
+pataki_moral <- paste0(pataki_moral, collapse = ". ")
+ntoken(pataki_moral)
+write(pataki_moral, "pataki_weighted_moral.txt")
+```
+Step 18: Write a new .txt file for the weighted moral language used by each 2016 DEMOCRATIC PRIMARY candidate
+```{r}
+#CLINTON
+toks_clinton_2016primary <- tokens(clinton2016primary_corpus)
+moral_toks_clinton_2016primary <- tokens_select(toks_clinton_2016primary, pattern = extracted_dict, valuetype = "glob")
+clinton_2016primary_moral <- as.character(moral_toks_clinton_2016primary)
+clinton_2016primary_moral <- paste0(clinton_2016primary_moral, collapse = ". ")
+ntoken(clinton_2016primary_moral)
+write(clinton_2016primary_moral, "clinton_2016primary_weighted_moral.txt")
+
+#SANDERS
+toks_sanders_2016primary <- tokens(sanders2016primary_corpus)
+moral_toks_sanders_2016primary <- tokens_select(toks_sanders_2016primary, pattern = extracted_dict, valuetype = "glob")
+sanders_2016primary_moral <- as.character(moral_toks_sanders_2016primary)
+sanders_2016primary_moral <- paste0(sanders_2016primary_moral, collapse = ". ")
+ntoken(sanders_2016primary_moral)
+write(sanders_2016primary_moral, "sanders_2016primary_weighted_moral.txt")
+
+#OMALLEY
+toks_omalley_2016primary <- tokens(omalley2016primary_corpus)
+moral_toks_omalley_2016primary <- tokens_select(toks_omalley_2016primary, pattern = extracted_dict, valuetype = "glob")
+omalley_2016primary_moral <- as.character(moral_toks_omalley_2016primary)
+omalley_2016primary_moral <- paste0(omalley_2016primary_moral, collapse = ". ")
+ntoken(omalley_2016primary_moral)
+write(omalley_2016primary_moral, "omalley_2016primary_weighted_moral.txt")
+```
+Step 19: Write a new .txt file for the weighted moral language used by each 2016 & 2020 GENERAL ELECTION candidate
+```{r}
+#CLINTON 2016 
+toks_clinton_2016GE <- tokens(clinton2016_GE_corpus)
+moral_toks_clinton_2016GE <- tokens_select(toks_clinton_2016GE, pattern = extracted_dict, valuetype = "glob")
+clinton_2016GE_moral <- as.character(moral_toks_clinton_2016GE)
+clinton_2016GE_moral <- paste0(clinton_2016GE_moral, collapse = ". ")
+ntoken(clinton_2016GE_moral)
+write(clinton_2016GE_moral, "clinton_2016GE_weighted_moral.txt")
+
+#TRUMP 2016
+toks_trump_2016GE <- tokens(trump2016_GE_corpus)
+moral_toks_trump_2016GE <- tokens_select(toks_trump_2016GE, pattern = extracted_dict, valuetype = "glob")
+trump_2016GE_moral <- as.character(moral_toks_trump_2016GE)
+trump_2016GE_moral <- paste0(trump_2016GE_moral, collapse = ". ")
+ntoken(trump_2016GE_moral)
+write(trump_2016GE_moral, "trump_2016GE_weighted_moral.txt")
+
+#BIDEN 2020
+toks_biden_2020GE <- tokens(biden2020_GE_corpus)
+moral_toks_biden_2020GE <- tokens_select(toks_biden_2020GE, pattern = extracted_dict, valuetype = "glob")
+biden_2020GE_moral <- as.character(moral_toks_biden_2020GE)
+biden_2020GE_moral <- paste0(biden_2020GE_moral, collapse = ". ")
+ntoken(biden_2020GE_moral)
+write(biden_2020GE_moral, "biden_2020GE_weighted_moral.txt")
+
+#TRUMP 2020
+toks_trump_2020GE <- tokens(trump2020_GE_corpus)
+moral_toks_trump_2020GE <- tokens_select(toks_trump_2020GE, pattern = extracted_dict, valuetype = "glob")
+trump_2020GE_moral <- as.character(moral_toks_trump_2020GE)
+trump_2020GE_moral <- paste0(trump_2020GE_moral, collapse = ". ")
+ntoken(trump_2020GE_moral)
+write(trump_2020GE_moral, "trump_2020GE_weighted_moral.txt")
+```
+
+```{r}
+
+```
+
